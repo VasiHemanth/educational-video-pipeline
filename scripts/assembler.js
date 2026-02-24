@@ -433,7 +433,9 @@ function drawOutroFrame(frameNum = 0) {
 // ══════════════════════════════════════════════════════════════════════════════
 async function assembleVideoRemotion(content, diagrams, audioPath, questionNum, config = {}) {
   const { spawn } = require('child_process');
-  const slug = (content.topic || 'video').replace(/[\s/]+/g, '_').replace(/[^\w]/g, '');
+  const domainSlug = (content.domain || 'GCP').replace(/[\\s/]+/g, '_').replace(/[^\\w-]/g, '');
+  const topicSlug = (content.topic || 'video').replace(/[\\s/]+/g, '_').replace(/[^\\w-]/g, '');
+  const slug = `${domainSlug}_${topicSlug}`;
   const outputPath = path.join(DIRS.video, `q${questionNum}_${slug}.mp4`);
 
   // Encode diagrams as base64 data URIs (bypasses Remotion's static file restrictions)
@@ -566,7 +568,9 @@ async function assembleVideoCanvas(content, diagrams, audioPath, questionNum) {
   for (let i = 0; i < OUTRO_FRAMES; i++) save(drawOutroFrame(i));
 
   // Encode
-  const slug = (content.topic || 'video').replace(/[\\s/]+/g, '_').replace(/[^\\w]/g, '');
+  const domainSlug = (content.domain || 'GCP').replace(/[\\s/]+/g, '_').replace(/[^\\w-]/g, '');
+  const topicSlug = (content.topic || 'video').replace(/[\\s/]+/g, '_').replace(/[^\\w-]/g, '');
+  const slug = `${domainSlug}_${topicSlug}`;
   const out = path.join(DIRS.video, `q${questionNum}_${slug}.mp4`);
   const dur = (INTRO_FRAMES + sections.length * SECTION_FRAMES + OUTRO_FRAMES) / FPS;
 

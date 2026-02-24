@@ -22,6 +22,7 @@ function initDB() {
                 question_number INTEGER NOT NULL,
                 question_text TEXT NOT NULL,
                 duration_seconds INTEGER,
+                video_file_name TEXT,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )`);
 
@@ -51,12 +52,12 @@ function initDB() {
 }
 
 // Track a newly generated video
-function trackVideo(domain, topic, questionNum, questionText, conceptsList = [], duration = null) {
+function trackVideo(domain, topic, questionNum, questionText, conceptsList = [], duration = null, videoFileName = null) {
     return new Promise((resolve, reject) => {
         db.run(
-            `INSERT INTO videos (domain, topic, question_number, question_text, duration_seconds) 
-             VALUES (?, ?, ?, ?, ?)`,
-            [domain, topic, questionNum, questionText, duration],
+            `INSERT INTO videos (domain, topic, question_number, question_text, duration_seconds, video_file_name) 
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [domain, topic, questionNum, questionText, duration, videoFileName],
             function (err) {
                 if (err) {
                     console.error("Error inserting video:", err);

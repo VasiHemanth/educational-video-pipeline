@@ -133,7 +133,7 @@ async function run() {
     ...(contentJson.answer_sections || []).map(s => s.keywords?.tech_terms || []).flat(),
     ...(contentJson.answer_sections || []).map(s => s.keywords?.concepts || []).flat()
   ])];
-  const videoId = await trackVideo(DOMAIN, TOPIC, NUMBER, contentJson.question_text || "", allConcepts, null);
+  const videoId = await trackVideo(DOMAIN, TOPIC, NUMBER, contentJson.question_text || "", allConcepts, null, path.basename(videoPath));
 
   if (AUTO_POST) {
     console.log('\n🚀 Auto-posting flag detected! Triggering social uploads...');
