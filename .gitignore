@@ -1,0 +1,7 @@
+node_modules/
+.env
+output/
+ffmpeg.zip
+remotion/node_modules/
+remotion/out/
+.DS_Store
