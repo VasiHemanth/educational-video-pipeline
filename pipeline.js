@@ -44,6 +44,7 @@ const ANIM_STYLE = getArg('--anim') || 'highlight'; // 'highlight', 'type', 'fad
 const PAUSE_FRAMES = parseInt(getArg('--pause') || '30', 10);
 const NO_PROGRESS = hasFlag('--no-progress');
 const AUTO_POST = hasFlag('--post');
+const DOMAIN = getArg('--domain') || 'GCP';
 
 // Override provider from CLI flag
 if (getArg('--provider')) process.env.LLM_PROVIDER = PROVIDER;
@@ -57,6 +58,7 @@ async function run() {
   console.log('╔══════════════════════════════════════════════════╗');
   console.log('║   GCP Video Pipeline Starting                    ║');
   console.log(`║   Provider : ${PROVIDER.padEnd(34)}║`);
+  console.log(`║   Domain   : ${DOMAIN.substring(0, 34).padEnd(34)}║`);
   console.log(`║   Topic    : ${TOPIC.substring(0, 34).padEnd(34)}║`);
   console.log(`║   Question : #${String(NUMBER).padEnd(33)}║`);
   console.log(`║   Dry Run  : ${String(DRY_RUN).padEnd(34)}║`);
@@ -72,7 +74,13 @@ async function run() {
 
   // ── STEP 1: Content Generation ──────────────────────────────────────────────
   console.log('📝 STEP 1/4 — Generating content with LLM...');
-  const contentJson = await askJSON(contentPrompt(NUMBER, TOPIC));
+  const contentJson = await askJSON(contentPrompt(NUMBER, TOPIC, DOMAIN));
+  contentJson.domain = DOMAIN; // inject for rendering
+
+  // Fix nested diagrams if LLM put them inside answer_sections instead of root
+  if (!contentJson.diagrams || contentJson.diagrams.length === 0) {
+    contentJson.diagrams = (contentJson.answer_sections || []).flatMap(sec => sec.diagrams || []);
+  }
 
   const contentPath = path.join(OUT_DIR, `q${NUMBER}_content.json`);
   fs.writeFileSync(contentPath, JSON.stringify(contentJson, null, 2));
@@ -95,8 +103,8 @@ async function run() {
 
     // Use the correct refinement prompt based on diagram mode
     const refinePrompt = DIAGRAM_MODE === 'mermaid'
-      ? mermaidDslRefinementPrompt(diagram, section?.text || '')
-      : dslRefinementPrompt(diagram, section?.text || '');
+      ? mermaidDslRefinementPrompt(diagram, section?.text || '', DOMAIN)
+      : dslRefinementPrompt(diagram, section?.text || '', DOMAIN);
 
     const refinedDsl = await askJSON(refinePrompt).catch(() => ({ dsl: diagram.dsl })); // fallback to original DSL on parse fail
 
@@ -115,17 +123,17 @@ async function run() {
 
   // ── BONUS: Generate platform metadata ────────────────────────────────────────
   console.log('\n📱 Generating platform metadata...');
-  const metadata = await askJSON(metadataPrompt(contentJson));
+  const metadata = await askJSON(metadataPrompt(contentJson, DOMAIN));
   const metaPath = path.join(OUT_DIR, `q${NUMBER}_metadata.json`);
   fs.writeFileSync(metaPath, JSON.stringify(metadata, null, 2));
 
   // ── TRACK IN DB ─────────────────────────────────────────────────────────────
   console.log('\n💾 Tracking video in database...');
   const allConcepts = [...new Set([
-    ...(contentJson.answer_sections || []).map(s => s.keywords?.gcp_services || []).flat(),
+    ...(contentJson.answer_sections || []).map(s => s.keywords?.tech_terms || []).flat(),
     ...(contentJson.answer_sections || []).map(s => s.keywords?.concepts || []).flat()
   ])];
-  const videoId = await trackVideo("GCP", TOPIC, NUMBER, contentJson.question_text || "", allConcepts, null);
+  const videoId = await trackVideo(DOMAIN, TOPIC, NUMBER, contentJson.question_text || "", allConcepts, null);
 
   if (AUTO_POST) {
     console.log('\n🚀 Auto-posting flag detected! Triggering social uploads...');

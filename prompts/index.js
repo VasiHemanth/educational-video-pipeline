@@ -7,9 +7,10 @@
  * STEP 1 — Generate question + full answer content
  * Output drives: title card, voiceover script, keyword highlighting, diagram specs
  */
-function contentPrompt(questionNumber, topic) {
+function contentPrompt(questionNumber, topic, domain = 'GCP') {
   return `
-You are a GCP Cloud Architect educator creating short-form video content for Google Cloud interview prep.
+You are an AI Cloud Architect educator creating short-form video content for ${domain} interview prep.
+We focus on building crazy scalable AI systems.
 
 Generate Interview Question #${questionNumber} about: "${topic}"
 
@@ -18,14 +19,14 @@ Return JSON with this exact structure:
   "question_number": ${questionNumber},
   "topic": "${topic}",
   "question_text": "How would you [specific scenario]?",
-  "gcp_services": ["list", "of", "GCP", "services", "involved"],
+  "tech_terms": ["list", "of", "${domain}", "services", "or", "technologies", "involved"],
   "answer_sections": [
     {
       "id": 1,
       "title": "DEFINITION",
       "text": "Full answer paragraph for this section (2-4 sentences). Be technical and specific.",
       "keywords": {
-        "gcp_services": ["exact words to highlight BLUE"],
+        "tech_terms": ["exact words to highlight BLUE"],
         "action_verbs": ["exact words to highlight RED"],
         "concepts": ["exact words to highlight GREEN"]
       }
@@ -57,14 +58,14 @@ DIAGRAM DSL RULES (Excalidraw-flowchart syntax):
 - @direction LR  = left-to-right layout
 
 KEYWORD RULES:
-- gcp_services: exact service names as they appear in text (e.g. "Cloud Dataflow", "BigQuery")
+- tech_terms: exact service/tech names as they appear in text (e.g. "Cloud Dataflow", "S3", "Spark")
 - action_verbs: technical verbs (e.g. "extract", "transform", "partition")
-- concepts: architectural concepts (e.g. "ETL", "streaming", "batch")
+- concepts: architectural concepts (e.g. "ETL", "streaming", "batch", "Generative AI")
 
 Generate 3-5 answer sections covering the complete answer. Each section needs 1 diagram.
 Topic-specific guidance for "${topic}":
-  - Be precise about GCP-specific APIs, configs, and patterns
-  - Reference real GCP console paths or SDK commands where helpful
+  - Be precise about ${domain}-specific APIs, configs, and patterns
+  - Reference real console paths or SDK commands where helpful
   - Include a monitoring/observability section if relevant
 `;
 }
@@ -73,9 +74,9 @@ Topic-specific guidance for "${topic}":
  * STEP 2 — Convert diagram spec to clean Excalidraw DSL
  * Called per diagram with the LLM-generated diagram spec
  */
-function dslRefinementPrompt(diagramSpec, sectionText) {
+function dslRefinementPrompt(diagramSpec, sectionText, domain = 'GCP') {
   return `
-Convert this GCP architecture diagram specification into clean Excalidraw-flowchart DSL.
+Convert this ${domain} architecture diagram specification into clean Excalidraw-flowchart DSL.
 
 Section context: "${sectionText}"
 
@@ -94,7 +95,7 @@ EXCALIDRAW DSL SYNTAX:
 
 RULES:
 1. Keep labels SHORT — max 3 words per node
-2. GCP service names: use official short forms (PubSub, Dataflow, BigQuery, GCS)  
+2. Service names: use official short forms (e.g. PubSub, EC2, Databricks)
 3. Always start with @direction and @spacing
 4. Decision diamonds must end with ?
 5. No special characters except ? in labels
@@ -110,9 +111,9 @@ Return ONLY the DSL string, nothing else. Example:
 /**
  * STEP 2b — Convert diagram spec to Mermaid DSL (colorful, reliable CLI)
  */
-function mermaidDslRefinementPrompt(diagramSpec, sectionText) {
+function mermaidDslRefinementPrompt(diagramSpec, sectionText, domain = 'GCP') {
   return `
-Convert this GCP architecture diagram specification into Mermaid flowchart syntax.
+Convert this ${domain} architecture diagram specification into Mermaid flowchart syntax.
 
 Section context: "${sectionText}"
 
@@ -137,13 +138,13 @@ NODE SHAPES:
 STYLE RULES:
 1. Use "flowchart LR" (left to right) unless the diagram needs TB (top to bottom)
 2. Keep labels SHORT — max 3 words per node
-3. GCP service names: use official short forms (Pub/Sub, Dataflow, BigQuery, GCS)
+3. Service names: use official short forms (Pub/Sub, Lambda, S3)
 4. Use labeled arrows for data flow descriptions: -->|label|
-5. Add style classes for GCP color coding after the flowchart:
-   - style A fill:#4285F4,stroke:#2A6DD9,color:#fff   (for compute/processing: Dataflow, Cloud Run, GKE)
-   - style B fill:#34A853,stroke:#1E8E3E,color:#fff   (for storage: BigQuery, GCS, Spanner)
-   - style C fill:#EA4335,stroke:#C5221F,color:#fff   (for messaging: Pub/Sub, Cloud Tasks)
-   - style D fill:#FBBC04,stroke:#E8A400,color:#000   (for monitoring: Cloud Monitoring, Logging)
+5. Add style classes for color coding after the flowchart:
+   - style A fill:#4285F4,stroke:#2A6DD9,color:#fff   (for compute/processing)
+   - style B fill:#34A853,stroke:#1E8E3E,color:#fff   (for storage/databases)
+   - style C fill:#EA4335,stroke:#C5221F,color:#fff   (for messaging/streaming)
+   - style D fill:#FBBC04,stroke:#E8A400,color:#000   (for monitoring/management)
 6. NO markdown fences — return raw Mermaid code only
 
 Return ONLY the Mermaid DSL string, nothing else. Example:
@@ -205,22 +206,22 @@ Match each node reveal to the moment the narrator first mentions that component.
 /**
  * STEP 4 — Generate YouTube/Reels metadata
  */
-function metadataPrompt(content) {
+function metadataPrompt(content, domain = 'GCP') {
   return `
-Generate optimized social media metadata for this GCP interview question video.
+Generate optimized social media metadata for this ${domain} interview question video.
 
 Question: ${content.question_text}
 Topic: ${content.topic}
-Services covered: ${content.gcp_services.join(', ')}
+Services covered: ${(content.tech_terms || []).join(', ')}
 
 Return JSON:
 {
   "youtube": {
-    "title": "GCP Interview Q${content.question_number}: [catchy title] #Shorts",
+    "title": "${domain} Interview Q${content.question_number}: [catchy title] #Shorts",
     "description": "3-4 sentence description with value prop + call to action",
-    "tags": ["GCP", "GoogleCloud", "CloudArchitect", "Interview", "Shorts", "...10 more relevant tags"],
+    "tags": ["${domain}", "CloudArchitect", "Interview", "AI", "Shorts", "...10 more relevant tags"],
     "category": "Education",
-    "playlist": "GCP Daily Interview Questions"
+    "playlist": "${domain} Daily Interview Questions"
   },
   "instagram": {
     "caption": "Hook line\n\nValue lines (3-4)\n\nHashtags (15-20)",

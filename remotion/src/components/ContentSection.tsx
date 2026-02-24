@@ -11,7 +11,7 @@ const ACCENTS = [G.blue, G.red, G.green, G.yellow];
 
 function colorWord(word: string, keywords: AnswerSection['keywords']): { color: string; bold: boolean } {
     const clean = word.replace(/[.,;:!?'"()]/g, '').toLowerCase();
-    if (keywords?.gcp_services?.some(k => clean.includes(k.toLowerCase()))) return { color: G.blue, bold: true };
+    if (keywords?.tech_terms?.some(k => clean.includes(k.toLowerCase()))) return { color: G.blue, bold: true };
     if (keywords?.action_verbs?.some(k => clean === k.toLowerCase())) return { color: G.red, bold: true };
     if (keywords?.concepts?.some(k => clean.includes(k.toLowerCase()))) return { color: G.green, bold: true };
     return { color: G.textWhite, bold: false };
@@ -62,7 +62,7 @@ export const ContentSection: React.FC<{
         : 1;
 
     const words = section.text?.split(' ') || [];
-    const wordsToReveal = Math.min(words.length, Math.floor(frame / 10) + 1);
+    const wordsToReveal = Math.min(words.length, Math.floor(frame / 4) + 1);
 
     const diagramSpring = spring({ fps, frame: frame - 30, config: { damping: 80, stiffness: 60 } });
     const diagramY = interpolate(diagramSpring, [0, 1], [150, 0]);

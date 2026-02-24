@@ -9,7 +9,7 @@ export interface AnswerSection {
     title: string;
     text: string;
     keywords: {
-        gcp_services?: string[];
+        tech_terms?: string[];
         action_verbs?: string[];
         concepts?: string[];
     };
@@ -20,6 +20,8 @@ export interface VideoContent {
     topic: string;
     question_number: string;
     question_text: string;
+    tech_terms?: string[];
+    domain?: string;
     answer_sections: AnswerSection[];
 }
 

@@ -51,7 +51,7 @@ export const Intro: React.FC<{ content: VideoProps['content'] }> = ({ content })
                 opacity: titleSlide, textAlign: 'center',
             }}>
                 <div style={{ fontSize: '32px', fontWeight: 500, color: G.textMuted, letterSpacing: '6px', textTransform: 'uppercase' }}>
-                    Google Cloud
+                    {content.domain || 'Cloud'}
                 </div>
                 <div style={{ fontSize: '58px', fontWeight: 900, color: G.textWhite, letterSpacing: '2px', marginTop: '8px' }}>
                     Interview Q#{content.question_number}
