@@ -26,6 +26,8 @@ const { askJSON } = require('./providers/llm');
 const { contentPrompt, dslRefinementPrompt, mermaidDslRefinementPrompt, metadataPrompt } = require('./prompts/index');
 const { renderAllDiagrams } = require('./scripts/diagrams');
 const { assembleVideo } = require('./scripts/assembler');
+const { initDB, trackVideo } = require('./scripts/db');
+const { postToAllPlatforms } = require('./scripts/post');
 
 // ── CLI args ──────────────────────────────────────────────────────────────────
 const args = process.argv.slice(2);
@@ -41,6 +43,7 @@ const PROVIDER = getArg('--provider') || process.env.LLM_PROVIDER || 'gemini';
 const ANIM_STYLE = getArg('--anim') || 'highlight'; // 'highlight', 'type', 'fade'
 const PAUSE_FRAMES = parseInt(getArg('--pause') || '30', 10);
 const NO_PROGRESS = hasFlag('--no-progress');
+const AUTO_POST = hasFlag('--post');
 
 // Override provider from CLI flag
 if (getArg('--provider')) process.env.LLM_PROVIDER = PROVIDER;
@@ -60,8 +63,12 @@ async function run() {
   console.log(`║   Remotion : ${String(USE_REMOTION).padEnd(34)}║`);
   console.log(`║   Diagrams : ${DIAGRAM_MODE.padEnd(34)}║`);
   console.log(`║   AnimStyle: ${ANIM_STYLE.padEnd(34)}║`);
+  console.log(`║   Auto-Post: ${String(AUTO_POST).padEnd(34)}║`);
   console.log('╚══════════════════════════════════════════════════╝');
   console.log('');
+
+  // ── INIT DB ───────────────────────────────────────────────────────────────────
+  await initDB();
 
   // ── STEP 1: Content Generation ──────────────────────────────────────────────
   console.log('📝 STEP 1/4 — Generating content with LLM...');
@@ -111,6 +118,19 @@ async function run() {
   const metadata = await askJSON(metadataPrompt(contentJson));
   const metaPath = path.join(OUT_DIR, `q${NUMBER}_metadata.json`);
   fs.writeFileSync(metaPath, JSON.stringify(metadata, null, 2));
+
+  // ── TRACK IN DB ─────────────────────────────────────────────────────────────
+  console.log('\n💾 Tracking video in database...');
+  const allConcepts = [...new Set([
+    ...(contentJson.answer_sections || []).map(s => s.keywords?.gcp_services || []).flat(),
+    ...(contentJson.answer_sections || []).map(s => s.keywords?.concepts || []).flat()
+  ])];
+  const videoId = await trackVideo("GCP", TOPIC, NUMBER, contentJson.question_text || "", allConcepts, null);
+
+  if (AUTO_POST) {
+    console.log('\n🚀 Auto-posting flag detected! Triggering social uploads...');
+    await postToAllPlatforms(videoId, videoPath, metadata);
+  }
 
   // ── Summary ───────────────────────────────────────────────────────────────────
   console.log('\n');
