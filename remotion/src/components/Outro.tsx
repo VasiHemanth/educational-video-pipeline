@@ -5,7 +5,9 @@ const G = {
     bg: '#0D1117', surface: '#161B22', textWhite: '#E6EDF3', textMuted: '#8B949E',
 };
 
-export const Outro: React.FC = () => {
+import { VideoProps } from '../types';
+
+export const Outro: React.FC<{ content?: VideoProps['content'] }> = ({ content }) => {
     const frame = useCurrentFrame();
     const { fps } = useVideoConfig();
 
@@ -42,9 +44,9 @@ export const Outro: React.FC = () => {
                 }} />
             ))}
 
-            {/* Thanks */}
-            <div style={{ opacity: thanksFade, textAlign: 'center', fontSize: '60px', fontWeight: 700, color: G.textWhite }}>
-                Thanks For Watching! 🙏
+            {/* Thanks / CTA */}
+            <div style={{ opacity: thanksFade, textAlign: 'center', fontSize: '60px', fontWeight: 700, color: G.textWhite, padding: '0 40px' }}>
+                {content?.cta_text || 'Thanks For Watching! 🙏'}
             </div>
 
             {/* Calligraphy branding */}

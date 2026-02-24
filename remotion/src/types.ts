@@ -20,6 +20,8 @@ export interface VideoContent {
     topic: string;
     question_number: string;
     question_text: string;
+    hook_text?: string;
+    cta_text?: string;
     tech_terms?: string[];
     domain?: string;
     answer_sections: AnswerSection[];
@@ -28,5 +30,11 @@ export interface VideoContent {
 export interface VideoProps {
     content: VideoContent;
     diagrams: DiagramInfo[];
+    config?: {
+        animStyle?: string;
+        pauseFrames?: number;
+        useHook?: boolean;
+        bgMusicPath?: string | null;
+    };
     fps?: number;
 }

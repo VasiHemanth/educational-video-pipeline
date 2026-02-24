@@ -44,6 +44,7 @@ const ANIM_STYLE = getArg('--anim') || 'highlight'; // 'highlight', 'type', 'fad
 const PAUSE_FRAMES = parseInt(getArg('--pause') || '30', 10);
 const NO_PROGRESS = hasFlag('--no-progress');
 const AUTO_POST = hasFlag('--post');
+const USE_HOOK = hasFlag('--hook');
 const DOMAIN = getArg('--domain') || 'GCP';
 
 // Override provider from CLI flag
@@ -65,6 +66,7 @@ async function run() {
   console.log(`║   Remotion : ${String(USE_REMOTION).padEnd(34)}║`);
   console.log(`║   Diagrams : ${DIAGRAM_MODE.padEnd(34)}║`);
   console.log(`║   AnimStyle: ${ANIM_STYLE.padEnd(34)}║`);
+  console.log(`║   Hook Text: ${String(USE_HOOK).padEnd(34)}║`);
   console.log(`║   Auto-Post: ${String(AUTO_POST).padEnd(34)}║`);
   console.log('╚══════════════════════════════════════════════════╝');
   console.log('');
@@ -119,7 +121,12 @@ async function run() {
   // ── STEP 4: Assemble video ───────────────────────────────────────────────────
   console.log('\n🎬 STEP 4/4 — Assembling video...');
   // Note: pass null for audio in prototype — wire up TTS here in Phase 2
-  const videoPath = await assembleVideo(contentJson, diagrams, null, NUMBER, USE_REMOTION, { animStyle: ANIM_STYLE, pauseFrames: PAUSE_FRAMES, noProgress: NO_PROGRESS });
+  const videoPath = await assembleVideo(contentJson, diagrams, null, NUMBER, USE_REMOTION, {
+    animStyle: ANIM_STYLE,
+    pauseFrames: PAUSE_FRAMES,
+    noProgress: NO_PROGRESS,
+    useHook: USE_HOOK
+  });
 
   // ── BONUS: Generate platform metadata ────────────────────────────────────────
   console.log('\n📱 Generating platform metadata...');

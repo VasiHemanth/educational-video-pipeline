@@ -19,12 +19,14 @@ Return JSON with this exact structure:
   "question_number": ${questionNumber},
   "topic": "${topic}",
   "question_text": "How would you [specific scenario]?",
+  "hook_text": "A punchy, viral 1-2 sentence hook opening the video (e.g. 'Here is how to build a RAG system that handles 10,000 queries/day on Google Cloud').",
+  "cta_text": "A strong, brief call to action for the end of the video (e.g. 'Save this for your next AI build' or 'Follow for daily Cloud Architect tips').",
   "tech_terms": ["list", "of", "${domain}", "services", "or", "technologies", "involved"],
   "answer_sections": [
     {
       "id": 1,
-      "title": "DEFINITION",
-      "text": "Full answer paragraph for this section (2-4 sentences). Be technical and specific.",
+      "title": "Short Title",
+      "text": "Extremely short paragraph. Strictly 1-2 sentences. Maximum 10-15 words total. Must be punchy.",
       "keywords": {
         "tech_terms": ["exact words to highlight BLUE"],
         "action_verbs": ["exact words to highlight RED"],
@@ -62,7 +64,11 @@ KEYWORD RULES:
 - action_verbs: technical verbs (e.g. "extract", "transform", "partition")
 - concepts: architectural concepts (e.g. "ETL", "streaming", "batch", "Generative AI")
 
-Generate 3-5 answer sections covering the complete answer. Each section needs 1 diagram.
+CRITICAL CONSTRAINTS:
+1. Generate EXACTLY 2-3 answer sections (no more!).
+2. Keep section text incredibly brief (1-2 sentences, 10-15 words max per slide). Mobile viewers will not read long text!
+3. Each section needs 1 diagram.
+
 Topic-specific guidance for "${topic}":
   - Be precise about ${domain}-specific APIs, configs, and patterns
   - Reference real console paths or SDK commands where helpful
@@ -94,7 +100,7 @@ EXCALIDRAW DSL SYNTAX:
   @spacing 80
 
 RULES:
-1. Keep labels SHORT — max 3 words per node
+1. Keep labels INCREDIBLY SHORT — strictly 1-2 words max per node. They must be readable on a small mobile screen.
 2. Service names: use official short forms (e.g. PubSub, EC2, Databricks)
 3. Always start with @direction and @spacing
 4. Decision diamonds must end with ?
@@ -137,9 +143,9 @@ NODE SHAPES:
 
 STYLE RULES:
 1. Use "flowchart LR" (left to right) unless the diagram needs TB (top to bottom)
-2. Keep labels SHORT — max 3 words per node
+2. Keep labels INCREDIBLY SHORT — strictly 1-2 words max per node! They must be massive and readable on a mobile screen.
 3. Service names: use official short forms (Pub/Sub, Lambda, S3)
-4. Use labeled arrows for data flow descriptions: -->|label|
+4. Use labeled arrows for data flow descriptions ONLY if absolutely necessary, kept to 1 word: -->|label|
 5. Add style classes for color coding after the flowchart:
    - style A fill:#4285F4,stroke:#2A6DD9,color:#fff   (for compute/processing)
    - style B fill:#34A853,stroke:#1E8E3E,color:#fff   (for storage/databases)

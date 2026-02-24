@@ -21,8 +21,11 @@ Switching providers = **one line in `.env`**. Zero code changes.
 
 ```bash
 npm install
+npm install googleapis # Required for YouTube uploads
 cp .env.example .env
 ```
+
+If you intend to use the YouTube Auto-Poster, place your OAuth 2.0 Client credentials downloaded from Google Cloud Console into the root of this project and name it `client_secret.json` (or update `.env` to point to it).
 
 ### 2. Install CLI tools
 
@@ -164,8 +167,14 @@ Topic + Number
 # Generate content only (no render, instant)
 node pipeline.js --topic "Pub/Sub vs Kafka" --number 17 --dry-run
 
-# Full video with Gemini
+# Basic full video with Gemini (Default)
 node pipeline.js --topic "Pub/Sub vs Kafka" --number 17
+
+# 🆕 Render with a punchy viral hook, Remotion rendering, and Mermaid architecture diagrams
+node pipeline.js --topic "Large Language Models" --domain "Generative AI" --number 18 --hook --remotion --diagrams mermaid --anim type
+
+# 🆕 Auto-post to YouTube Shorts (requires client_secret.json setup on first run)
+node pipeline.js --topic "Vector Embeddings" --domain "Generative AI" --number 19 --remotion --post
 
 # Switch to Ollama on the fly
 LLM_PROVIDER=ollama node pipeline.js --topic "Cloud Spanner" --number 18
@@ -173,6 +182,16 @@ LLM_PROVIDER=ollama node pipeline.js --topic "Cloud Spanner" --number 18
 # Switch to Claude Code on the fly  
 LLM_PROVIDER=claude node pipeline.js --topic "Cloud Armor WAF" --number 19
 ```
+
+### CLI Flags Reference
+*   `--topic <str>`: The core subject matter to ask the LLM about.
+*   `--number <int>`: The video/question sequence number.
+*   `--domain <str>`: Sets the target technology (e.g. `GCP`, `AWS`, `Generative AI`). Defaults to `GCP`.
+*   `--hook`: Instructs the LLM to generate a viral 1-2 sentence hook, and replaces the standard question intro card with massive hook text.
+*   `--remotion`: Use the React-based Remotion rendering engine instead of Canvas (much smoother).
+*   `--diagrams <str>`: `excalidraw` (default) or `mermaid` (cleaner labels, more robust).
+*   `--anim <str>`: `highlight` (default word-by-word) or `type` (typewriter effect).
+*   `--post`: Uploads the final video to YouTube Shorts automatically upon completion.
 
 ---
 

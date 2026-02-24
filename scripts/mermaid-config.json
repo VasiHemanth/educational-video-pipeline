@@ -14,7 +14,7 @@
         "clusterBorder": "#4285F4",
         "titleColor": "#202124",
         "edgeLabelBackground": "#FFFFFF",
-        "fontSize": "18px",
+        "fontSize": "36px",
         "fontFamily": "Roboto, sans-serif"
     }
 }

@@ -6,7 +6,7 @@ const G = {
     bg: '#0D1117', surface: '#161B22', textWhite: '#E6EDF3', textMuted: '#8B949E',
 };
 
-export const Intro: React.FC<{ content: VideoProps['content'] }> = ({ content }) => {
+export const Intro: React.FC<{ content: VideoProps['content'], config?: VideoProps['config'] }> = ({ content, config }) => {
     const frame = useCurrentFrame();
     const { fps } = useVideoConfig();
 
@@ -63,7 +63,7 @@ export const Intro: React.FC<{ content: VideoProps['content'] }> = ({ content })
                 </div>
             </div>
 
-            {/* Question card */}
+            {/* Question / Hook card */}
             <div style={{
                 marginTop: '50px', width: '100%', maxWidth: '940px', padding: '36px 44px',
                 backgroundColor: G.surface, borderRadius: '20px',
@@ -72,10 +72,11 @@ export const Intro: React.FC<{ content: VideoProps['content'] }> = ({ content })
                 opacity: Math.max(0, questionSlide),
             }}>
                 <div style={{
-                    fontSize: '38px', fontWeight: 400, color: G.textWhite, lineHeight: 1.5,
+                    fontSize: config?.useHook ? '52px' : '38px',
+                    fontWeight: 400, color: G.textWhite, lineHeight: 1.5,
                     textAlign: 'center', wordBreak: 'break-word', whiteSpace: 'normal',
                 }}>
-                    {content.question_text}
+                    {config?.useHook ? (content.hook_text || content.question_text) : content.question_text}
                 </div>
             </div>
 

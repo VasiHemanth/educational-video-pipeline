@@ -5,3 +5,7 @@ ffmpeg.zip
 remotion/node_modules/
 remotion/out/
 .DS_Store
+client_secret.json
+youtube_tokens.json
+client_secret_*.json
+*.sqlite

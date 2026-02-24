@@ -451,12 +451,29 @@ async function assembleVideoRemotion(content, diagrams, audioPath, questionNum, 
     return { ...d, pngPath };
   });
 
+  // Pick a random background music track
+  const audioDir = path.join(__dirname, '..', 'sample_audio_files');
+  let bgMusicPath = null;
+  if (fs.existsSync(audioDir)) {
+    const mp3s = fs.readdirSync(audioDir).filter(f => f.endsWith('.mp3'));
+    if (mp3s.length > 0) {
+      const randomFile = mp3s[Math.floor(Math.random() * mp3s.length)];
+      const absPath = path.join(audioDir, randomFile);
+      // Remotion requires data URIs or public/ folder access, encode as base64
+      const b64Audio = fs.readFileSync(absPath).toString('base64');
+      bgMusicPath = `data:audio/mp3;base64,${b64Audio}`;
+      console.log(`  🎵 Selected background music: ${randomFile}`);
+    }
+  }
+
   const propsPayload = {
     content,
     diagrams: formattedDiagrams,
     config: {
       animStyle: config.animStyle || 'highlight',
-      pauseFrames: config.pauseFrames || 30
+      pauseFrames: config.pauseFrames || 30,
+      useHook: config.useHook || false,
+      bgMusicPath: bgMusicPath
     }
   };
 
@@ -568,8 +585,8 @@ async function assembleVideoCanvas(content, diagrams, audioPath, questionNum) {
   for (let i = 0; i < OUTRO_FRAMES; i++) save(drawOutroFrame(i));
 
   // Encode
-  const domainSlug = (content.domain || 'GCP').replace(/[\\s/]+/g, '_').replace(/[^\\w-]/g, '');
-  const topicSlug = (content.topic || 'video').replace(/[\\s/]+/g, '_').replace(/[^\\w-]/g, '');
+  const domainSlug = (content.domain || 'GCP').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
+  const topicSlug = (content.topic || 'video').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
   const slug = `${domainSlug}_${topicSlug}`;
   const out = path.join(DIRS.video, `q${questionNum}_${slug}.mp4`);
   const dur = (INTRO_FRAMES + sections.length * SECTION_FRAMES + OUTRO_FRAMES) / FPS;
