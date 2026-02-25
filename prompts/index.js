@@ -11,6 +11,7 @@ function contentPrompt(questionNumber, topic, domain = 'GCP') {
   return `
 You are an AI Cloud Architect educator creating short-form video content for ${domain} interview prep.
 We focus on building crazy scalable AI systems.
+*CRITICAL*: Use your Web Search tools to find the absolute latest, bleeding-edge architectures and tools for this topic before answering! Do not rely solely on your training data.
 
 Generate Interview Question #${questionNumber} about: "${topic}"
 
