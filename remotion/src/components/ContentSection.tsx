@@ -9,12 +9,13 @@ const G = {
 
 const ACCENTS = [G.blue, G.red, G.green, G.yellow];
 
-function colorWord(word: string, keywords: AnswerSection['keywords']): { color: string; bold: boolean } {
-    const clean = word.replace(/[.,;:!?'"()]/g, '').toLowerCase();
-    if (keywords?.tech_terms?.some(k => clean.includes(k.toLowerCase()))) return { color: G.blue, bold: true };
-    if (keywords?.action_verbs?.some(k => clean === k.toLowerCase())) return { color: G.red, bold: true };
-    if (keywords?.concepts?.some(k => clean.includes(k.toLowerCase()))) return { color: G.green, bold: true };
-    return { color: G.textWhite, bold: false };
+function colorWord(rawWord: string, keywords: AnswerSection['keywords']): { color: string; bold: boolean; cleanWord: string } {
+    const cleanWord = rawWord.replace(/\*/g, ''); // Strip markdown asterisks completely
+    const clean = cleanWord.replace(/[.,;:!?'"()]/g, '').toLowerCase();
+    if (keywords?.tech_terms?.some(k => clean.includes(k.toLowerCase()))) return { color: G.blue, bold: true, cleanWord };
+    if (keywords?.action_verbs?.some(k => clean === k.toLowerCase())) return { color: G.red, bold: true, cleanWord };
+    if (keywords?.concepts?.some(k => clean.includes(k.toLowerCase()))) return { color: G.green, bold: true, cleanWord };
+    return { color: G.textWhite, bold: false, cleanWord };
 }
 
 const Corners: React.FC<{ color: string }> = ({ color }) => {
@@ -102,7 +103,7 @@ export const ContentSection: React.FC<{
                         // Typewriter logic: filter out unrevealed words
                         if (animStyle === 'type' && i >= wordsToReveal) return null;
 
-                        const { color, bold } = colorWord(word, section.keywords);
+                        const { color, bold, cleanWord } = colorWord(word, section.keywords);
                         const isKeyword = bold || color !== G.textWhite;
 
                         // Highlight logic: sweeping spotlight effect
@@ -122,7 +123,7 @@ export const ContentSection: React.FC<{
 
                         return (
                             <span key={i} style={{ color: finalColor, fontWeight: bold ? 700 : 400, opacity: finalOpacity }}>
-                                {word}{' '}
+                                {cleanWord}{' '}
                             </span>
                         );
                     })}

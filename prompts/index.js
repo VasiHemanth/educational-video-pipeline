@@ -69,6 +69,7 @@ CRITICAL CONSTRAINTS:
 1. Generate EXACTLY 2-3 answer sections (no more!).
 2. Keep section text to 3-5 lines (roughly 15-20 words max per slide). Explain the architectural workflow properly! Mobile viewers will read it fast.
 3. Each section needs 1 diagram.
+4. DO NOT USE ANY MARKDOWN FORMATTING (like **bold** or *italics*) in the text strings. Just plain text.
 
 Topic-specific guidance for "${topic}":
   - Be precise about ${domain}-specific APIs, configs, and patterns
