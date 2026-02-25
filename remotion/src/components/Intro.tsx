@@ -87,7 +87,9 @@ export const Intro: React.FC<{ content: VideoProps['content'], config?: VideoPro
                 <div style={{ fontSize: '42px', fontFamily: "'Dancing Script', cursive, serif", color: G.blue }}>
                     AI Cloud Architect
                 </div>
-
+                <div style={{ fontSize: '22px', fontWeight: 700, color: G.textMuted, letterSpacing: '3px', textTransform: 'uppercase' }}>
+                    by Hemanth Vasi
+                </div>
             </div>
         </AbsoluteFill>
     );
