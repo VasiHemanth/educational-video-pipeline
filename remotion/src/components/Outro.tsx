@@ -21,6 +21,7 @@ export const Outro: React.FC<{ content?: VideoProps['content'] }> = ({ content }
     return (
         <AbsoluteFill style={{
             backgroundColor: G.bg, justifyContent: 'center', alignItems: 'center',
+            padding: '180px 60px 60px 60px',
             fontFamily: 'Roboto, Arial, sans-serif', overflow: 'hidden',
         }}>
             {/* Ambient glow */}
@@ -45,18 +46,17 @@ export const Outro: React.FC<{ content?: VideoProps['content'] }> = ({ content }
             ))}
 
             {/* Thanks / CTA */}
-            <div style={{ opacity: thanksFade, textAlign: 'center', fontSize: '60px', fontWeight: 700, color: G.textWhite, padding: '0 40px' }}>
+            <div style={{ opacity: thanksFade, textAlign: 'center', fontSize: '48px', fontWeight: 700, color: G.textWhite, padding: '0 80px' }}>
                 {content?.cta_text || 'Thanks For Watching! 🙏'}
             </div>
 
-            {/* Calligraphy branding */}
             <div style={{
                 marginTop: '48px', textAlign: 'center',
                 transform: `translateY(${interpolate(brandSlide, [0, 1], [50, 0])}px)`,
                 opacity: Math.max(0, brandSlide),
             }}>
                 <div style={{
-                    fontSize: '60px', fontFamily: "'Dancing Script', cursive, serif", color: G.blue,
+                    fontSize: '50px', fontFamily: "'Dancing Script', cursive, serif", color: G.blue,
                 }}>
                     AI Cloud Architect
                 </div>
@@ -75,7 +75,7 @@ export const Outro: React.FC<{ content?: VideoProps['content'] }> = ({ content }
             }}>
                 <div style={{
                     padding: '20px 64px', backgroundColor: G.red, borderRadius: '50px',
-                    fontSize: '40px', fontWeight: 700, color: '#FFF',
+                    fontSize: '36px', fontWeight: 700, color: '#FFF',
                     boxShadow: `0 8px 32px ${G.red}50`,
                     display: 'flex', alignItems: 'center', gap: '16px',
                 }}>

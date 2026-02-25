@@ -67,8 +67,8 @@ export const ContentSection: React.FC<{
     const diagramSpring = spring({ fps, frame: frame - 30, config: { damping: 80, stiffness: 60 } });
     const diagramY = interpolate(diagramSpring, [0, 1], [150, 0]);
 
-    const baseFontSize = hasDiagram ? 36 : 42;
-    const fontSize = words.length > 70 ? baseFontSize - 6 : baseFontSize;
+    const baseFontSize = hasDiagram ? 46 : 56;
+    const fontSize = words.length > 70 ? baseFontSize - 8 : baseFontSize;
 
     const progress = interpolate(frame, [0, durationInFrames], [0, 100], { extrapolateRight: 'clamp' });
 
@@ -80,16 +80,16 @@ export const ContentSection: React.FC<{
             <Corners color={accent} />
 
             {/* --- TITLE --- */}
-            <div style={{ position: 'absolute', top: 70, left: 0, right: 0, height: '100px', textAlign: 'center' }}>
-                <div style={{ fontSize: '46px', fontWeight: 700, color: G.textWhite }}>✦ {section.title} ✦</div>
-                <div style={{ width: '120px', height: '4px', backgroundColor: accent, borderRadius: '2px', margin: '12px auto 0' }} />
+            <div style={{ position: 'absolute', top: 180, left: 0, right: 0, height: '100px', textAlign: 'center' }}>
+                <div style={{ fontSize: '56px', fontWeight: 700, color: G.textWhite }}>✦ {section.title} ✦</div>
+                <div style={{ width: '120px', height: '6px', backgroundColor: accent, borderRadius: '3px', margin: '12px auto 0' }} />
             </div>
 
             {/* --- TEXT (TOP ZONE) --- */}
             <div style={{
                 position: 'absolute',
-                top: 200,
-                left: 60, right: 60,
+                top: 300,
+                left: 80, right: 80,
                 height: hasDiagram ? '45%' : '75%', // Dynamic zone boundary
                 display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>
@@ -133,7 +133,7 @@ export const ContentSection: React.FC<{
             {hasDiagram && (
                 <div style={{
                     position: 'absolute',
-                    top: '55%', bottom: 70, left: 60, right: 60,
+                    top: '55%', bottom: 120, left: 60, right: 60,
                     display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
                     transform: `translateY(${diagramY}px)`,
                     opacity: diagramSpring,

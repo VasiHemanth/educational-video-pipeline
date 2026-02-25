@@ -142,7 +142,7 @@ NODE SHAPES:
   A[[Label]]   = subroutine
 
 STYLE RULES:
-1. Use "flowchart LR" (left to right) unless the diagram needs TB (top to bottom)
+1. MUST use "flowchart TB" (vertical layout) IF there are more than 3 nodes in the diagram. If the diagram has 3 or fewer nodes, MUST use "flowchart LR" (horizontal layout).
 2. Keep labels INCREDIBLY SHORT — strictly 1-2 words max per node! They must be massive and readable on a mobile screen.
 3. Service names: use official short forms (Pub/Sub, Lambda, S3)
 4. Use labeled arrows for data flow descriptions ONLY if absolutely necessary, kept to 1 word: -->|label|

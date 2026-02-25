@@ -18,7 +18,7 @@ export const Intro: React.FC<{ content: VideoProps['content'], config?: VideoPro
     return (
         <AbsoluteFill style={{
             backgroundColor: G.bg, justifyContent: 'center', alignItems: 'center',
-            padding: '60px', overflow: 'hidden', fontFamily: 'Roboto, Arial, sans-serif',
+            padding: '180px 60px 60px 60px', overflow: 'hidden', fontFamily: 'Roboto, Arial, sans-serif',
         }}>
             {/* Ambient glow */}
             <div style={{
@@ -50,10 +50,10 @@ export const Intro: React.FC<{ content: VideoProps['content'], config?: VideoPro
                 transform: `translateY(${interpolate(titleSlide, [0, 1], [-80, 0])}px)`,
                 opacity: titleSlide, textAlign: 'center',
             }}>
-                <div style={{ fontSize: '32px', fontWeight: 500, color: G.textMuted, letterSpacing: '6px', textTransform: 'uppercase' }}>
+                <div style={{ fontSize: '40px', fontWeight: 500, color: G.textMuted, letterSpacing: '6px', textTransform: 'uppercase' }}>
                     {content.domain || 'Cloud'}
                 </div>
-                <div style={{ fontSize: '58px', fontWeight: 900, color: G.textWhite, letterSpacing: '2px', marginTop: '8px' }}>
+                <div style={{ fontSize: '72px', fontWeight: 900, color: G.textWhite, letterSpacing: '2px', marginTop: '8px' }}>
                     Interview Q#{content.question_number}
                 </div>
                 <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', marginTop: '14px' }}>
@@ -72,7 +72,7 @@ export const Intro: React.FC<{ content: VideoProps['content'], config?: VideoPro
                 opacity: Math.max(0, questionSlide),
             }}>
                 <div style={{
-                    fontSize: config?.useHook ? '52px' : '38px',
+                    fontSize: config?.useHook ? '64px' : '48px',
                     fontWeight: 400, color: G.textWhite, lineHeight: 1.5,
                     textAlign: 'center', wordBreak: 'break-word', whiteSpace: 'normal',
                 }}>
