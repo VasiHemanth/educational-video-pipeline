@@ -164,12 +164,7 @@ export const ContentSection: React.FC<{
                 }}>
                     AI Cloud Architect
                 </div>
-                <div style={{
-                    fontSize: '10px', fontWeight: 700, color: G.textMuted, opacity: 0.3,
-                    letterSpacing: '1px', textTransform: 'uppercase', marginTop: '2px',
-                }}>
-                    by Hemanth Vasi
-                </div>
+
             </div>
         </AbsoluteFill>
     );

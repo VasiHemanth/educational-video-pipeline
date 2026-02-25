@@ -60,12 +60,7 @@ export const Outro: React.FC<{ content?: VideoProps['content'] }> = ({ content }
                 }}>
                     AI Cloud Architect
                 </div>
-                <div style={{
-                    fontSize: '26px', fontWeight: 700, color: G.textMuted,
-                    letterSpacing: '4px', textTransform: 'uppercase', marginTop: '6px',
-                }}>
-                    by Hemanth Vasi
-                </div>
+
             </div>
 
             {/* SUBSCRIBE CTA */}
