@@ -36,8 +36,8 @@ export const calculateBaseSectionFrames = (section: any, diagram: any, pauseFram
   const hasDiagram = !!(diagram && diagram.pngPath);
 
   // Scientific duration:
-  // 9f per word (~200 WPM reading speed) + 60f diagram viewing penalty + 45f animation buffer + user pause
-  return (words.length * 9) + (hasDiagram ? 60 : 0) + 45 + pauseFrames;
+  // 4f per word (~300 WPM text streaming) + 60f diagram viewing penalty + 45f animation buffer + user pause
+  return (words.length * 4) + (hasDiagram ? 60 : 0) + 45 + pauseFrames;
 };
 
 export const RemotionRoot: React.FC = () => {

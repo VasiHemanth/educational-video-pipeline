@@ -90,7 +90,7 @@ async function uploadToYouTubeShorts(auth, filePath, metadata) {
                         categoryId: '27', // Education
                     },
                     status: {
-                        privacyStatus: 'private', // Upload as private initially
+                        privacyStatus: 'public', // Auto-publish directly to shorts feed
                         selfDeclaredMadeForKids: false,
                     },
                 },

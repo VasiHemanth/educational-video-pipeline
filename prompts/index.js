@@ -26,7 +26,7 @@ Return JSON with this exact structure:
     {
       "id": 1,
       "title": "Short Title",
-      "text": "Extremely short paragraph. Strictly 1-2 sentences. Maximum 10-15 words total. Must be punchy.",
+      "text": "3 to 5 lines explaining the architecture block diagram deeply. Maximum 15-20 words total. Must be technical.",
       "keywords": {
         "tech_terms": ["exact words to highlight BLUE"],
         "action_verbs": ["exact words to highlight RED"],
@@ -66,7 +66,7 @@ KEYWORD RULES:
 
 CRITICAL CONSTRAINTS:
 1. Generate EXACTLY 2-3 answer sections (no more!).
-2. Keep section text incredibly brief (1-2 sentences, 10-15 words max per slide). Mobile viewers will not read long text!
+2. Keep section text to 3-5 lines (roughly 15-20 words max per slide). Explain the architectural workflow properly! Mobile viewers will read it fast.
 3. Each section needs 1 diagram.
 
 Topic-specific guidance for "${topic}":
@@ -224,8 +224,8 @@ Return JSON:
 {
   "youtube": {
     "title": "${domain} Interview Q${content.question_number}: [catchy title] #Shorts",
-    "description": "3-4 sentence description with value prop + call to action",
-    "tags": ["${domain}", "CloudArchitect", "Interview", "AI", "Shorts", "...10 more relevant tags"],
+    "description": "Write a highly technical, rigorous 5-6 sentence explanation of the architectural workflow shown in the video. Explain the exact mechanism of how the services interact. End with a strong CTA.",
+    "tags": ["${domain}", "CloudArchitect", "Interview", "AI", "Shorts", "SystemDesign", "...exactly 15-20 strictly relevant technical hashtags!"],
     "category": "Education",
     "playlist": "${domain} Daily Interview Questions"
   },

@@ -62,7 +62,7 @@ export const ContentSection: React.FC<{
         : 1;
 
     const words = section.text?.split(' ') || [];
-    const wordsToReveal = Math.min(words.length, Math.floor(frame / 4) + 1);
+    const wordsToReveal = Math.min(words.length, Math.floor(frame / 1.5) + 1);
 
     const diagramSpring = spring({ fps, frame: frame - 30, config: { damping: 80, stiffness: 60 } });
     const diagramY = interpolate(diagramSpring, [0, 1], [150, 0]);
@@ -88,9 +88,9 @@ export const ContentSection: React.FC<{
             {/* --- TEXT (TOP ZONE) --- */}
             <div style={{
                 position: 'absolute',
-                top: 300,
-                left: 80, right: 80,
-                height: hasDiagram ? '45%' : '75%', // Dynamic zone boundary
+                top: 260,
+                left: 60, right: 60,
+                height: hasDiagram ? '35%' : '75%', // Dynamic zone boundary
                 display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>
                 <div style={{
@@ -133,7 +133,7 @@ export const ContentSection: React.FC<{
             {hasDiagram && (
                 <div style={{
                     position: 'absolute',
-                    top: '55%', bottom: 120, left: 60, right: 60,
+                    top: '45%', bottom: 120, left: 60, right: 60,
                     display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
                     transform: `translateY(${diagramY}px)`,
                     opacity: diagramSpring,

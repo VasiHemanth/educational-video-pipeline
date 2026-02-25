@@ -17,7 +17,7 @@ export const Intro: React.FC<{ content: VideoProps['content'], config?: VideoPro
 
     return (
         <AbsoluteFill style={{
-            backgroundColor: G.bg, justifyContent: 'center', alignItems: 'center',
+            backgroundColor: G.bg, justifyContent: 'flex-start', alignItems: 'center',
             padding: '180px 60px 60px 60px', overflow: 'hidden', fontFamily: 'Roboto, Arial, sans-serif',
         }}>
             {/* Ambient glow */}
@@ -48,7 +48,7 @@ export const Intro: React.FC<{ content: VideoProps['content'], config?: VideoPro
             {/* Badge */}
             <div style={{
                 transform: `translateY(${interpolate(titleSlide, [0, 1], [-80, 0])}px)`,
-                opacity: titleSlide, textAlign: 'center',
+                opacity: titleSlide, textAlign: 'center', marginTop: '40px',
             }}>
                 <div style={{ fontSize: '40px', fontWeight: 500, color: G.textMuted, letterSpacing: '6px', textTransform: 'uppercase' }}>
                     {content.domain || 'Cloud'}
