@@ -17,7 +17,7 @@ const PROVIDER = process.env.LLM_PROVIDER || 'gemini';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3.1';
 const OLLAMA_HOST = process.env.OLLAMA_HOST || 'http://localhost:11434';
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3-flash';
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
 // ─────────────────────────────────────────────
 // GEMINI CLI  (google/gemini-cli — free tier)
