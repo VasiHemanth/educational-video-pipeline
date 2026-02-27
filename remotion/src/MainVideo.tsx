@@ -1,11 +1,9 @@
-import { Series, Audio } from 'remotion';
+import { Series, Audio, AbsoluteFill } from 'remotion';
 import { Intro } from './components/Intro';
 import { ContentSection } from './components/ContentSection';
 import { Outro } from './components/Outro';
 import { VideoProps } from './types';
 import React from 'react';
-import { calculateBaseSectionFrames } from './Root';
-import { AbsoluteFill } from 'remotion';
 
 export const MainVideo: React.FC<VideoProps> = ({ content, diagrams, config }) => {
     if (!content || !content.answer_sections) return null;
@@ -15,21 +13,7 @@ export const MainVideo: React.FC<VideoProps> = ({ content, diagrams, config }) =
 
     return (
         <React.Fragment>
-            <style>
-                {`
-                @keyframes pan {
-                    0% { background-position: 0% 50%; }
-                    50% { background-position: 100% 50%; }
-                    100% { background-position: 0% 50%; }
-                }
-                `}
-            </style>
-
-            <AbsoluteFill style={{
-                background: 'linear-gradient(225deg, #0D1117 0%, #161B22 50%, #0D1117 100%)',
-                backgroundSize: '200% 200%',
-                animation: 'pan 30s ease infinite',
-            }} />
+            <AbsoluteFill style={{ backgroundColor: '#0A0A0A' }} />
 
             {config?.bgMusicPath && (
                 <Audio src={config.bgMusicPath} volume={0.15} loop />
