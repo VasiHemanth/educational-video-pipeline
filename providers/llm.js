@@ -152,7 +152,13 @@ ${schema ? `Schema:\n${schema}` : ''}`;
 
   const raw = await ask(jsonPrompt);
   // Strip ```json ... ``` fences if present
-  const cleaned = raw.replace(/^```(?:json)?\n?/m, '').replace(/\n?```$/m, '').trim();
+  let cleaned = raw.replace(/^```(?:json)?\n?/gm, '').replace(/\n?```/gm, '').trim();
+  // Fallback: extract JSON object between first { and last }
+  const firstBrace = cleaned.indexOf('{');
+  const lastBrace = cleaned.lastIndexOf('}');
+  if (firstBrace !== -1 && lastBrace !== -1 && firstBrace < lastBrace) {
+    cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+  }
   try {
     return JSON.parse(cleaned);
   } catch (e) {

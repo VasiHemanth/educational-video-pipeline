@@ -47,19 +47,23 @@ export const RemotionRoot: React.FC = () => {
     ? dynamicProps
     : defaultProps;
 
-  const INTRO = 180;
-  const OUTRO = 180;
-  const pauseFrames = activeProps.config?.pauseFrames ?? 30;
+  const INTRO = activeProps.config?.introFrames ?? 180;
+  const OUTRO = activeProps.config?.outroFrames ?? 180;
 
-  const baseFrames = activeProps.content.answer_sections.reduce((acc, section) => {
-    const diagram = (activeProps.diagrams || []).find(d => d.section_id === section.id);
-    return acc + calculateBaseSectionFrames(section, diagram, pauseFrames);
-  }, 0);
+  // If sectionTimings are pre-calculated by the Pipeline (auto mode), use those exactly:
+  let total = activeProps.config?.totalFrames;
 
-  const MAX_CONTENT_FRAMES = 2250 - INTRO - OUTRO;
-  const scaledContentFrames = Math.min(baseFrames, MAX_CONTENT_FRAMES);
-
-  const total = INTRO + scaledContentFrames + OUTRO;
+  if (!total) {
+    // Fallback for local development Preview:
+    const pauseFrames = activeProps.config?.pauseFrames ?? 30;
+    const baseFrames = activeProps.content.answer_sections.reduce((acc, section) => {
+      const diagram = (activeProps.diagrams || []).find(d => d.section_id === section.id);
+      return acc + calculateBaseSectionFrames(section, diagram, pauseFrames);
+    }, 0);
+    const MAX_CONTENT_FRAMES = 2250 - INTRO - OUTRO;
+    const scaledContentFrames = Math.min(baseFrames, MAX_CONTENT_FRAMES);
+    total = INTRO + scaledContentFrames + OUTRO;
+  }
 
   return (
     <Composition

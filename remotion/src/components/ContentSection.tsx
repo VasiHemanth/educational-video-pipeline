@@ -45,7 +45,7 @@ export const ContentSection: React.FC<{
     section: AnswerSection;
     diagram?: DiagramInfo;
     sectionIndex?: number;
-    config?: { animStyle?: string, pauseFrames?: number };
+    config?: import('../types').VideoProps['config'];
 }> = ({ section, diagram, sectionIndex = 0, config }) => {
     const frame = useCurrentFrame();
     const { fps, durationInFrames } = useVideoConfig();
@@ -59,13 +59,20 @@ export const ContentSection: React.FC<{
     // For 'highlight', the container is always 1, keywords light up sequentially
     // For 'type', container is 1, words appear sequentially
     const containerOpacity = animStyle === 'fade'
-        ? interpolate(frame, [0, 20], [0, 1], { extrapolateRight: 'clamp' })
-        : 1;
-
     const words = section.text?.split(' ') || [];
-    const wordsToReveal = Math.min(words.length, Math.floor(frame / 1.5) + 1);
 
-    const diagramSpring = spring({ fps, frame: frame - 30, config: { damping: 80, stiffness: 60 } });
+    // Grab pre-calculated timings from JSON payload (fallback if missing during local preview)
+    const secTiming = config?.sectionTimings?.find(s => s.id === section.id);
+    const phaseA = secTiming ? secTiming.phaseAFrames : words.length * 4;
+    const phaseB = secTiming ? secTiming.phaseBFrames : 15;
+
+    // Typewriter logic: force exactly [phaseA] frames to reveal the entire string
+    const typeRate = phaseA / Math.max(1, words.length);
+    const wordsToReveal = Math.min(words.length, Math.floor(frame / typeRate) + 1);
+
+    // Phase C: Diagram Entry delays until Text (A) + Pause (B) are complete
+    const diagramStartFrame = phaseA + phaseB;
+    const diagramSpring = spring({ fps, frame: frame - diagramStartFrame, config: { damping: 80, stiffness: 60 } });
     const diagramY = interpolate(diagramSpring, [0, 1], [150, 0]);
 
     const baseFontSize = hasDiagram ? 46 : 56;
@@ -137,7 +144,7 @@ export const ContentSection: React.FC<{
                     top: '45%', bottom: 120, left: 60, right: 60,
                     display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
                     transform: `translateY(${diagramY}px)`,
-                    opacity: diagramSpring,
+                    opacity: interpolate(diagramSpring, [0, 1], [0, 1]),
                 }}>
                     <Img
                         src={diagram!.pngPath}

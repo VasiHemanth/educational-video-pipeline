@@ -9,7 +9,8 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const OUTPUT_DIR = path.join(__dirname, '..', 'output', 'diagrams');
+const OUTPUT_DIR = path.join(__dirname, '..', 'output_prod', 'diagrams');
+if (!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 const MERMAID_CONFIG = path.join(__dirname, 'mermaid-config.json');
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -18,7 +19,6 @@ const MERMAID_CONFIG = path.join(__dirname, 'mermaid-config.json');
 
 function dslToExcalidraw(dsl, outputName) {
   const outPath = path.join(OUTPUT_DIR, `${outputName}.excalidraw`);
-  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
   const tmpDsl = `/tmp/diagram_${outputName}.dsl`;
   fs.writeFileSync(tmpDsl, dsl, 'utf8');

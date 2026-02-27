@@ -25,6 +25,23 @@ export interface VideoContent {
     tech_terms?: string[];
     domain?: string;
     answer_sections: AnswerSection[];
+    config?: {
+        animStyle?: string;
+        pauseFrames?: number;
+        useHook?: boolean;
+        bgMusicPath?: string | null;
+        platform?: 'youtube' | 'meta';
+    };
+}
+
+export interface SectionTiming {
+    id: string;
+    startFrame: number;
+    durationFrames: number;
+    phaseAFrames: number;
+    phaseBFrames: number;
+    phaseCFrames: number;
+    phaseDFrames: number;
 }
 
 export interface VideoProps {
@@ -35,6 +52,11 @@ export interface VideoProps {
         pauseFrames?: number;
         useHook?: boolean;
         bgMusicPath?: string | null;
+        platform?: 'youtube' | 'meta';
+        introFrames?: number;
+        outroFrames?: number;
+        totalFrames?: number;
+        sectionTimings?: SectionTiming[];
     };
     fps?: number;
 }

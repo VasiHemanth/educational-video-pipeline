@@ -58,9 +58,10 @@ const f = (size, bold = false, italic = false) =>
 
 // ── Output dirs ───────────────────────────────────────────────────────────────
 const DIRS = {
-  frames: path.join(__dirname, '..', 'output', 'frames'),
-  video: path.join(__dirname, '..', 'output', 'video'),
-  audio: path.join(__dirname, '..', 'output', 'audio'),
+  frames: path.join(__dirname, '..', 'output_prod', 'frames'),
+  video: path.join(__dirname, '..', 'output_prod', 'video'),
+  audio: path.join(__dirname, '..', 'output_prod', 'audio'),
+  thumbnails: path.join(__dirname, '..', 'output_prod', 'thumbnails'),
 };
 Object.values(DIRS).forEach(d => fs.mkdirSync(d, { recursive: true }));
 
@@ -432,11 +433,13 @@ function drawOutroFrame(frameNum = 0) {
 // MAIN ASSEMBLER (REMOTION BASED)
 // ══════════════════════════════════════════════════════════════════════════════
 async function assembleVideoRemotion(content, diagrams, audioPath, questionNum, config = {}) {
-  const { spawn } = require('child_process');
-  const domainSlug = (content.domain || 'GCP').replace(/[\\s/]+/g, '_').replace(/[^\\w-]/g, '');
-  const topicSlug = (content.topic || 'video').replace(/[\\s/]+/g, '_').replace(/[^\\w-]/g, '');
-  const slug = `${domainSlug}_${topicSlug}`;
-  const outputPath = path.join(DIRS.video, `q${questionNum}_${slug}.mp4`);
+  const { spawn, execSync } = require('child_process');
+  const domainSlug = (content.domain || 'GCP').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
+  const topicSlug = (content.topic || 'video').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
+  const platformSuffix = config.platform ? `_${config.platform}` : '';
+  const slug = `${domainSlug}_${topicSlug}${platformSuffix}`;
+  const rawOutputPath = path.join(DIRS.video, `raw_q${questionNum}_${slug}.mp4`);
+  const finalOutputPath = path.join(DIRS.video, `q${questionNum}_${slug}.mp4`);
 
   // Encode diagrams as base64 data URIs (bypasses Remotion's static file restrictions)
   const formattedDiagrams = (diagrams || []).map(d => {
@@ -466,6 +469,56 @@ async function assembleVideoRemotion(content, diagrams, audioPath, questionNum, 
     }
   }
 
+  // --- DYNAMIC PACING & SFX CALCULATIONS ---
+  const FPS = 30;
+  const targetWpm = 140;
+  const fastWpm = 200;
+
+  const introFrames = config.useHook ? 75 : 180;
+  const outroFrames = 180;
+  let currentFrame = introFrames;
+
+  const sectionTimings = [];
+  const sfxEvents = [];
+
+  for (const section of content.answer_sections || []) {
+    const rawText = (section.text || '').replace(/\*/g, '');
+    const wordCount = rawText.split(/\s+/).filter(x => x.length > 0).length || 1;
+
+    // Phase A (Text Entry)
+    const phaseAFrames = Math.round((wordCount / fastWpm) * 60 * FPS);
+    // Total read time based on normal WPM
+    const totalReadingFrames = Math.round((wordCount / targetWpm) * 60 * FPS);
+
+    // Check if this section has a diagram
+    const hasDiagram = Boolean((diagrams || []).find(d => d.section_id === section.id));
+
+    const phaseBFrames = 15; // 0.5s pause
+    const phaseCFrames = hasDiagram ? 20 : 0; // diagram entry
+
+    // Phase D (Dwell time)
+    const phaseDFrames = Math.max(0, totalReadingFrames - phaseAFrames);
+
+    const sectionDuration = phaseAFrames + phaseBFrames + phaseCFrames + phaseDFrames;
+
+    sectionTimings.push({
+      id: section.id,
+      startFrame: currentFrame,
+      durationFrames: sectionDuration,
+      phaseAFrames,
+      phaseBFrames,
+      phaseCFrames,
+      phaseDFrames
+    });
+
+    // SFX overlay disabled to prevent errors when SFX files don't exist
+    // Add custom SFX logic here when files are restored
+
+    currentFrame += sectionDuration;
+  }
+
+  const totalFrames = currentFrame + outroFrames;
+
   const propsPayload = {
     content,
     diagrams: formattedDiagrams,
@@ -473,7 +526,12 @@ async function assembleVideoRemotion(content, diagrams, audioPath, questionNum, 
       animStyle: config.animStyle || 'highlight',
       pauseFrames: config.pauseFrames || 30,
       useHook: config.useHook || false,
-      bgMusicPath: bgMusicPath
+      bgMusicPath: bgMusicPath,
+      platform: config.platform,
+      introFrames,
+      outroFrames,
+      totalFrames,
+      sectionTimings
     }
   };
 
@@ -487,7 +545,7 @@ async function assembleVideoRemotion(content, diagrams, audioPath, questionNum, 
   await new Promise((resolve, reject) => {
     const proc = spawn('npx', [
       'remotion', 'render', 'src/index.ts', 'MainVideo',
-      outputPath, `--props=${propsFile}`, '-y'
+      rawOutputPath, `--props=${propsFile}`, '-y'
     ], { cwd: remotionDir, stdio: ['ignore', 'pipe', 'pipe'] });
 
     let totalFrames = 0;
@@ -525,14 +583,77 @@ async function assembleVideoRemotion(content, diagrams, audioPath, questionNum, 
       if (!config.noProgress) {
         process.stdout.write('\r  Rendering [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%  \n');
       }
-      if (code === 0) resolve();
-      else reject(new Error(`Remotion render exited with code ${code}`));
+      if (code === 0) {
+        console.log(`\n✅ Raw video ready. Layering SFX with FFmpeg...`);
+
+        // Apply SFX with FFmpeg if any
+        if (sfxEvents.length > 0) {
+          try {
+            const sfxDir = path.join(__dirname, '..', 'sample_audio_files', 'sfx');
+            // We inject a silent audio track at input [1] to ensure [1:a] exists for mixing
+            let ffmpegArgs = ['-y', '-i', rawOutputPath, '-f', 'lavfi', '-i', 'anullsrc=channel_layout=stereo:sample_rate=44100'];
+            let filterComplex = '';
+
+            // Add an input (-i) for each SFX (starting at index 2)
+            for (let i = 0; i < sfxEvents.length; i++) {
+              const sfxPath = path.join(sfxDir, sfxEvents[i].type);
+              ffmpegArgs.push('-i', sfxPath);
+              // Filter: delay the audio stream [i+2]
+              filterComplex += `[${i + 2}]adelay=${sfxEvents[i].delayMs}|${sfxEvents[i].delayMs}[s${i + 1}];`;
+            }
+
+            // Mix original video audio [0:a] OR silent track [1:a] with all delayed sfx streams
+            const mixInputs = sfxEvents.map((_, i) => `[s${i + 1}]`).join('');
+
+            // Assuming the video has NO audio initially for now, we baseline against the silent track
+            filterComplex += `[1:a]${mixInputs}amix=inputs=${sfxEvents.length + 1}[aout]`;
+
+            ffmpegArgs.push('-filter_complex', filterComplex);
+            ffmpegArgs.push('-map', '0:v', '-map', '[aout]');
+            ffmpegArgs.push('-c:v', 'copy', '-c:a', 'aac', '-shortest', finalOutputPath);
+
+            // console.log('ffmpeg', ffmpegArgs.join(' ')); // DEBUG
+            execSync(`/opt/homebrew/bin/ffmpeg ${ffmpegArgs.map(x => `"${x}"`).join(' ')}`, { stdio: 'ignore' });
+
+            // Remove raw output
+            fs.unlinkSync(rawOutputPath);
+          } catch (err) {
+            console.error(`  ⚠️ SFX overlay failed. Defaulting to raw output.`, err.message);
+            fs.renameSync(rawOutputPath, finalOutputPath);
+          }
+        } else {
+          // No SFX, just rename
+          fs.renameSync(rawOutputPath, finalOutputPath);
+        }
+
+        console.log(`\n✅ Final Video ready: ${finalOutputPath}`);
+
+        // Extract thumbnail (Frame 90 - Inside the Intro phase)
+        const thumbnailPath = path.join(DIRS.thumbnails, `q${questionNum}_${slug}_thumbnail.png`);
+        if (!fs.existsSync(path.dirname(thumbnailPath))) {
+          fs.mkdirSync(path.dirname(thumbnailPath), { recursive: true });
+        }
+        if (!fs.existsSync(thumbnailPath)) {
+          console.log(`  📸 Extracting thumbnail...`);
+          try {
+            execSync(`npx remotion still src/index.ts MainVideo "${thumbnailPath}" --props="${propsFile}" --frame=90`, {
+              cwd: remotionDir,
+              stdio: 'ignore'
+            });
+            console.log(`  ✅ Thumbnail saved: ${thumbnailPath}`);
+          } catch (e) {
+            console.warn(`  ⚠️ Failed to generate thumbnail:`, e.message);
+          }
+        }
+        resolve();
+      } else {
+        reject(new Error(`Remotion render exited with code ${code}`));
+      }
     });
   });
 
-  console.log(`\n✅ Video ready: ${outputPath}`);
   try { fs.unlinkSync(propsFile); } catch (e) { }
-  return outputPath;
+  return finalOutputPath;
 }
 
 
@@ -608,11 +729,11 @@ async function assembleVideoCanvas(content, diagrams, audioPath, questionNum) {
 }
 
 // Global dispatcher
-async function assembleVideo(content, diagrams, audioPath, questionNum, useRemotion = false) {
+async function assembleVideo(content, diagrams, audioPath, questionNum, useRemotion = false, config = {}) {
   if (useRemotion) {
-    return assembleVideoRemotion(content, diagrams, audioPath, questionNum);
+    return assembleVideoRemotion(content, diagrams, audioPath, questionNum, config);
   } else {
-    return assembleVideoCanvas(content, diagrams, audioPath, questionNum);
+    return assembleVideoCanvas(content, diagrams, audioPath, questionNum, config);
   }
 }
 

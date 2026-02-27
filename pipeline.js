@@ -37,7 +37,7 @@ const hasFlag = (flag) => args.includes(flag);
 const TOPIC = getArg('--topic') || 'Cloud Dataflow and BigQuery ETL pipeline';
 const NUMBER = parseInt(getArg('--number') || '14', 10);
 const DRY_RUN = hasFlag('--dry-run');
-const USE_REMOTION = hasFlag('--remotion');
+const USE_REMOTION = !hasFlag('--canvas') && !hasFlag('--no-remotion');
 const DIAGRAM_MODE = getArg('--diagrams') || 'excalidraw'; // 'excalidraw' or 'mermaid'
 const PROVIDER = getArg('--provider') || process.env.LLM_PROVIDER || 'gemini';
 const ANIM_STYLE = getArg('--anim') || 'highlight'; // 'highlight', 'type', 'fade'
@@ -47,10 +47,14 @@ const AUTO_POST = hasFlag('--post');
 const USE_HOOK = hasFlag('--hook');
 const DOMAIN = getArg('--domain') || 'GCP';
 
+// Platforms parsing (e.g. --platforms "youtube,meta")
+const rawPlatforms = getArg('--platforms') || 'youtube';
+const TARGET_PLATFORMS = rawPlatforms.split(',').map(p => p.trim().toLowerCase());
+
 // Override provider from CLI flag
 if (getArg('--provider')) process.env.LLM_PROVIDER = PROVIDER;
 
-const OUT_DIR = path.join(__dirname, 'output');
+const OUT_DIR = path.join(__dirname, 'output_prod');
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
 // ── Pipeline ──────────────────────────────────────────────────────────────────
@@ -118,15 +122,23 @@ async function run() {
   console.log('\n🎨 STEP 3/4 — Rendering diagrams...');
   const diagrams = await renderAllDiagrams(contentJson, DIAGRAM_MODE);
 
-  // ── STEP 4: Assemble video ───────────────────────────────────────────────────
-  console.log('\n🎬 STEP 4/4 — Assembling video...');
+  // ── STEP 4: Assemble video(s) ────────────────────────────────────────────────
+  console.log('\\n🎬 STEP 4/4 — Assembling video(s)...');
   // Note: pass null for audio in prototype — wire up TTS here in Phase 2
-  const videoPath = await assembleVideo(contentJson, diagrams, null, NUMBER, USE_REMOTION, {
-    animStyle: ANIM_STYLE,
-    pauseFrames: PAUSE_FRAMES,
-    noProgress: NO_PROGRESS,
-    useHook: USE_HOOK
-  });
+
+  const renderedVideos = {}; // Record of platform -> filePath
+
+  for (const platform of TARGET_PLATFORMS) {
+    console.log(`\\n   ⚙️  Building for platform: ${platform.toUpperCase()}`);
+    const videoPath = await assembleVideo(contentJson, diagrams, null, NUMBER, USE_REMOTION, {
+      animStyle: ANIM_STYLE,
+      pauseFrames: PAUSE_FRAMES,
+      noProgress: NO_PROGRESS,
+      useHook: USE_HOOK,
+      platform: platform // Pass the platform config to Remotion!
+    });
+    renderedVideos[platform] = videoPath;
+  }
 
   // ── BONUS: Generate platform metadata ────────────────────────────────────────
   console.log('\n📱 Generating platform metadata...');
@@ -140,11 +152,12 @@ async function run() {
     ...(contentJson.answer_sections || []).map(s => s.keywords?.tech_terms || []).flat(),
     ...(contentJson.answer_sections || []).map(s => s.keywords?.concepts || []).flat()
   ])];
-  const videoId = await trackVideo(DOMAIN, TOPIC, NUMBER, contentJson.question_text || "", allConcepts, null, path.basename(videoPath));
+  const firstVideoPath = Object.values(renderedVideos)[0];
+  const videoId = await trackVideo(DOMAIN, TOPIC, NUMBER, contentJson.question_text || "", allConcepts, null, path.basename(firstVideoPath));
 
   if (AUTO_POST) {
-    console.log('\n🚀 Auto-posting flag detected! Triggering social uploads...');
-    await postToAllPlatforms(videoId, videoPath, metadata);
+    console.log('\\n🚀 Auto-posting flag detected! Triggering social uploads...');
+    await postToAllPlatforms(videoId, renderedVideos, metadata);
   }
 
   // ── Summary ───────────────────────────────────────────────────────────────────
@@ -152,7 +165,9 @@ async function run() {
   console.log('🎉 Pipeline Complete!');
   console.log('─────────────────────────────────────────');
   console.log(`📄 Content JSON  : ${contentPath}`);
-  console.log(`🎞️  Video          : ${videoPath}`);
+  for (const [plat, pth] of Object.entries(renderedVideos)) {
+    console.log(`🎞️  Video (${plat.padEnd(7)}): ${pth}`);
+  }
   console.log(`📱 Metadata       : ${metaPath}`);
   console.log(`⏱️  Duration       : ~${((contentJson.answer_sections?.length || 3) * 6 + 6).toFixed(0)}s`);
   console.log('─────────────────────────────────────────');

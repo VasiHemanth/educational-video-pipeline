@@ -74,12 +74,15 @@ export const Outro: React.FC<{ content?: VideoProps['content'] }> = ({ content }
                 transform: `scale(${ctaScale * ctaPulse})`,
             }}>
                 <div style={{
-                    padding: '20px 64px', backgroundColor: G.red, borderRadius: '50px',
-                    fontSize: '36px', fontWeight: 700, color: '#FFF',
-                    boxShadow: `0 8px 32px ${G.red}50`,
+                    padding: '20px 64px',
+                    background: content?.config?.platform === 'meta' ? 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)' : G.red,
+                    borderRadius: '50px',
+                    fontSize: content?.config?.platform === 'meta' ? '32px' : '36px',
+                    fontWeight: 700, color: '#FFF',
+                    boxShadow: `0 8px 32px ${content?.config?.platform === 'meta' ? '#dc2743' : G.red}50`,
                     display: 'flex', alignItems: 'center', gap: '16px',
                 }}>
-                    🔔 SUBSCRIBE
+                    {content?.config?.platform === 'meta' ? '➕ Follow ai_cloud_architect' : '🔔 SUBSCRIBE'}
                 </div>
             </div>
 
