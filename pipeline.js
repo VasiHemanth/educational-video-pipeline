@@ -23,7 +23,7 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const { askJSON } = require('./providers/llm');
-const { contentPrompt, dslRefinementPrompt, mermaidDslRefinementPrompt, metadataPrompt } = require('./prompts/index');
+const { contentPrompt, dslRefinementPrompt, mermaidDslRefinementPrompt, remotionDslRefinementPrompt, metadataPrompt } = require('./prompts/index');
 const { renderAllDiagrams } = require('./scripts/diagrams');
 const { assembleVideo } = require('./scripts/assembler');
 const { initDB, trackVideo } = require('./scripts/db');
@@ -38,7 +38,7 @@ const TOPIC = getArg('--topic') || 'Cloud Dataflow and BigQuery ETL pipeline';
 const NUMBER = parseInt(getArg('--number') || '14', 10);
 const DRY_RUN = hasFlag('--dry-run');
 const USE_REMOTION = !hasFlag('--canvas') && !hasFlag('--no-remotion');
-const DIAGRAM_MODE = getArg('--diagrams') || 'excalidraw'; // 'excalidraw' or 'mermaid'
+const DIAGRAM_MODE = getArg('--diagrams') || 'remotion'; // 'excalidraw', 'mermaid', or 'remotion'
 const PROVIDER = getArg('--provider') || process.env.LLM_PROVIDER || 'gemini';
 const ANIM_STYLE = getArg('--anim') || 'highlight'; // 'highlight', 'type', 'fade'
 const PAUSE_FRAMES = parseInt(getArg('--pause') || '30', 10);
@@ -110,17 +110,33 @@ async function run() {
     // Use the correct refinement prompt based on diagram mode
     const refinePrompt = DIAGRAM_MODE === 'mermaid'
       ? mermaidDslRefinementPrompt(diagram, section?.text || '', DOMAIN)
+      : DIAGRAM_MODE === 'remotion'
+      ? remotionDslRefinementPrompt(diagram, section?.text || '', DOMAIN)
       : dslRefinementPrompt(diagram, section?.text || '', DOMAIN);
 
     const refinedDsl = await askJSON(refinePrompt).catch(() => ({ dsl: diagram.dsl })); // fallback to original DSL on parse fail
 
-    // askJSON might return string for DSL - handle both
-    diagram.dsl = (typeof refinedDsl === 'string') ? refinedDsl : (refinedDsl?.dsl || diagram.dsl);
+    // askJSON might return string for DSL, or JSON object for remotion
+    diagram.dsl = (DIAGRAM_MODE === 'remotion' && typeof refinedDsl === 'object' && !refinedDsl.dsl)
+      ? JSON.stringify(refinedDsl)
+      : (typeof refinedDsl === 'string') ? refinedDsl : (refinedDsl?.dsl || diagram.dsl);
   }
 
-  // ── STEP 3: Render diagrams → PNG ────────────────────────────────────────────
+  // ── STEP 3: Render diagrams → PNG (Skip if remotion native) ────────────────────────────────────────────
   console.log('\n🎨 STEP 3/4 — Rendering diagrams...');
-  const diagrams = await renderAllDiagrams(contentJson, DIAGRAM_MODE);
+  let diagrams = [];
+  if (DIAGRAM_MODE === 'remotion') {
+    console.log('   Skipping PNG render (using native Remotion diagrams)...');
+    diagrams = contentJson.diagrams.map(d => ({ ...d, isNative: true }));
+  } else {
+    diagrams = await renderAllDiagrams(contentJson, DIAGRAM_MODE);
+  }
+
+  // ── BONUS: Generate platform metadata BEFOREHAND for thumbnail ────────────────────────────────────────
+  console.log('\n📱 Generating platform metadata...');
+  const metadata = await askJSON(metadataPrompt(contentJson, DOMAIN));
+  const metaPath = path.join(OUT_DIR, `q${NUMBER}_metadata.json`);
+  fs.writeFileSync(metaPath, JSON.stringify(metadata, null, 2));
 
   // ── STEP 4: Assemble video(s) ────────────────────────────────────────────────
   console.log('\\n🎬 STEP 4/4 — Assembling video(s)...');
@@ -130,7 +146,7 @@ async function run() {
 
   for (const platform of TARGET_PLATFORMS) {
     console.log(`\\n   ⚙️  Building for platform: ${platform.toUpperCase()}`);
-    const videoPath = await assembleVideo(contentJson, diagrams, null, NUMBER, USE_REMOTION, {
+    const videoPath = await assembleVideo(contentJson, diagrams, metadata, NUMBER, USE_REMOTION, {
       animStyle: ANIM_STYLE,
       pauseFrames: PAUSE_FRAMES,
       noProgress: NO_PROGRESS,
@@ -139,12 +155,6 @@ async function run() {
     });
     renderedVideos[platform] = videoPath;
   }
-
-  // ── BONUS: Generate platform metadata ────────────────────────────────────────
-  console.log('\n📱 Generating platform metadata...');
-  const metadata = await askJSON(metadataPrompt(contentJson, DOMAIN));
-  const metaPath = path.join(OUT_DIR, `q${NUMBER}_metadata.json`);
-  fs.writeFileSync(metaPath, JSON.stringify(metadata, null, 2));
 
   // ── TRACK IN DB ─────────────────────────────────────────────────────────────
   console.log('\n💾 Tracking video in database...');

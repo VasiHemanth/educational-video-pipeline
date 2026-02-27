@@ -1,7 +1,9 @@
 export interface DiagramInfo {
     section_id: string;
-    excalidrawPath: string;
-    pngPath: string;
+    excalidrawPath?: string;
+    pngPath?: string;
+    isNative?: boolean;
+    dsl?: string;
 }
 
 export interface AnswerSection {
@@ -57,6 +59,8 @@ export interface VideoProps {
         outroFrames?: number;
         totalFrames?: number;
         sectionTimings?: SectionTiming[];
+        thumbnail_headline?: string;
+        thumbnail_subheadline?: string;
     };
     fps?: number;
 }

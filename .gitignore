@@ -9,3 +9,6 @@ client_secret.json
 youtube_tokens.json
 client_secret_*.json
 *.sqlite
+.png
+.mp4
+output_prod/

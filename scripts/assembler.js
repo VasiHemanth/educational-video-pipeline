@@ -432,7 +432,7 @@ function drawOutroFrame(frameNum = 0) {
 // ══════════════════════════════════════════════════════════════════════════════
 // MAIN ASSEMBLER (REMOTION BASED)
 // ══════════════════════════════════════════════════════════════════════════════
-async function assembleVideoRemotion(content, diagrams, audioPath, questionNum, config = {}) {
+async function assembleVideoRemotion(content, diagrams, metadata, questionNum, config = {}) {
   const { spawn, execSync } = require('child_process');
   const domainSlug = (content.domain || 'GCP').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
   const topicSlug = (content.topic || 'video').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
@@ -443,6 +443,7 @@ async function assembleVideoRemotion(content, diagrams, audioPath, questionNum, 
 
   // Encode diagrams as base64 data URIs (bypasses Remotion's static file restrictions)
   const formattedDiagrams = (diagrams || []).map(d => {
+    if (d.isNative) return d;
     let pngPath = d.png_path || d.pngPath;
     if (pngPath && fs.existsSync(pngPath)) {
       const b64 = fs.readFileSync(pngPath).toString('base64');
@@ -497,7 +498,7 @@ async function assembleVideoRemotion(content, diagrams, audioPath, questionNum, 
     const phaseCFrames = hasDiagram ? 20 : 0; // diagram entry
 
     // Phase D (Dwell time)
-    const phaseDFrames = Math.max(0, totalReadingFrames - phaseAFrames);
+    const phaseDFrames = Math.max(120, totalReadingFrames - phaseAFrames);
 
     const sectionDuration = phaseAFrames + phaseBFrames + phaseCFrames + phaseDFrames;
 
@@ -628,21 +629,30 @@ async function assembleVideoRemotion(content, diagrams, audioPath, questionNum, 
 
         console.log(`\n✅ Final Video ready: ${finalOutputPath}`);
 
-        // Extract thumbnail (Frame 90 - Inside the Intro phase)
+        // Extract thumbnail by rendering the Thumbnail composition
         const thumbnailPath = path.join(DIRS.thumbnails, `q${questionNum}_${slug}_thumbnail.png`);
         if (!fs.existsSync(path.dirname(thumbnailPath))) {
           fs.mkdirSync(path.dirname(thumbnailPath), { recursive: true });
         }
+        
+        // Add thumbnail-specific props to the payload
+        propsPayload.config.thumbnail_headline = metadata?.thumbnail?.headline;
+        propsPayload.config.thumbnail_subheadline = metadata?.thumbnail?.subheadline;
+        const thumbPropsFile = path.join(__dirname, '..', 'remotion', `thumb_props_q${questionNum}.json`);
+        fs.writeFileSync(thumbPropsFile, JSON.stringify(propsPayload, null, 2));
+
         if (!fs.existsSync(thumbnailPath)) {
-          console.log(`  📸 Extracting thumbnail...`);
+          console.log(`  📸 Rendering custom thumbnail...`);
           try {
-            execSync(`npx remotion still src/index.ts MainVideo "${thumbnailPath}" --props="${propsFile}" --frame=90`, {
+            execSync(`npx remotion render src/index.ts Thumbnail "${thumbnailPath}" --props="${thumbPropsFile}"`, {
               cwd: remotionDir,
               stdio: 'ignore'
             });
             console.log(`  ✅ Thumbnail saved: ${thumbnailPath}`);
           } catch (e) {
             console.warn(`  ⚠️ Failed to generate thumbnail:`, e.message);
+          } finally {
+            try { fs.unlinkSync(thumbPropsFile); } catch (e) { }
           }
         }
         resolve();
@@ -729,11 +739,11 @@ async function assembleVideoCanvas(content, diagrams, audioPath, questionNum) {
 }
 
 // Global dispatcher
-async function assembleVideo(content, diagrams, audioPath, questionNum, useRemotion = false, config = {}) {
+async function assembleVideo(content, diagrams, metadata, questionNum, useRemotion = false, config = {}) {
   if (useRemotion) {
-    return assembleVideoRemotion(content, diagrams, audioPath, questionNum, config);
+    return assembleVideoRemotion(content, diagrams, metadata, questionNum, config);
   } else {
-    return assembleVideoCanvas(content, diagrams, audioPath, questionNum, config);
+    return assembleVideoCanvas(content, diagrams, null, questionNum, config);
   }
 }
 

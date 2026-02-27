@@ -27,11 +27,12 @@ Return JSON with this exact structure:
     {
       "id": 1,
       "title": "Short Title",
-      "text": "3 to 5 lines explaining the architecture block diagram deeply. Maximum 15-20 words total. Must be technical.",
+      "text": "Extremely concise on-screen text. Maximum 10-15 words total. Punchy, readable, punchy.",
+      "spoken_audio": "Detailed spoken explanation of this section (20-30 words). Natural speech, no bullet points. This will be read by TTS.",
       "keywords": {
-        "tech_terms": ["exact words to highlight BLUE"],
-        "action_verbs": ["exact words to highlight RED"],
-        "concepts": ["exact words to highlight GREEN"]
+        "tech_terms": ["exact words from 'text' to highlight"],
+        "action_verbs": ["exact words from 'text' to highlight"],
+        "concepts": ["exact words from 'text' to highlight"]
       }
     }
   ],
@@ -46,7 +47,6 @@ Return JSON with this exact structure:
       "direction": "LR"
     }
   ],
-  "voiceover_script": "Full spoken script exactly matching the answer sections. Natural speech, no bullet points.",
   "title_card_text": "Short catchy subtitle for the intro card (max 8 words)",
   "hashtags": ["#GCP", "#CloudArchitect", "#GoogleCloud", "#Interview"]
 }
@@ -61,15 +61,16 @@ DIAGRAM DSL RULES (Excalidraw-flowchart syntax):
 - @direction LR  = left-to-right layout
 
 KEYWORD RULES:
-- tech_terms: exact service/tech names as they appear in text (e.g. "Cloud Dataflow", "S3", "Spark")
-- action_verbs: technical verbs (e.g. "extract", "transform", "partition")
-- concepts: architectural concepts (e.g. "ETL", "streaming", "batch", "Generative AI")
+- tech_terms: exact service/tech names as they appear in the 'text' property
+- action_verbs: technical verbs from the 'text' property
+- concepts: architectural concepts from the 'text' property
 
 CRITICAL CONSTRAINTS:
 1. Generate EXACTLY 2-3 answer sections (no more!).
-2. Keep section text to 3-5 lines (roughly 15-20 words max per slide). Explain the architectural workflow properly! Mobile viewers will read it fast.
-3. Each section needs 1 diagram.
-4. DO NOT USE ANY MARKDOWN FORMATTING (like **bold** or *italics*) in the text strings. Just plain text.
+2. 'text' MUST BE ULTRA CONCISE. Mobile viewers will read it fast. Maximum 10-15 words.
+3. 'spoken_audio' provides the detailed explanation that the narrator says while 'text' is on screen.
+4. Each section needs 1 diagram.
+5. DO NOT USE ANY MARKDOWN FORMATTING (like **bold** or *italics*) in the text strings. Just plain text.
 
 Topic-specific guidance for "${topic}":
   - Be precise about ${domain}-specific APIs, configs, and patterns
@@ -231,6 +232,10 @@ Return JSON:
     "category": "Education",
     "playlist": "${domain} Daily Interview Questions"
   },
+  "thumbnail": {
+    "headline": "A very punchy, large-text headline for the thumbnail (max 5 words).",
+    "subheadline": "A slightly longer sub-headline that elaborates on the topic (max 10-12 words)."
+  },
   "instagram": {
     "caption": "Hook line\n\nValue lines (3-4)\n\nHashtags (15-20)",
     "cover_text": "Short punchy text for the reel cover"
@@ -243,4 +248,34 @@ Return JSON:
 `;
 }
 
-module.exports = { contentPrompt, dslRefinementPrompt, mermaidDslRefinementPrompt, animationPrompt, metadataPrompt };
+/**
+ * STEP 2c — Convert diagram spec to native JSON (Remotion component)
+ */
+function remotionDslRefinementPrompt(diagramSpec, sectionText, domain = 'GCP') {
+  return `
+Convert this ${domain} architecture diagram specification into a simple JSON graph format for direct UI rendering.
+
+Section context: "${sectionText}"
+
+Diagram spec:
+${JSON.stringify(diagramSpec, null, 2)}
+
+Return ONLY a valid JSON object matching this schema:
+{
+  "direction": "LR" | "TB",
+  "nodes": [
+    { "id": "string", "label": "string (keep to 1-2 words)", "type": "compute | storage | database | messaging | user" }
+  ],
+  "edges": [
+    { "from": "node_id", "to": "node_id", "label": "optional short label" }
+  ]
+}
+
+RULES:
+1. "direction": MUST be "LR" for 3 or fewer nodes, UNLESS any node label is more than 2 words long, in which case it MUST be "TB". If more than 3 nodes, it MUST be "TB".
+2. "label" MUST BE INCREDIBLY SHORT — strictly 1-2 words max per node!
+3. Do not include markdown fences (like \`\`\`json). Just the raw JSON object.
+`;
+}
+
+module.exports = { contentPrompt, dslRefinementPrompt, mermaidDslRefinementPrompt, remotionDslRefinementPrompt, animationPrompt, metadataPrompt };

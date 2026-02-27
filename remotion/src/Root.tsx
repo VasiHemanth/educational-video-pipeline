@@ -1,5 +1,6 @@
 import { Composition, getInputProps, Series } from 'remotion';
 import { MainVideo } from './MainVideo';
+import { Thumbnail } from './components/Thumbnail';
 import { VideoProps } from './types';
 import React from 'react';
 
@@ -33,7 +34,7 @@ const defaultProps: VideoProps = {
 // Pure function to calculate base section frames (without scaling)
 export const calculateBaseSectionFrames = (section: any, diagram: any, pauseFrames: number) => {
   const words = section.text?.split(' ') || [];
-  const hasDiagram = !!(diagram && diagram.pngPath);
+  const hasDiagram = !!(diagram && (diagram.pngPath || diagram.isNative));
 
   // Scientific duration:
   // 4f per word (~300 WPM text streaming) + 60f diagram viewing penalty + 45f animation buffer + user pause
@@ -66,14 +67,25 @@ export const RemotionRoot: React.FC = () => {
   }
 
   return (
-    <Composition
-      id="MainVideo"
-      component={MainVideo as React.FC<any>}
-      durationInFrames={total}
-      fps={30}
-      width={1080}
-      height={1920}
-      defaultProps={activeProps}
-    />
+    <>
+      <Composition
+        id="MainVideo"
+        component={MainVideo as React.FC<any>}
+        durationInFrames={total}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={activeProps}
+      />
+      <Composition
+        id="Thumbnail"
+        component={Thumbnail as React.FC<any>}
+        durationInFrames={1}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={activeProps}
+      />
+    </>
   );
 };
