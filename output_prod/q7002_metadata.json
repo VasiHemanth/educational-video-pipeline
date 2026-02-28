@@ -1,0 +1,42 @@
+{
+  "youtube": {
+    "title": "GCP Interview Q7002: Scale IoT to Millions: Event-Driven Serverless #Shorts",
+    "description": "Design a hyper-scalable, event-driven GCP architecture for millions of IoT sensor readings/sec. Eventarc Advanced triggers Pub/Sub, reliably ingesting data streams. Cloud Run or Cloud Functions process events serverlessly, scaling dynamically based on message volume. Workflows orchestrate complex tasks, storing raw data in Cloud Storage before efficient ingestion into BigQuery for analytics. Memorystore caches critical processing data for low-latency access, all secured by robust IAM policies. Master serverless IoT on GCP today!",
+    "tags": [
+      "GCP",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "IoT",
+      "EventDriven",
+      "Serverless",
+      "PubSub",
+      "CloudRun",
+      "CloudFunctions",
+      "BigQuery",
+      "Memorystore",
+      "Eventarc",
+      "GCPInterview",
+      "Scalability",
+      "Architecture",
+      "Cloud",
+      "GoogleCloud"
+    ],
+    "category": "Education",
+    "playlist": "GCP Daily Interview Questions"
+  },
+  "thumbnail": {
+    "headline": "GCP IoT: Scale to Millions",
+    "subheadline": "Event-Driven Serverless Architecture for IoT Data"
+  },
+  "instagram": {
+    "caption": "Scale your IoT to millions on GCP effortlessly! 🚀\n\n- Ingest millions of sensor readings/sec with Pub/Sub & Eventarc.\n- Process data serverlessly using Cloud Run/Functions with auto-scaling.\n- Analyze massive datasets in BigQuery, enhance with Memorystore caching.\n- Build fault-tolerant, cost-effective, and secure IoT solutions.\n\n#GCP #IoT #Serverless #EventDriven #CloudArchitecture #PubSub #CloudRun #CloudFunctions #BigQuery #Memorystore #Eventarc #GCPInterview #Scalability #SystemDesign #GoogleCloud #TechInterview #CloudSolutions #DataProcessing #Engineering #DevOps",
+    "cover_text": "GCP IoT Scalability Explained"
+  },
+  "tiktok": {
+    "caption": "GCP IoT scaling with Event-Driven Serverless! Pub/Sub, Cloud Run & BigQuery handle millions of readings reliably. Learn the architecture! #GCP #IoT #Serverless #ScaleUp",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

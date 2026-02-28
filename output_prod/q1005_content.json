@@ -1,0 +1,139 @@
+{
+  "question_number": 1005,
+  "topic": "Agentic AI Architectures",
+  "question_text": "How would you design a scalable and secure multi-agent system on Google Cloud Platform capable of complex, long-running workflows?",
+  "hook_text": "Building autonomous AI agents? Here's how to scale them securely on Google Cloud!",
+  "cta_text": "Follow for advanced GCP AI architectures!",
+  "tech_terms": [
+    "Vertex AI Agent Builder",
+    "Agent Development Kit (ADK)",
+    "Vertex AI Agent Engine",
+    "Managed Sessions",
+    "Memory Bank",
+    "Secure Code Execution",
+    "Agent-to-Agent (A2A) Protocol",
+    "Agentic IAM",
+    "BigQuery Continuous Queries",
+    "Vertex AI Search",
+    "Vector Search",
+    "Gemini 1.5 Pro",
+    "LangChain",
+    "CrewAI",
+    "Firebase Genkit",
+    "Vertex AI Reasoning Engine"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Vertex AI Agent Builder: Core",
+      "text": "Vertex AI Agent Builder: Full-stack for Agent Development and Runtime.",
+      "spoken_audio": "GCP's Vertex AI Agent Builder is your comprehensive platform, providing the tools and managed runtime needed for end-to-end agent development and secure execution.",
+      "keywords": {
+        "tech_terms": [
+          "Vertex AI Agent Builder"
+        ],
+        "action_verbs": [
+          "Development",
+          "Runtime"
+        ],
+        "concepts": [
+          "Full-stack",
+          "Platform"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Orchestration & Secure Communication",
+      "text": "Orchestrate multi-agents, secure communication with A2A Protocol and Agentic IAM.",
+      "spoken_audio": "For complex tasks, orchestrate multiple agents using patterns like coordinators. Secure inter-agent communication via A2A Protocol and fine-grained access with Agentic IAM.",
+      "keywords": {
+        "tech_terms": [
+          "A2A Protocol",
+          "Agentic IAM"
+        ],
+        "action_verbs": [
+          "Orchestrate",
+          "secure"
+        ],
+        "concepts": [
+          "Multi-agents",
+          "Communication"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Grounding & Real-time Reasoning",
+      "text": "Ground agents with Vertex AI Search. Real-time data via BigQuery Continuous Queries.",
+      "spoken_audio": "Ensure agents are factual by grounding them with Vertex AI Search for RAG. Leverage BigQuery Continuous Queries for real-time data access and dynamic reasoning.",
+      "keywords": {
+        "tech_terms": [
+          "Vertex AI Search",
+          "BigQuery Continuous Queries"
+        ],
+        "action_verbs": [
+          "Ground",
+          "access"
+        ],
+        "concepts": [
+          "Real-time data",
+          "RAG"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Agent Builder Components",
+      "type": "flowchart",
+      "dsl": "(Start) -> [Agent Development Kit (ADK)] -> [Vertex AI Agent Engine] -> [[Memory Bank]]",
+      "animation_sequence": [
+        "Start",
+        "Agent Development Kit (ADK)",
+        "Vertex AI Agent Engine",
+        "Memory Bank"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Multi-Agent Coordination",
+      "type": "flowchart",
+      "dsl": "(Coordinator Agent) --> \"task\" [Sub-Agent A] @direction LR\n(Coordinator Agent) --> \"task\" [Sub-Agent B]\n[Sub-Agent A] --> \"A2A\" [Sub-Agent B]",
+      "animation_sequence": [
+        "Coordinator Agent",
+        "Sub-Agent A",
+        "Sub-Agent B",
+        "A2A"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Agent Grounding Flow",
+      "type": "flowchart",
+      "dsl": "[Agent] -> [Vertex AI Search] -> [[Knowledge Base]]\n[Agent] -> [[BigQuery Continuous Queries]]",
+      "animation_sequence": [
+        "Agent",
+        "Vertex AI Search",
+        "Knowledge Base",
+        "BigQuery Continuous Queries"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "Scalable Agentic AI on GCP",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#GoogleCloud",
+    "#AgenticAI",
+    "#VertexAI"
+  ],
+  "domain": "GCP"
+}

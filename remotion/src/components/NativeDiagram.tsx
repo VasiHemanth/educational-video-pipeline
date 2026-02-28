@@ -5,11 +5,50 @@ interface Node { id: string; label: string; type: string; }
 interface Edge { from: string; to: string; label?: string; }
 interface Graph { direction: string; nodes: Node[]; edges: Edge[]; }
 
-export const NativeDiagram: React.FC<{ 
-    dsl: string; 
-    accent: string; 
-    phaseA: number; 
-    phaseB: number 
+// ── Layout decision ────────────────────────────────────────────────────────────
+// Canvas: 1080×1920. Diagram zone: top 42% → bottom 12% = 46% ≈ 883px usable height.
+// LR (horizontal): ≤3 nodes — wide nodes fit in 960px usable width
+// TB (vertical):   4-8 nodes — portrait canvas gives ~110-220px per node slot
+// GRID (2-row):    9+ nodes
+type LayoutMode = 'LR' | 'TB' | 'GRID';
+
+function computeLayout(nodeCount: number): LayoutMode {
+    if (nodeCount <= 3) return 'LR';
+    if (nodeCount <= 8) return 'TB';
+    return 'GRID';
+}
+
+// ── Dynamic sizing tiers ───────────────────────────────────────────────────────
+// Diagram zone: top 36% → bottom 8% = 56% of 1920 ≈ 1075px usable height
+// Each TB node slot = 1075 / nodeCount — size tiers must fit within these slots
+function getNodeSizing(nodeCount: number, layout: LayoutMode) {
+    if (layout === 'LR') {
+        // Horizontal: ≤3 nodes, generous spacing across 960px wide
+        return { fontSize: 32, padV: 16, padH: 26, gap: 32, arrowLen: 50, minW: 120, maxW: 320, borderW: 4, arrowSize: 13 };
+    }
+
+    // Vertical (TB) — 1075px usable height, slots per node:
+    if (nodeCount <= 4) {
+        // ~268px/slot → big, bold nodes
+        return { fontSize: 36, padV: 18, padH: 28, gap: 24, arrowLen: 50, minW: 220, maxW: 740, borderW: 4, arrowSize: 13 };
+    }
+    if (nodeCount <= 6) {
+        // ~179px/slot → comfortable
+        return { fontSize: 28, padV: 14, padH: 22, gap: 18, arrowLen: 36, minW: 180, maxW: 700, borderW: 4, arrowSize: 11 };
+    }
+    if (nodeCount <= 8) {
+        // ~134px/slot → compact but legible
+        return { fontSize: 22, padV: 10, padH: 18, gap: 12, arrowLen: 28, minW: 150, maxW: 660, borderW: 3, arrowSize: 9 };
+    }
+    // 9+ (GRID fallback)
+    return { fontSize: 16, padV: 7, padH: 12, gap: 8, arrowLen: 18, minW: 110, maxW: 280, borderW: 2, arrowSize: 7 };
+}
+
+export const NativeDiagram: React.FC<{
+    dsl: string;
+    accent: string;
+    phaseA: number;
+    phaseB: number
 }> = ({ dsl, accent, phaseA, phaseB }) => {
     const frame = useCurrentFrame();
     const { fps } = useVideoConfig();
@@ -21,11 +60,60 @@ export const NativeDiagram: React.FC<{
         return <div style={{ color: '#EA4335', fontSize: '24px' }}>Invalid Diagram JSON</div>;
     }
 
-    const isLR = graph.direction !== 'TB';
+    const nodeCount = graph.nodes.length;
+    const layout = computeLayout(nodeCount);
+    const sizing = getNodeSizing(nodeCount, layout);
     const diagramStartFrame = phaseA + phaseB;
-    
-    // Scale down the entire diagram if there are many nodes to prevent overflow
-    const scaleFactor = Math.max(0.6, 1 - (graph.nodes.length - 3) * 0.1);
+
+    // ── GRID LAYOUT (2-row wrap for 9+ nodes) ─────────────────────────────────
+    if (layout === 'GRID') {
+        const cols = Math.ceil(nodeCount / 2);
+        return (
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: `${sizing.gap * 2}px`,
+                width: '100%',
+                height: '100%',
+            }}>
+                {[0, 1].map(row => (
+                    <div key={row} style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: `${sizing.gap}px`,
+                    }}>
+                        {graph.nodes.slice(row * cols, (row + 1) * cols).map((node, i) => {
+                            const globalIdx = row * cols + i;
+                            const appearFrame = diagramStartFrame + (globalIdx * 12);
+                            const nodeSpring = spring({ fps, frame: frame - appearFrame, config: { damping: 14 } });
+                            const scale = interpolate(nodeSpring, [0, 1], [0.8, 1]);
+                            const opacity = interpolate(nodeSpring, [0, 1], [0, 1]);
+                            return (
+                                <React.Fragment key={node.id}>
+                                    {i > 0 && (
+                                        <Arrow
+                                            isLR={true}
+                                            sizing={sizing}
+                                            accent={accent}
+                                            opacity={interpolate(spring({ fps, frame: frame - appearFrame + 6 }), [0, 1], [0, 1])}
+                                        />
+                                    )}
+                                    <DiagramNode node={node} accent={accent} sizing={sizing} scale={scale} opacity={opacity} />
+                                </React.Fragment>
+                            );
+                        })}
+                    </div>
+                ))}
+            </div>
+        );
+    }
+
+    // ── LINEAR LAYOUT (LR or TB) ───────────────────────────────────────────────
+    const isLR = layout === 'LR';
 
     return (
         <div style={{
@@ -33,87 +121,129 @@ export const NativeDiagram: React.FC<{
             flexDirection: isLR ? 'row' : 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: isLR ? '30px' : '20px',
+            gap: `${sizing.gap}px`,
             width: '100%',
             height: '100%',
-            transform: `scale(${scaleFactor})`
         }}>
             {graph.nodes.map((node, i) => {
-                const appearFrame = diagramStartFrame + (i * 20);
+                const appearFrame = diagramStartFrame + (i * 15);
                 const nodeSpring = spring({ fps, frame: frame - appearFrame, config: { damping: 14 } });
                 const scale = interpolate(nodeSpring, [0, 1], [0.8, 1]);
                 const opacity = interpolate(nodeSpring, [0, 1], [0, 1]);
 
                 const hasIncomingEdge = i > 0;
-                const edgeLabel = hasIncomingEdge ? graph.edges?.find(e => e.to === node.id && e.from === graph.nodes[i-1].id)?.label : null;
+                const edgeLabel = hasIncomingEdge
+                    ? graph.edges?.find(e => e.to === node.id && e.from === graph.nodes[i - 1].id)?.label
+                    : null;
 
                 return (
                     <React.Fragment key={node.id}>
                         {hasIncomingEdge && (
-                            <div style={{
-                                opacity: interpolate(spring({ fps, frame: frame - appearFrame + 10 }), [0, 1], [0, 1]),
-                                display: 'flex',
-                                flexDirection: isLR ? 'row' : 'column',
-                                alignItems: 'center',
-                                position: 'relative'
-                            }}>
-                                {edgeLabel && (
-                                    <div style={{
-                                        position: 'absolute',
-                                        top: isLR ? '-35px' : 'auto',
-                                        left: isLR ? 'auto' : '25px',
-                                        color: '#A1A1A6',
-                                        fontSize: '20px',
-                                        fontWeight: 600,
-                                        letterSpacing: '1px',
-                                        whiteSpace: 'nowrap',
-                                        textTransform: 'uppercase'
-                                    }}>
-                                        {edgeLabel}
-                                    </div>
-                                )}
-                                <div style={{
-                                    width: isLR ? '60px' : '4px',
-                                    height: isLR ? '4px' : '60px',
-                                    backgroundColor: '#48484A',
-                                    borderRadius: '2px'
-                                }} />
-                                <div style={{
-                                    width: 0, height: 0,
-                                    borderTop: isLR ? '12px solid transparent' : 'none',
-                                    borderBottom: isLR ? '12px solid transparent' : 'none',
-                                    borderLeft: isLR ? '18px solid #48484A' : '12px solid transparent',
-                                    borderRight: isLR ? 'none' : '12px solid transparent',
-                                    borderTopColor: isLR ? 'transparent' : '#48484A',
-                                    marginTop: isLR ? 0 : '-4px',
-                                    marginLeft: isLR ? '-4px' : 0
-                                }} />
-                            </div>
+                            <Arrow
+                                isLR={isLR}
+                                sizing={sizing}
+                                accent={accent}
+                                label={edgeLabel}
+                                opacity={interpolate(spring({ fps, frame: frame - appearFrame + 8 }), [0, 1], [0, 1])}
+                            />
                         )}
-                        <div style={{
-                            transform: `scale(${scale})`,
-                            opacity,
-                            padding: '30px 40px',
-                            backgroundColor: 'transparent',
-                            border: `3px solid ${accent}`,
-                            borderRadius: node.type === 'database' || node.type === 'storage' ? '40px' : '16px',
-                            color: '#F5F5F7',
-                            fontSize: '36px',
-                            fontWeight: 700,
-                            boxShadow: `inset 0 0 20px ${accent}20, 0 0 30px ${accent}30`,
-                            textAlign: 'center',
-                            minWidth: '220px',
-                            maxWidth: '380px',
-                            wordBreak: 'break-word',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}>
-                            {node.label}
-                        </div>
+                        <DiagramNode
+                            node={node}
+                            accent={accent}
+                            sizing={sizing}
+                            scale={scale}
+                            opacity={opacity}
+                        />
                     </React.Fragment>
                 );
             })}
         </div>
     );
 };
+
+// ── Arrow Component ────────────────────────────────────────────────────────────
+const Arrow: React.FC<{
+    isLR: boolean;
+    sizing: ReturnType<typeof getNodeSizing>;
+    accent: string;
+    label?: string | null;
+    opacity: number;
+}> = ({ isLR, sizing, accent, label, opacity }) => (
+    <div style={{
+        opacity,
+        display: 'flex',
+        flexDirection: isLR ? 'row' : 'column',
+        alignItems: 'center',
+        position: 'relative',
+        flexShrink: 0,
+    }}>
+        {label && (
+            <div style={{
+                position: 'absolute',
+                top: isLR ? `-${sizing.fontSize + 6}px` : 'auto',
+                left: isLR ? 'auto' : `${sizing.arrowLen + 8}px`,
+                color: '#A1A1A6',
+                fontSize: `${Math.max(11, sizing.fontSize - 7)}px`,
+                fontWeight: 600,
+                letterSpacing: '0.5px',
+                whiteSpace: 'nowrap',
+                textTransform: 'uppercase',
+            }}>
+                {label}
+            </div>
+        )}
+        {/* Arrow shaft */}
+        <div style={{
+            width: isLR ? `${sizing.arrowLen}px` : '3px',
+            height: isLR ? '3px' : `${sizing.arrowLen}px`,
+            backgroundColor: '#48484A',
+            borderRadius: '2px',
+        }} />
+        {/* Arrow head */}
+        <div style={{
+            width: 0,
+            height: 0,
+            borderTop: isLR ? `${sizing.arrowSize}px solid transparent` : 'none',
+            borderBottom: isLR ? `${sizing.arrowSize}px solid transparent` : 'none',
+            borderLeft: isLR ? `${sizing.arrowSize + 4}px solid #48484A` : `${sizing.arrowSize}px solid transparent`,
+            borderRight: isLR ? 'none' : `${sizing.arrowSize}px solid transparent`,
+            borderTopColor: isLR ? 'transparent' : '#48484A',
+            marginTop: isLR ? 0 : '-2px',
+            marginLeft: isLR ? '-2px' : 0,
+        }} />
+    </div>
+);
+
+// ── Node Component ─────────────────────────────────────────────────────────────
+const DiagramNode: React.FC<{
+    node: Node;
+    accent: string;
+    sizing: ReturnType<typeof getNodeSizing>;
+    scale: number;
+    opacity: number;
+}> = ({ node, accent, sizing, scale, opacity }) => (
+    <div style={{
+        transform: `scale(${scale})`,
+        opacity,
+        padding: `${sizing.padV}px ${sizing.padH}px`,
+        backgroundColor: 'transparent',
+        border: `${sizing.borderW}px solid ${accent}`,
+        borderRadius: node.type === 'database' || node.type === 'storage' ? '40px' : '16px',
+        color: '#F5F5F7',
+        fontSize: `${sizing.fontSize}px`,
+        fontWeight: 700,
+        boxShadow: `inset 0 0 20px ${accent}15, 0 0 25px ${accent}20`,
+        textAlign: 'center' as const,
+        minWidth: `${sizing.minW}px`,
+        maxWidth: `${sizing.maxW}px`,
+        wordBreak: 'break-word' as const,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        lineHeight: 1.25,
+        flexShrink: 0,
+        whiteSpace: 'normal' as const,
+    }}>
+        {node.label}
+    </div>
+);

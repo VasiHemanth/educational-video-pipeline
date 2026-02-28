@@ -1,0 +1,38 @@
+{
+  "youtube": {
+    "title": "GCP Interview Q2006: Serverless RAG on GCP: Scale GenAI! #Shorts",
+    "description": "Dive into building a highly scalable and cost-effective serverless Generative AI application on GCP using RAG. This video explains an architecture where Cloud Functions trigger Dataflow pipelines to process data into Vector Search, enabling Vertex AI (Gemini) to perform efficient RAG. Cloud Run hosts the core application, while Cloud Storage manages data. Cloud Build ensures CI/CD, all monitored and logged by Cloud Monitoring and Logging. Master GCP's serverless power for GenAI! Learn more at [YourWebsite/Link].",
+    "tags": [
+      "GCP",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "Serverless",
+      "CloudRun",
+      "VertexAI",
+      "VectorSearch",
+      "CloudStorage",
+      "CloudFunctions",
+      "Dataflow",
+      "Gemini",
+      "RAG",
+      "GenerativeAI",
+      "CloudBuild",
+      "CloudMonitoring",
+      "CloudLogging",
+      "GoogleCloud"
+    ],
+    "category": "Education",
+    "playlist": "GCP Daily Interview Questions"
+  },
+  "instagram": {
+    "caption": "Unlock scalable & cost-effective GenAI on GCP with RAG! \n\nLearn a robust serverless architecture leveraging Cloud Run, Vertex AI, and Vector Search. See how Dataflow, Cloud Functions, and Cloud Storage power efficient data processing for RAG. Implement CI/CD with Cloud Build, ensuring reliability with Cloud Monitoring and Logging. Master the essentials for designing cutting-edge Generative AI solutions.\n\n#GCP #Serverless #GenAI #RAG #CloudArchitecture #SystemDesign #VertexAI #VectorSearch #CloudRun #CloudFunctions #Dataflow #Gemini #CloudStorage #CloudBuild #CloudMonitoring #CloudLogging #AI #GoogleCloud #TechInterview #CloudSolutions",
+    "cover_text": "Scale GenAI on GCP"
+  },
+  "tiktok": {
+    "caption": "Build scalable, cost-effective GenAI with RAG on GCP! 🚀 Learn Cloud Run, Vertex AI, Dataflow. Master serverless architecture. #GCP #GenAI #RAG",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

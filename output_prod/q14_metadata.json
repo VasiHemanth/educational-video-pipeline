@@ -1,0 +1,42 @@
+{
+  "youtube": {
+    "title": "GCP Interview Q14: Real-time IoT ETL with Dataflow #Shorts",
+    "description": "Design a real-time ETL pipeline on GCP for high-volume IoT streaming data. Pub/Sub ingests raw streams, feeding into Cloud Dataflow jobs leveraging Apache Beam. Dataflow, enhanced by Streaming Engine and Dataflow Shuffle, processes and transforms data efficiently. Refined data is then loaded into BigQuery via the Storage Write API, optimized for low-latency analytics. Cloud Monitoring ensures observability, while Flex Templates streamline deployment and Cloud Composer orchestrates complex workflows. This architecture guarantees scalable, reliable, and cost-efficient data processing. Master GCP ETL design. Hit like & subscribe for more expert insights!",
+    "tags": [
+      "GCP",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "CloudDataflow",
+      "BigQuery",
+      "ETL",
+      "RealtimeData",
+      "StreamingData",
+      "IoT",
+      "ApacheBeam",
+      "PubSub",
+      "DataEngineering",
+      "DataAnalytics",
+      "CloudMonitoring",
+      "GCPInterview",
+      "DataPipeline",
+      "CloudComputing"
+    ],
+    "category": "Education",
+    "playlist": "GCP Daily Interview Questions"
+  },
+  "thumbnail": {
+    "headline": "GCP: Dataflow Real-time ETL",
+    "subheadline": "Optimize IoT streaming data to BigQuery for analytics."
+  },
+  "instagram": {
+    "caption": "Unlock the secrets to building a hyper-efficient real-time ETL pipeline on GCP for IoT data!\n\nLearn how Pub/Sub ingests massive IoT streams, feeding into powerful Cloud Dataflow jobs. Discover Apache Beam's role in processing, transforming, and optimizing data before it hits BigQuery via Storage Write API. Ensure peak performance, cost-efficiency, and bulletproof reliability for your critical data analytics. This setup leverages Streaming Engine, Dataflow Shuffle, and Flex Templates for ultimate scalability.\n\n#GCP #CloudDataflow #BigQuery #ETL #RealtimeData #StreamingData #IoT #ApacheBeam #PubSub #CloudArchitect #SystemDesign #GoogleCloud #DataEngineering #DataAnalytics #CloudMonitoring #GCPInterview #DataPipeline #CloudComputing #TechInterview #HighPerformance",
+    "cover_text": "GCP: Real-time IoT ETL"
+  },
+  "tiktok": {
+    "caption": "Master real-time IoT ETL on GCP! Dataflow & BigQuery power high-volume streams for analytics, ensuring performance & reliability. Level up your cloud skills! #GCP #Dataflow #ETL #IoT",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

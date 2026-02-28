@@ -1,0 +1,136 @@
+{
+  "question_number": 2008,
+  "topic": "Serverless Architecture on GCP",
+  "question_text": "How would you design a highly scalable, event-driven data processing pipeline on GCP for real-time analytics?",
+  "hook_text": "Build real-time analytics pipelines that scale infinitely on Google Cloud!",
+  "cta_text": "Follow for daily Cloud Architect tips and interview prep.",
+  "tech_terms": [
+    "Cloud Run",
+    "Cloud Functions",
+    "Pub/Sub",
+    "Firestore",
+    "Workflows",
+    "Cloud Storage",
+    "Secret Manager",
+    "Cloud Logging",
+    "Cloud Trace",
+    "IAM"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Event Ingestion & Processing",
+      "text": "Pub/Sub ingests events. Cloud Run processes. Scalable. Serverless. Fast.",
+      "spoken_audio": "We start with Pub/Sub for highly decoupled, asynchronous event ingestion. Cloud Run then scales containerized services to process these events efficiently, handling varying loads seamlessly.",
+      "keywords": {
+        "tech_terms": [
+          "Pub/Sub",
+          "Cloud Run"
+        ],
+        "action_verbs": [
+          "ingests",
+          "processes"
+        ],
+        "concepts": [
+          "events",
+          "scalable",
+          "serverless"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Data Persistence & Workflows",
+      "text": "Firestore stores data. Workflows orchestrate complex, stateful operations.",
+      "spoken_audio": "Processed data is persisted in Firestore, offering a flexible and scalable NoSQL database. For complex, multi-step tasks, Workflows orchestrate serverless execution across various GCP services.",
+      "keywords": {
+        "tech_terms": [
+          "Firestore",
+          "Workflows"
+        ],
+        "action_verbs": [
+          "stores",
+          "orchestrate"
+        ],
+        "concepts": [
+          "data",
+          "stateful operations"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Secure & Monitor",
+      "text": "Secret Manager for credentials. Cloud Logging, Trace for observability. IAM.",
+      "spoken_audio": "Security is paramount: use Secret Manager for sensitive credentials and IAM for least privilege access. Cloud Logging and Trace provide comprehensive observability, crucial for monitoring and debugging distributed serverless systems.",
+      "keywords": {
+        "tech_terms": [
+          "Secret Manager",
+          "Cloud Logging",
+          "Cloud Trace",
+          "IAM"
+        ],
+        "action_verbs": [
+          "for",
+          "provide"
+        ],
+        "concepts": [
+          "credentials",
+          "observability",
+          "monitoring"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Event Ingestion Flow",
+      "type": "flowchart",
+      "dsl": "(External System) -> Pub/Sub -> [Cloud Run]",
+      "animation_sequence": [
+        "External System",
+        "Pub/Sub",
+        "Cloud Run"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Data Persistence & Workflow",
+      "type": "flowchart",
+      "dsl": "[Cloud Run] --> [[Firestore]]\n[Cloud Run] --> [Workflows]",
+      "animation_sequence": [
+        "Cloud Run",
+        "Firestore",
+        "Workflows"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Security & Observability",
+      "type": "flowchart",
+      "dsl": "Secret Manager -- \"Provides\" --> [Cloud Run]\n[Cloud Run] --> \"Logs to\" --> [[Cloud Logging]]\n[Cloud Run] --> \"Traces to\" --> [[Cloud Trace]]",
+      "animation_sequence": [
+        "Secret Manager",
+        "Cloud Run",
+        "Cloud Logging",
+        "Cloud Trace"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "GCP Serverless: Real-time Analytics Pipeline",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#GoogleCloud",
+    "#Interview",
+    "#Serverless"
+  ],
+  "domain": "GCP"
+}

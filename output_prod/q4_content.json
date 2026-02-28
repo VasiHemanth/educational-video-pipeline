@@ -1,0 +1,133 @@
+{
+  "question_number": 4,
+  "topic": "Long Running Agentic Workflows",
+  "question_text": "How would you design a highly available and fault-tolerant architecture for a Generative AI agent that needs to maintain conversational context over several days to assist customers with complex multi-step processes?",
+  "hook_text": "Building an AI agent that remembers your entire conversation for days? Here's the architecture that makes it possible!",
+  "cta_text": "Bookmark this for your next Generative AI project!",
+  "tech_terms": [
+    "Google Cloud Run",
+    "Cloud Functions",
+    "Pub/Sub",
+    "Firestore",
+    "Vertex AI Agent Builder",
+    "LangChain",
+    "OpenTelemetry",
+    "Cloud Monitoring",
+    "Cloud Logging",
+    "BigQuery",
+    "Google Kubernetes Engine (GKE)"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Persistent Context and Memory",
+      "text": "Store agent state and conversational history in a scalable NoSQL database like Firestore. Use a vector database for long-term memory retrieval.",
+      "keywords": {
+        "tech_terms": [
+          "Firestore",
+          "Vector database"
+        ],
+        "action_verbs": [
+          "Store"
+        ],
+        "concepts": [
+          "conversational history",
+          "long-term memory"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Event-Driven Orchestration",
+      "text": "Decouple agent steps using Pub/Sub for asynchronous communication. Orchestrate complex workflows with Cloud Workflows or custom serverless functions.",
+      "keywords": {
+        "tech_terms": [
+          "Pub/Sub",
+          "Cloud Workflows",
+          "Cloud Functions"
+        ],
+        "action_verbs": [
+          "Decouple",
+          "Orchestrate"
+        ],
+        "concepts": [
+          "asynchronous communication",
+          "complex workflows"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Monitoring and Resilience",
+      "text": "Implement comprehensive logging and tracing with Cloud Logging and OpenTelemetry. Use dead-letter queues and retry mechanisms for fault tolerance.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Logging",
+          "OpenTelemetry"
+        ],
+        "action_verbs": [
+          "Implement"
+        ],
+        "concepts": [
+          "fault tolerance",
+          "retry mechanisms"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Agent Memory Architecture",
+      "type": "flowchart",
+      "dsl": "(Agent) -> [[Firestore]], (Agent) -> [[Vector database]]",
+      "animation_sequence": [
+        "Agent",
+        "Firestore",
+        "Vector database"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Agent Workflow Orchestration",
+      "type": "flowchart",
+      "dsl": "(User) -> [API Gateway] -> [Cloud Function] -> (Pub/Sub) -> [Cloud Run Agent Service]",
+      "animation_sequence": [
+        "User",
+        "API Gateway",
+        "Cloud Function",
+        "Pub/Sub",
+        "Cloud Run Agent Service"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Observability and Error Handling",
+      "type": "flowchart",
+      "dsl": "(Agent) -> [Cloud Logging] -> [[BigQuery]], (Agent) --> \"Error\" [Dead Letter Queue]",
+      "animation_sequence": [
+        "Agent",
+        "Cloud Logging",
+        "BigQuery",
+        "Dead Letter Queue"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "voiceover_script": "To design a highly available and fault-tolerant Generative AI agent, first, ensure persistent context and memory. Store agent state and conversational history in a scalable NoSQL database like Firestore, and utilize a vector database for long-term memory retrieval. Next, implement an event-driven orchestration layer. Decouple agent steps using Pub/Sub for asynchronous communication, and orchestrate complex workflows with Cloud Workflows or custom serverless functions. Finally, establish robust monitoring and resilience. Implement comprehensive logging and tracing with Cloud Logging and OpenTelemetry, and incorporate dead-letter queues and retry mechanisms for fault tolerance.",
+  "title_card_text": "Long-Running AI Agent Architectures",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#GoogleCloud",
+    "#Interview",
+    "#GenerativeAI",
+    "#AIagents"
+  ],
+  "domain": "Generative AI"
+}

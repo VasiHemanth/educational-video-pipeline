@@ -1,0 +1,158 @@
+{
+  "question_number": 3001,
+  "topic": "Highly scalable dynamic RAG system",
+  "question_text": "How would you design a highly scalable and dynamic RAG system on Google Cloud to handle millions of queries per day and continuously ingest new data?",
+  "hook_text": "Building a RAG system that handles millions of queries daily and stays real-time is tough. Here's how Google Cloud's latest Vertex AI services make it possible.",
+  "cta_text": "Scale your AI. Follow for advanced Cloud Architect strategies.",
+  "tech_terms": [
+    "Vertex AI",
+    "RAG Engine",
+    "Vector Search",
+    "Gemini 1.5",
+    "Google Cloud Storage",
+    "Eventarc",
+    "Cloud Run",
+    "Google ADK",
+    "Pub/Sub",
+    "Document AI",
+    "text-embedding-004",
+    "Multimodal RAG",
+    "In-line citations",
+    "High-Fidelity Mode"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Real-time Data Ingestion",
+      "text": "Cloud Storage, Eventarc, Cloud Run power dynamic RAG updates.",
+      "spoken_audio": "Achieve real-time freshness by triggering ingestion with Eventarc from new data in Cloud Storage. Cloud Run processes documents, initiating Vertex AI RAG Engine for efficient indexing.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Storage",
+          "Eventarc",
+          "Cloud Run",
+          "Vertex AI RAG Engine"
+        ],
+        "action_verbs": [
+          "power",
+          "triggering",
+          "processes",
+          "initiating"
+        ],
+        "concepts": [
+          "dynamic RAG updates",
+          "real-time freshness",
+          "efficient indexing"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Scalable Retrieval & Generation",
+      "text": "Vector Search, Gemini 1.5, Cloud Run for massive queries.",
+      "spoken_audio": "Handle massive query loads with Vertex AI Vector Search for ultra-low latency retrieval. Gemini 1.5 powers grounded generation, all orchestrated by scalable Cloud Run services.",
+      "keywords": {
+        "tech_terms": [
+          "Vector Search",
+          "Gemini 1.5",
+          "Cloud Run"
+        ],
+        "action_verbs": [
+          "Handle",
+          "powers",
+          "orchestrated"
+        ],
+        "concepts": [
+          "massive queries",
+          "ultra-low latency",
+          "grounded generation"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Agentic Grounding, Multimodal RAG",
+      "text": "Google ADK, Multimodal, High-Fidelity reduce hallucinations.",
+      "spoken_audio": "Leverage Google ADK for agentic orchestration, integrating dynamic retrieval. Implement multimodal RAG with Gemini, and use High-Fidelity mode for critical, hallucination-sensitive use cases.",
+      "keywords": {
+        "tech_terms": [
+          "Google ADK",
+          "Multimodal RAG",
+          "Gemini",
+          "High-Fidelity mode"
+        ],
+        "action_verbs": [
+          "Leverage",
+          "integrating",
+          "Implement",
+          "use",
+          "reduce"
+        ],
+        "concepts": [
+          "agentic orchestration",
+          "dynamic retrieval",
+          "hallucinations"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Dynamic Ingestion Flow",
+      "type": "flowchart",
+      "dsl": "(Data Source) --> (Google Cloud Storage) --> [Eventarc Trigger] --> [Cloud Run Ingester] --> [Vertex AI RAG Engine] --> [[Vector Search / RAG Corpus]]",
+      "animation_sequence": [
+        "Data Source",
+        "Google Cloud Storage",
+        "Eventarc Trigger",
+        "Cloud Run Ingester",
+        "Vertex AI RAG Engine",
+        "Vector Search / RAG Corpus"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Scalable Query Path",
+      "type": "flowchart",
+      "dsl": "(User Query) --> [Cloud Run Backend] --> [Vertex AI Vector Search] --> [Gemini 1.5] --> (Grounded Response)",
+      "animation_sequence": [
+        "User Query",
+        "Cloud Run Backend",
+        "Vertex AI Vector Search",
+        "Gemini 1.5",
+        "Grounded Response"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Advanced RAG Capabilities",
+      "type": "flowchart",
+      "dsl": "[Cloud Run Backend] --> [Google ADK Agent] --> {Grounding Score > Threshold?} --> [Vertex AI RAG Engine/Vector Search] --> Gemini 1.5",
+      "animation_sequence": [
+        "Cloud Run Backend",
+        "Google ADK Agent",
+        "Grounding Score > Threshold?",
+        "Vertex AI RAG Engine/Vector Search",
+        "Gemini 1.5"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "Architecting Dynamic RAG on GCP",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#GoogleCloud",
+    "#Interview",
+    "#RAG",
+    "#VertexAI",
+    "#GenerativeAI"
+  ],
+  "domain": "Generative AI"
+}

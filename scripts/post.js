@@ -73,7 +73,7 @@ function getNewToken(oAuth2Client, resolve, reject) {
 /**
  * Uploads a video to YouTube Shorts using the Data API v3
  */
-async function uploadToYouTubeShorts(auth, filePath, metadata) {
+async function uploadToYouTubeShorts(auth, filePath, metadata, thumbnailPath = null) {
     const youtube = google.youtube({ version: 'v3', auth });
 
     console.log('   📤 Uploading to YouTube Shorts...');
@@ -105,8 +105,26 @@ async function uploadToYouTubeShorts(auth, filePath, metadata) {
             }
         );
 
-        const shortUrl = `https://youtube.com/shorts/${res.data.id}`;
+        const videoId = res.data.id;
+        const shortUrl = `https://youtube.com/shorts/${videoId}`;
         console.log(`   ✅ YouTube Upload Complete! URL: ${shortUrl}`);
+
+        // Try to set thumbnail if provided
+        if (thumbnailPath && fs.existsSync(thumbnailPath)) {
+            console.log('   🖼️  Setting YouTube custom thumbnail...');
+            try {
+                await youtube.thumbnails.set({
+                    videoId: videoId,
+                    media: {
+                        body: fs.createReadStream(thumbnailPath),
+                    },
+                });
+                console.log('   ✅ YouTube Thumbnail set!');
+            } catch (thumbErr) {
+                console.warn('   ⚠️  YouTube Thumbnail set failed (Shorts often restrict custom thumbnails via API):', thumbErr.message);
+            }
+        }
+
         return { status: 'SUCCESS', url: shortUrl };
     } catch (err) {
         console.error('   ❌ YouTube Upload Failed:');
@@ -118,7 +136,7 @@ async function uploadToYouTubeShorts(auth, filePath, metadata) {
 /**
  * Meta/Facebook Video API integration
  */
-async function uploadToFacebook(filePath, metadata) {
+async function uploadToFacebook(filePath, metadata, thumbnailPath = null) {
     const PAGE_ID = process.env.FB_PAGE_ID;
     const USER_TOKEN = process.env.META_ACCESS_TOKEN;
 
@@ -145,6 +163,10 @@ async function uploadToFacebook(filePath, metadata) {
         form.append('access_token', TOKEN);
         form.append('description', metadata.instagram?.caption || 'New architecture video!');
         form.append('source', fs.createReadStream(filePath));
+        
+        if (thumbnailPath && fs.existsSync(thumbnailPath)) {
+            form.append('thumb', fs.createReadStream(thumbnailPath));
+        }
 
         // Start upload
         const response = await axios.post(`https://graph.facebook.com/v21.0/${PAGE_ID}/videos`, form, {
@@ -165,7 +187,7 @@ async function uploadToFacebook(filePath, metadata) {
 /**
  * Meta/Instagram Graph API integration (Reels)
  */
-async function uploadToInstagram(videoUrl, metadata) {
+async function uploadToInstagram(videoUrl, metadata, thumbUrl = null) {
     const IG_ACCOUNT_ID = process.env.IG_ACCOUNT_ID;
     const TOKEN = process.env.META_ACCESS_TOKEN;
 
@@ -184,12 +206,20 @@ async function uploadToInstagram(videoUrl, metadata) {
     console.log('   📤 Initiating Instagram Reel Upload...');
     try {
         // Step 1: Create media container
-        // Build raw URL string to guarantee parameter delivery to Facebook bounds
-        const encodedVideo = encodeURIComponent(videoUrl);
-        const encodedCaption = encodeURIComponent(metadata.instagram?.caption || 'New architecture reel!');
-        const createUrl = `https://graph.facebook.com/v21.0/${IG_ACCOUNT_ID}/media?access_token=${TOKEN}&media_type=REELS&video_url=${encodedVideo}&caption=${encodedCaption}`;
+        const params = {
+            access_token: TOKEN,
+            media_type: 'REELS',
+            video_url: videoUrl,
+            caption: metadata.instagram?.caption || 'New architecture reel!',
+        };
+        
+        if (thumbUrl) {
+            params.cover_url = thumbUrl;
+        }
 
-        const containerRes = await axios.post(createUrl);
+        const createUrl = `https://graph.facebook.com/v21.0/${IG_ACCOUNT_ID}/media`;
+        const containerRes = await axios.post(createUrl, null, { params });
+        
         const containerId = containerRes.data.id;
         console.log(`   ⏳ Container created (${containerId}). Polling for readiness...`);
 
@@ -221,9 +251,9 @@ async function uploadToInstagram(videoUrl, metadata) {
 }
 
 /**
- * Cloudinary API integration (Temporary Video Hosting for IG)
+ * Cloudinary API integration (Temporary Hosting for IG)
  */
-async function uploadToCloudinary(filePath) {
+async function uploadToCloudinary(filePath, isImage = false) {
     const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
     const API_KEY = process.env.CLOUDINARY_API_KEY;
     const API_SECRET = process.env.CLOUDINARY_API_SECRET;
@@ -233,7 +263,9 @@ async function uploadToCloudinary(filePath) {
         return null;
     }
 
-    console.log('   📤 Uploading meta video to Cloudinary to generate public URL for Instagram...');
+    const type = isImage ? 'image' : 'video';
+    console.log(`   📤 Uploading ${type} to Cloudinary to generate public URL for Instagram...`);
+    
     cloudinary.config({
         cloud_name: CLOUD_NAME,
         api_key: API_KEY,
@@ -242,8 +274,8 @@ async function uploadToCloudinary(filePath) {
 
     try {
         const uploadResult = await cloudinary.uploader.upload(filePath, {
-            resource_type: 'video',
-            public_id: `gcp_reel_${Date.now()}`,
+            resource_type: isImage ? 'image' : 'video',
+            public_id: `gcp_${isImage ? 'thumb' : 'reel'}_${Date.now()}`,
             overwrite: true,
             eager: [],
             transformation: []
@@ -252,7 +284,7 @@ async function uploadToCloudinary(filePath) {
         console.log(`   ✅ Cloudinary Upload Complete! URL: ${uploadResult.secure_url}`);
         return uploadResult.secure_url;
     } catch (error) {
-        console.error('   ❌ Cloudinary Upload Failed:', error.message || error);
+        console.error(`   ❌ Cloudinary ${type} Upload Failed:`, error.message || error);
         return null;
     }
 }
@@ -261,7 +293,7 @@ async function uploadToCloudinary(filePath) {
 /**
  * Master dispatcher
  */
-async function postToAllPlatforms(videoId, renderedVideos, metadata) {
+async function postToAllPlatforms(videoId, renderedVideos, metadata, thumbnailPath = null) {
     console.log(`\n🚀 Commencing upload for Video ID: ${videoId}`);
     const platforms = Object.keys(renderedVideos);
 
@@ -272,7 +304,7 @@ async function postToAllPlatforms(videoId, renderedVideos, metadata) {
         try {
             const auth = await authorize();
             if (auth) {
-                const result = await uploadToYouTubeShorts(auth, renderedVideos['youtube'], metadata);
+                const result = await uploadToYouTubeShorts(auth, renderedVideos['youtube'], metadata, thumbnailPath);
                 await trackPosting(videoId, 'YouTube', result.status, result.url);
             } else {
                 console.log('   ⏭️  Skipping YouTube (Missing Credentials)');
@@ -290,14 +322,16 @@ async function postToAllPlatforms(videoId, renderedVideos, metadata) {
         const metaVideoPath = renderedVideos['meta'];
 
         // Facebook
-        const fbResult = await uploadToFacebook(metaVideoPath, metadata);
+        const fbResult = await uploadToFacebook(metaVideoPath, metadata, thumbnailPath);
         await trackPosting(videoId, 'Facebook', fbResult.status, fbResult.url);
 
         // Instagram
         // We now upload the file to Cloudinary first because the Graph API requires a public URL.
-        const cloudUrl = await uploadToCloudinary(metaVideoPath);
+        const cloudUrl = await uploadToCloudinary(metaVideoPath, false);
+        const cloudThumbUrl = thumbnailPath ? await uploadToCloudinary(thumbnailPath, true) : null;
+        
         if (cloudUrl) {
-            const igResult = await uploadToInstagram(cloudUrl, metadata);
+            const igResult = await uploadToInstagram(cloudUrl, metadata, cloudThumbUrl);
             await trackPosting(videoId, 'Instagram', igResult.status, igResult.url);
         } else {
             console.log('   ⏭️  Skipping Instagram (Requires a public video URL, Cloudinary upload failed or missing keys)');

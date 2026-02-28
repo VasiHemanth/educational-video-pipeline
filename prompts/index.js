@@ -27,8 +27,8 @@ Return JSON with this exact structure:
     {
       "id": 1,
       "title": "Short Title",
-      "text": "Extremely concise on-screen text. Maximum 10-15 words total. Punchy, readable, punchy.",
-      "spoken_audio": "Detailed spoken explanation of this section (20-30 words). Natural speech, no bullet points. This will be read by TTS.",
+      "text": "3 to 5 lines explaining the architecture block diagram deeply. Maximum 15-20 words total. Must be technical.", 
+      "spoken_audio": "A punchy technical explanation for narration, 10-20 words max.", 
       "keywords": {
         "tech_terms": ["exact words from 'text' to highlight"],
         "action_verbs": ["exact words from 'text' to highlight"],
@@ -40,37 +40,34 @@ Return JSON with this exact structure:
     {
       "id": 1,
       "section_id": 1,
-      "title": "ETL Pipeline Overview",
+      "title": "Architecture Overview",
       "type": "flowchart",
-      "dsl": "(Source) -> [Transform] -> [[Destination]]",
-      "animation_sequence": ["node1_id", "arrow", "node2_id"],
+      "dsl": "(Source) -> [Process] -> [[Storage]]",
+      "animation_sequence": ["node1", "arrow", "node2"],
       "direction": "LR"
     }
   ],
-  "title_card_text": "Short catchy subtitle for the intro card (max 8 words)",
-  "hashtags": ["#GCP", "#CloudArchitect", "#GoogleCloud", "#Interview"]
+  "title_card_text": "Catchy subtitle (max 6 words)",
+  "hashtags": ["#GCP", "#CloudArchitect", "#Interview"]
 }
 
-DIAGRAM DSL RULES (Excalidraw-flowchart syntax):
-- [Label]     = rectangle (process/service)
-- {Label?}    = diamond (decision)
-- (Label)     = ellipse (start/end)
-- [[Label]]   = database/storage
-- ->          = solid arrow
-- --> "label" = labeled dashed arrow
-- @direction LR  = left-to-right layout
+DIAGRAM DSL RULES:
+- [Label]     = rectangle
+- {Label?}    = diamond
+- (Label)     = ellipse
+- [[Label]]   = database
+- ->          = arrow
+- @direction LR|TB
 
 KEYWORD RULES:
-- tech_terms: exact service/tech names as they appear in the 'text' property
-- action_verbs: technical verbs from the 'text' property
-- concepts: architectural concepts from the 'text' property
+- highlight exact words from 'text'
 
 CRITICAL CONSTRAINTS:
-1. Generate EXACTLY 2-3 answer sections (no more!).
-2. 'text' MUST BE ULTRA CONCISE. Mobile viewers will read it fast. Maximum 10-15 words.
-3. 'spoken_audio' provides the detailed explanation that the narrator says while 'text' is on screen.
+1. Generate EXACTLY 2-3 answer sections.
+2. 'spoken_audio' MUST BE 10-20 words.
+3. 'text' (on-screen summary) MUST BE 15-20 words total, spread across 3-5 short lines.
 4. Each section needs 1 diagram.
-5. DO NOT USE ANY MARKDOWN FORMATTING (like **bold** or *italics*) in the text strings. Just plain text.
+5. NO MARKDOWN. Plain text only.
 
 Topic-specific guidance for "${topic}":
   - Be precise about ${domain}-specific APIs, configs, and patterns
@@ -145,7 +142,7 @@ NODE SHAPES:
   A[[Label]]   = subroutine
 
 STYLE RULES:
-1. MUST use "flowchart TB" (vertical layout) IF there are more than 3 nodes in the diagram. If the diagram has 3 or fewer nodes, MUST use "flowchart LR" (horizontal layout).
+1. Use "flowchart LR" (horizontal) for 3 or fewer nodes. Use "flowchart TB" (vertical) for more than 3 nodes — portrait canvas has ample vertical space.
 2. Keep labels INCREDIBLY SHORT — strictly 1-2 words max per node! They must be massive and readable on a mobile screen.
 3. Service names: use official short forms (Pub/Sub, Lambda, S3)
 4. Use labeled arrows for data flow descriptions ONLY if absolutely necessary, kept to 1 word: -->|label|
@@ -272,7 +269,7 @@ Return ONLY a valid JSON object matching this schema:
 }
 
 RULES:
-1. "direction": MUST be "LR" for 3 or fewer nodes, UNLESS any node label is more than 2 words long, in which case it MUST be "TB". If more than 3 nodes, it MUST be "TB".
+1. "direction": Use "LR" for 3 or fewer nodes. Use "TB" for more than 3 nodes — the portrait canvas (1920px tall) fits tall diagrams much better than wide ones.
 2. "label" MUST BE INCREDIBLY SHORT — strictly 1-2 words max per node!
 3. Do not include markdown fences (like \`\`\`json). Just the raw JSON object.
 `;

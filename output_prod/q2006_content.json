@@ -1,0 +1,148 @@
+{
+  "question_number": 2006,
+  "topic": "Serverless Architecture on GCP",
+  "question_text": "How would you design a highly scalable and cost-effective serverless architecture on GCP to power a Generative AI application using the Retrieval Augmented Generation (RAG) pattern?",
+  "hook_text": "Build a RAG system on Google Cloud that scales automatically and keeps costs low!",
+  "cta_text": "Follow for daily Cloud Architect tips and stay ahead!",
+  "tech_terms": [
+    "Cloud Run",
+    "Vertex AI",
+    "Vector Search",
+    "Cloud Storage",
+    "Cloud Functions",
+    "Dataflow",
+    "Gemini",
+    "Cloud Build",
+    "Cloud Monitoring",
+    "Cloud Logging"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Data Ingestion & Embeddings",
+      "text": "Ingest data, create embeddings, store in Vertex AI Vector Search.",
+      "spoken_audio": "Raw data lands in Cloud Storage. Cloud Functions or Dataflow generate embeddings with Vertex AI, then store them efficiently in Vertex AI Vector Search for retrieval.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Storage",
+          "Cloud Functions",
+          "Dataflow",
+          "Vertex AI",
+          "Vector Search"
+        ],
+        "action_verbs": [
+          "Ingest",
+          "create",
+          "store"
+        ],
+        "concepts": [
+          "embeddings"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Query Processing with LLM",
+      "text": "Cloud Run service queries Vector Search, prompts Vertex AI Gemini.",
+      "spoken_audio": "User requests are handled by a Cloud Run service. It retrieves relevant context from Vector Search and constructs a prompt for the Vertex AI Gemini model for accurate responses.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Run",
+          "Vector Search",
+          "Vertex AI",
+          "Gemini"
+        ],
+        "action_verbs": [
+          "queries",
+          "prompts"
+        ],
+        "concepts": [
+          "context",
+          "accurate responses"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Deployment & Observability",
+      "text": "Deploy with Cloud Build, monitor with Cloud Monitoring & Logging.",
+      "spoken_audio": "Automate deployment via Cloud Build. Cloud Monitoring provides performance metrics and alerts, while Cloud Logging captures detailed logs for robust debugging and observability.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Build",
+          "Cloud Monitoring",
+          "Cloud Logging"
+        ],
+        "action_verbs": [
+          "Deploy",
+          "monitor"
+        ],
+        "concepts": [
+          "observability",
+          "performance metrics",
+          "alerts"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Data Ingestion Pipeline",
+      "type": "flowchart",
+      "dsl": "(Raw Data) -> [[Cloud Storage]] -> [Cloud Functions/Dataflow] --> \"Create Embeddings\" [Vertex AI] --> \"Store\" [[Vertex AI Vector Search]]",
+      "animation_sequence": [
+        "Raw Data",
+        "Cloud Storage",
+        "Cloud Functions/Dataflow",
+        "Vertex AI",
+        "Vertex AI Vector Search"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Query Flow with RAG",
+      "type": "flowchart",
+      "dsl": "(User Request) -> [Cloud Run Service] --> \"Retrieve Context\" [[Vertex AI Vector Search]] --> \"Augment Prompt\" [Vertex AI Gemini] -> (Response)",
+      "animation_sequence": [
+        "User Request",
+        "Cloud Run Service",
+        "Vertex AI Vector Search",
+        "Vertex AI Gemini",
+        "Response"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Deployment & Monitoring",
+      "type": "flowchart",
+      "dsl": "(Code Commit) -> [Cloud Build] --> \"Deploy\" [Cloud Run/Functions] \n [Cloud Run/Functions] --> (Logs) \n (Logs) -> [[Cloud Logging]] \n [Cloud Run/Functions] --> (Metrics) \n (Metrics) -> [[Cloud Monitoring]]",
+      "animation_sequence": [
+        "Code Commit",
+        "Cloud Build",
+        "Cloud Run/Functions",
+        "Logs",
+        "Cloud Logging",
+        "Metrics",
+        "Cloud Monitoring"
+      ],
+      "direction": "TB"
+    }
+  ],
+  "title_card_text": "GCP Serverless RAG: Scalable AI",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#GoogleCloud",
+    "#Interview",
+    "#Serverless",
+    "#RAG",
+    "#GenerativeAI"
+  ],
+  "domain": "GCP"
+}

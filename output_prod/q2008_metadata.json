@@ -1,0 +1,37 @@
+{
+  "youtube": {
+    "title": "GCP Interview Q2008: Real-time Analytics: Event-Driven Serverless Pipeline #Shorts",
+    "description": "Dive into designing a highly scalable, event-driven data processing pipeline on GCP for real-time analytics, leveraging serverless components. Data ingress is managed by Pub/Sub, acting as a robust message broker, with Cloud Functions triggering on new messages to process initial events or Cloud Run instances handling more complex data transformations. Workflows orchestrate multi-step processes, persisting state in Firestore, while processed data lands in Cloud Storage for long-term retention and further analysis. Sensitive configurations are securely fetched from Secret Manager, and comprehensive monitoring with Cloud Logging and Cloud Trace ensures operational visibility, all governed by fine-grained IAM policies. This architecture ensures seamless, decoupled interactions between services, allowing independent scaling and resilience essential for real-time demands. Master GCP serverless architecture with this in-depth guide!",
+    "tags": [
+      "GCP",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "Serverless",
+      "EventDriven",
+      "DataPipeline",
+      "RealtimeAnalytics",
+      "CloudRun",
+      "CloudFunctions",
+      "PubSub",
+      "Firestore",
+      "Workflows",
+      "CloudStorage",
+      "Observability",
+      "Security",
+      "GoogleCloud"
+    ],
+    "category": "Education",
+    "playlist": "GCP Daily Interview Questions"
+  },
+  "instagram": {
+    "caption": "Unlock the secrets to building ultra-scalable, real-time data pipelines on GCP! 🚀\n\nDiscover how to combine Cloud Run, Cloud Functions, and Pub/Sub for seamless event ingestion and processing. Orchestrate complex workflows with Workflows and ensure data persistence with Firestore and Cloud Storage. Learn essential best practices for security (Secret Manager) and observability (Cloud Logging, Cloud Trace) in your serverless architecture. Design resilient, high-performance systems that scale effortlessly to meet any demand.\n\n#GCP #CloudArchitecture #Serverless #DataEngineering #RealtimeAnalytics #EventDriven #CloudRun #CloudFunctions #PubSub #Firestore #Workflows #CloudStorage #SystemDesign #TechInterview #GoogleCloud #DevOps #CloudComputing #BigData #Scalability",
+    "cover_text": "GCP Real-time Analytics Pipeline"
+  },
+  "tiktok": {
+    "caption": "Build epic real-time data pipelines on GCP! 🚀 Master Cloud Run, Pub/Sub & more for scalable, event-driven analytics. Dive in now! #GCP #Serverless #DataPipeline",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "question_number": 14,
+  "topic": "Cloud Dataflow and BigQuery ETL pipeline",
+  "question_text": "Imagine you need to build a real-time ETL pipeline to process high-volume streaming data from IoT devices and load it into BigQuery for analytics. How would you design and optimize this pipeline for performance, cost-efficiency, and reliability on GCP?",
+  "hook_text": "Building real-time ETL pipelines on GCP? Master Dataflow and BigQuery for massive scale!",
+  "cta_text": "Follow for advanced GCP architecture insights!",
+  "tech_terms": [
+    "Cloud Dataflow",
+    "Apache Beam",
+    "BigQuery",
+    "Pub/Sub",
+    "Cloud Composer",
+    "BigQuery Storage Write API",
+    "Streaming Engine",
+    "Dataflow Shuffle",
+    "Flex Templates",
+    "Cloud Monitoring"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Real-time Ingestion",
+      "text": "Ingest high-volume streaming data using Pub/Sub.\nCloud Dataflow processes with Apache Beam.\nScalable, fault-tolerant transformations.\nUnified batch and stream processing.",
+      "spoken_audio": "High-volume data enters Pub/Sub, then Cloud Dataflow transforms it using Apache Beam, enabling scalable, fault-tolerant processing.",
+      "keywords": {
+        "tech_terms": [
+          "Pub/Sub",
+          "Cloud Dataflow",
+          "Apache Beam"
+        ],
+        "action_verbs": [
+          "Ingest",
+          "processes",
+          "transforms"
+        ],
+        "concepts": [
+          "high-volume streaming data",
+          "scalable",
+          "fault-tolerant transformations",
+          "Unified batch and stream processing"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Dataflow Optimization",
+      "text": "Optimize Dataflow with Streaming Engine, Shuffle.\nMinimize latency, improve worker efficiency.\nUtilize Flex Templates for deployment.\nBreak fusion with GroupByKey.",
+      "spoken_audio": "Optimize Dataflow with Streaming Engine and Shuffle. Use Flex Templates for robust deployments and GroupByKey to break fusion.",
+      "keywords": {
+        "tech_terms": [
+          "Dataflow",
+          "Streaming Engine",
+          "Shuffle",
+          "Flex Templates",
+          "GroupByKey"
+        ],
+        "action_verbs": [
+          "Optimize",
+          "Minimize",
+          "improve",
+          "Utilize",
+          "Break"
+        ],
+        "concepts": [
+          "latency",
+          "worker efficiency",
+          "deployment",
+          "fusion"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "BigQuery Loading",
+      "text": "Load transformed data into BigQuery.\nUse Storage Write API for high throughput.\nPartition and cluster tables.\nCost-efficient, fast analytics.",
+      "spoken_audio": "Load data into BigQuery using the Storage Write API. Partition and cluster tables for cost-efficient, fast analytics.",
+      "keywords": {
+        "tech_terms": [
+          "BigQuery",
+          "Storage Write API",
+          "Partition",
+          "cluster"
+        ],
+        "action_verbs": [
+          "Load",
+          "Use"
+        ],
+        "concepts": [
+          "transformed data",
+          "high throughput",
+          "tables",
+          "Cost-efficient",
+          "fast analytics"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Data Ingestion Flow",
+      "type": "flowchart",
+      "dsl": "(IoT Device) -> (Cloud Pub/Sub) -> [Cloud Dataflow (Apache Beam)]",
+      "animation_sequence": [
+        "IoT Device",
+        "Cloud Pub/Sub",
+        "Cloud Dataflow (Apache Beam)"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Dataflow Internal Optimization",
+      "type": "flowchart",
+      "dsl": "[Cloud Dataflow] -- Streaming Engine --> [Dataflow Shuffle] --> [Beam Transformations]",
+      "animation_sequence": [
+        "Cloud Dataflow",
+        "Streaming Engine",
+        "Dataflow Shuffle",
+        "Beam Transformations"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "BigQuery Loading Strategy",
+      "type": "flowchart",
+      "dsl": "[Beam Transformations] --> [[BigQuery (Storage Write API)]]",
+      "animation_sequence": [
+        "Beam Transformations",
+        "BigQuery (Storage Write API)"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "Scalable ETL: Dataflow & BigQuery",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#Interview"
+  ],
+  "domain": "GCP"
+}

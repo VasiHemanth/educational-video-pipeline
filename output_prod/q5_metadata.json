@@ -1,0 +1,42 @@
+{
+  "youtube": {
+    "title": "Generative AI Interview Q5: Architecting Enterprise AI at Scale #Shorts",
+    "description": "Architecting a large-scale Generative AI application for a Fortune 500 demands a robust framework. This video details an architectural workflow leveraging a Cloud AI Platform to host LLMs, integrated with proprietary data via RAG using Vector Databases. Kubernetes ensures scalable deployment, while MLOps pipelines automate continuous integration and delivery. Observability tools provide real-time performance insights, complemented by Model Monitoring for drift detection and Data Governance for compliance. Master these concepts to build and deploy ethically sound, high-performing Gen AI solutions. Learn more about enterprise AI architecture today!",
+    "tags": [
+      "Generative AI",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "LLM",
+      "RAG",
+      "VectorDatabase",
+      "Kubernetes",
+      "MLOps",
+      "Observability",
+      "DataGovernance",
+      "ModelMonitoring",
+      "CloudAI",
+      "EthicalAI",
+      "AIArchitecture",
+      "EnterpriseAI",
+      "MLEngineering",
+      "AIDeployment"
+    ],
+    "category": "Education",
+    "playlist": "Generative AI Daily Interview Questions"
+  },
+  "thumbnail": {
+    "headline": "Architecting Enterprise AI Now",
+    "subheadline": "From concept to production: High-performance, ethical Gen AI deployment."
+  },
+  "instagram": {
+    "caption": "Cracking the code to enterprise-grade Generative AI deployments? 💡\n\nLearn how to architect scalable, cost-efficient, and ethically compliant Gen AI solutions for Fortune 500 companies.\nDive deep into integrating LLMs with proprietary data using RAG and Vector Databases.\nExplore the roles of Kubernetes, MLOps, Observability, and Model Monitoring in production.\nEnsure data governance and ethical AI are at the core of your strategy.\n\n#GenerativeAI #LLM #RAG #VectorDatabase #Kubernetes #MLOps #Observability #DataGovernance #ModelMonitoring #CloudAI #EthicalAI #SystemDesign #AIArchitecture #EnterpriseAI #MLEngineering #AIDeployment #ScalableAI #AIEthics #TechInterview #SolutionsArchitect",
+    "cover_text": "Architecting Gen AI"
+  },
+  "tiktok": {
+    "caption": "How would YOU architect Gen AI for a Fortune 500? 🤔 We're talking LLMs, RAG, Kubernetes, MLOps & Ethical AI at scale! Share your insights! 👇 #GenAI #LLM #AI",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

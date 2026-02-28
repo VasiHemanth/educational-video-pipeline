@@ -1,0 +1,42 @@
+{
+  "youtube": {
+    "title": "Generative AI Interview Q7000: GCP RAG Design: 10K QPS, <100ms Latency! #Shorts",
+    "description": "Discover how to architect a hyper-scalable RAG system on Google Cloud. This technical deep-dive explores a robust workflow: Document AI ingests data from Cloud Storage, then Vertex AI Embeddings API vectors are indexed in Vertex AI Vector Search for hybrid retrieval, optimized with Context Caching. Cloud Run orchestrates queries via Vertex AI Agent Engine, leveraging Gemini for generative responses with sub-100ms latency. BigQuery aids metadata filtering, while VPC Service Controls, IAM, and Vertex AI Safety Filters ensure enterprise-grade security. Elevate your system design skills; watch now for a deep dive into high-performance RAG!",
+    "tags": [
+      "Generative AI",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "GoogleCloud",
+      "VertexAI",
+      "Gemini",
+      "VectorSearch",
+      "CloudRun",
+      "DocumentAI",
+      "Embeddings",
+      "LangChain",
+      "RAGSystem",
+      "LowLatency",
+      "HighThroughput",
+      "ScalableAI",
+      "EnterpriseAI",
+      "BigQuery"
+    ],
+    "category": "Education",
+    "playlist": "Generative AI Daily Interview Questions"
+  },
+  "thumbnail": {
+    "headline": "GCP RAG: 10,000 QPS!",
+    "subheadline": "Design ultra-low latency, high-accuracy RAG systems on Google Cloud."
+  },
+  "instagram": {
+    "caption": "Building RAG on GCP for 10,000 QPS? Here's how!\n\nDive into a technical deep-dive on designing a hyper-scalable Retrieval Augmented Generation (RAG) system on Google Cloud, engineered for peak performance.\nLearn how to integrate Vertex AI, Gemini, Vector Search, Cloud Run, and Document AI to achieve sub-100ms latency and high accuracy.\nUnderstand the intricate service interactions, from data ingestion via Cloud Storage to real-time query processing and secure generative AI responses.\nExplore critical components like Hybrid Search, Context Caching, and robust security with VPC Service Controls and Vertex AI Safety Filters.\n\n#GenerativeAI #CloudArchitect #SystemDesign #GoogleCloud #VertexAI #Gemini #VectorSearch #CloudRun #DocumentAI #Embeddings #LangChain #RAGSystem #AI #ScalableAI #EnterpriseAI #LowLatency #HighThroughput #BigQuery #CloudEngineering #AIDevelopment",
+    "cover_text": "GCP RAG: 10,000 QPS, <100ms!"
+  },
+  "tiktok": {
+    "caption": "Design a GCP RAG system for 10,000 QPS with sub-100ms latency! Learn Vertex AI, Gemini, Vector Search, Cloud Run. Master scalable AI. Watch now!",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

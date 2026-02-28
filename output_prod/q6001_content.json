@@ -1,0 +1,160 @@
+{
+  "question_number": 6001,
+  "topic": "Managing large scale Gen AI Project",
+  "question_text": "How would you architect a large-scale Generative AI project on Google Cloud, ensuring scalability, cost-efficiency, and robust MLOps practices?",
+  "hook_text": "Here is how to manage a large-scale Gen AI Project that processes millions of requests daily on Google Cloud.",
+  "cta_text": "Save this for your next Gen AI architecture interview!",
+  "tech_terms": [
+    "Google Cloud",
+    "Vertex AI",
+    "GKE",
+    "Vector Databases",
+    "Retrieval-Augmented Generation",
+    "LangChain",
+    "LLMOps",
+    "Kubernetes"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Data-Centric RAG Scaling",
+      "text": "Leverage Vector Databases with Retrieval-Augmented Generation for scalable, accurate, and hallucination-free LLM responses from proprietary data.",
+      "spoken_audio": "Implement a data-centric strategy using Vector Databases for Retrieval-Augmented Generation, effectively grounding LLMs with proprietary data, ensuring high scalability and dramatically reducing hallucinations.",
+      "keywords": {
+        "tech_terms": [
+          "Vector Databases",
+          "Retrieval-Augmented Generation",
+          "LLMs"
+        ],
+        "action_verbs": [
+          "Implement",
+          "grounding",
+          "ensuring",
+          "reducing"
+        ],
+        "concepts": [
+          "data-centric strategy",
+          "proprietary data",
+          "high scalability",
+          "hallucinations"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Cloud-Native GenAI Ops",
+      "text": "Utilize Google Kubernetes Engine (GKE) for elastic GPU orchestration, deploying modular microservices and an enterprise orchestration layer like LangChain.",
+      "spoken_audio": "On Google Cloud, utilize GKE for elastic GPU orchestration, deploying modular GenAI microservices. Integrate an enterprise orchestration layer, such as LangChain, to manage complex model interactions and workflows efficiently.",
+      "keywords": {
+        "tech_terms": [
+          "Google Cloud",
+          "GKE",
+          "GPU",
+          "microservices",
+          "LangChain"
+        ],
+        "action_verbs": [
+          "utilize",
+          "deploying",
+          "Integrate",
+          "manage"
+        ],
+        "concepts": [
+          "elastic GPU orchestration",
+          "modular GenAI microservices",
+          "enterprise orchestration layer",
+          "model interactions",
+          "workflows"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "LLMOps Monitoring & Evaluation",
+      "text": "Establish robust LLMOps with prompt versioning, automated evaluation, and drift detection to ensure reliable production GenAI applications.",
+      "spoken_audio": "Establish robust LLMOps practices including prompt versioning, automated model evaluation, and continuous drift detection. This ensures the reliability, performance, and cost-efficiency of production GenAI applications at scale.",
+      "keywords": {
+        "tech_terms": [
+          "LLMOps",
+          "prompt versioning",
+          "automated model evaluation",
+          "drift detection",
+          "GenAI"
+        ],
+        "action_verbs": [
+          "Establish",
+          "ensures"
+        ],
+        "concepts": [
+          "reliability",
+          "performance",
+          "cost-efficiency",
+          "production applications"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "RAG Flow with Vector DB",
+      "type": "flowchart",
+      "dsl": "(User Query) -> [Embed Query] -> [[Vector DB (Proprietary Data)]] -> [Retrieve Relevant Chunks] -> [Contextualize Prompt with Chunks] -> [LLM Call] -> (Response)",
+      "animation_sequence": [
+        "User Query",
+        "Embed Query",
+        "Vector DB (Proprietary Data)",
+        "Retrieve Relevant Chunks",
+        "Contextualize Prompt with Chunks",
+        "LLM Call",
+        "Response"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "GKE Microservices Architecture",
+      "type": "flowchart",
+      "dsl": "@direction LR\n(Incoming Requests) -> [API Gateway] -> [Kubernetes (GKE)]\n[Kubernetes (GKE)] -> [Microservice A] --> \"calls\" [LLM Endpoint (Vertex AI)]\n[Kubernetes (GKE)] -> [Microservice B]\n[Kubernetes (GKE)] -> [LangChain Orchestrator]",
+      "animation_sequence": [
+        "Incoming Requests",
+        "API Gateway",
+        "Kubernetes (GKE)",
+        "Microservice A",
+        "LLM Endpoint (Vertex AI)",
+        "Microservice B",
+        "LangChain Orchestrator"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "LLMOps Feedback Loop",
+      "type": "flowchart",
+      "dsl": "@direction LR\n(GenAI Application) -> [Monitoring & Observability] --> \"metrics, logs, traces\" [LLMOps Platform]\n[LLMOps Platform] -> [Automated Evaluation] --> \"alerts, reports\" {Drift Detected?}\n{Drift Detected?} --> \"Yes\" [Prompt/Model Retraining] --> \"new version\" [GenAI Application]\n{Drift Detected?} --> \"No\" [Continue Monitoring]",
+      "animation_sequence": [
+        "GenAI Application",
+        "Monitoring & Observability",
+        "LLMOps Platform",
+        "Automated Evaluation",
+        "Drift Detected?",
+        "Prompt/Model Retraining",
+        "Continue Monitoring"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "Scaling GenAI Projects: Architecting Success on GCP",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#GoogleCloud",
+    "#Interview",
+    "#GenAI",
+    "#LLMOps"
+  ],
+  "domain": "Generative AI"
+}

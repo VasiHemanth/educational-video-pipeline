@@ -1,0 +1,38 @@
+{
+  "youtube": {
+    "title": "Generative AI Interview Q3001: Dynamic RAG @ Scale w/ Vertex AI #Shorts",
+    "description": "Designing a highly scalable and dynamic RAG system on Google Cloud involves integrating Vertex AI's Vector Search for efficient retrieval of relevant information from a continuously updated knowledge base stored in Google Cloud Storage. Eventarc and Pub/Sub orchestrate real-time data ingestion, triggering Cloud Run services that utilize Document AI and text-embedding-004 to process and embed new data for Vector Search. Gemini 1.5, operating in High-Fidelity Mode, then leverages the retrieved context to generate precise responses with in-line citations, enabling Multimodal RAG capabilities. This architecture ensures rapid query processing for millions of users while maintaining data freshness and contextual accuracy. Master this complex architecture and accelerate your career. Learn more at [Your Channel Link/Resource].",
+    "tags": [
+      "Generative AI",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "GoogleCloud",
+      "RAGSystem",
+      "VertexAI",
+      "VectorSearch",
+      "Gemini1_5",
+      "CloudStorage",
+      "Eventarc",
+      "CloudRun",
+      "PubSub",
+      "DocumentAI",
+      "TextEmbedding",
+      "MultimodalRAG",
+      "HighFidelity",
+      "AIArchitecture"
+    ],
+    "category": "Education",
+    "playlist": "Generative AI Daily Interview Questions"
+  },
+  "instagram": {
+    "caption": "Ever wondered how to build a RAG system that handles millions of queries?\n\nUnlock the secrets to a highly scalable and dynamic RAG architecture on Google Cloud. Leverage Vertex AI, Vector Search, Gemini 1.5, and more for real-time data ingestion and lightning-fast responses. Go beyond basic RAG with multimodal capabilities and high-fidelity generation. Perfect for aspiring Cloud Architects and AI Engineers!\n\n#GenerativeAI #CloudArchitect #Interview #AI #Shorts #SystemDesign #GoogleCloud #RAGSystem #VertexAI #VectorSearch #Gemini1_5 #CloudStorage #Eventarc #CloudRun #PubSub #DocumentAI #TextEmbedding #MultimodalRAG #HighFidelity #AIArchitecture",
+    "cover_text": "Dynamic RAG @ Scale!"
+  },
+  "tiktok": {
+    "caption": "Build a RAG system for millions! Vertex AI, Vector Search, Gemini 1.5. Real-time data & multimodal RAG on GCP. Level up your AI architecture skills now!",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

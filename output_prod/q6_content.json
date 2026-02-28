@@ -1,0 +1,182 @@
+{
+  "question_number": 6,
+  "topic": "Large-Scale Foundation Model Training on Google Cloud (GPT-scale)",
+  "question_text": "How would you design a GPT-scale foundation model training pipeline on Google Cloud, optimizing for performance and cost efficiency?",
+  "hook_text": "Training a GPT-scale model? Google Cloud's AI Hypercomputer is your answer. Let's build a bleeding-edge pipeline.",
+  "cta_text": "Master large-scale AI training! Follow for more advanced Cloud Architect solutions.",
+  "tech_terms": [
+    "AI Hypercomputer",
+    "TPU",
+    "GPU",
+    "Trillium",
+    "Ironwood",
+    "NVIDIA Blackwell",
+    "RoCE",
+    "Jupiter Fabric",
+    "JAX",
+    "MaxText",
+    "PyTorch",
+    "DeepSpeed",
+    "FSDP",
+    "3D Parallelism",
+    "Multislice Training",
+    "Hyperdisk Exapools",
+    "Anywhere Cache",
+    "GCS FUSE",
+    "Checkpointing",
+    "GKE",
+    "Dynamic Workload Scheduler",
+    "MFU",
+    "Vertex AI TensorBoard",
+    "Cloud Profiler",
+    "XLA",
+    "ZeRO-3",
+    "Tensor Parallelism",
+    "Pipeline Parallelism",
+    "Google Cloud Storage",
+    "Kubernetes"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Compute & Network Foundation",
+      "text": "Leverage Trillium TPUs or Blackwell B200 GPUs. Interconnect with Titanium ML adapters and Jupiter Fabric for 3.2 Tbps RoCE network.",
+      "spoken_audio": "Trillium TPUs or Blackwell GPUs power it. Titanium ML and Jupiter Fabric ensure ultra-fast networking.",
+      "keywords": {
+        "tech_terms": [
+          "Trillium TPUs",
+          "Blackwell B200 GPUs",
+          "Titanium ML",
+          "Jupiter Fabric",
+          "RoCE"
+        ],
+        "action_verbs": [
+          "Leverage",
+          "Interconnect"
+        ],
+        "concepts": [
+          "network"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Scaling & Parallelism Strategy",
+      "text": "Employ JAX/MaxText for TPUs or PyTorch/DeepSpeed with FSDP for GPUs. Use 3D parallelism (tensor, pipeline, data) for extreme model sizes.",
+      "spoken_audio": "JAX, PyTorch, and DeepSpeed enable efficient FSDP and 3D parallelism for massive models.",
+      "keywords": {
+        "tech_terms": [
+          "JAX",
+          "MaxText",
+          "TPUs",
+          "PyTorch",
+          "DeepSpeed",
+          "FSDP",
+          "GPUs",
+          "3D parallelism",
+          "tensor",
+          "pipeline",
+          "data"
+        ],
+        "action_verbs": [
+          "Employ",
+          "Use"
+        ],
+        "concepts": [
+          "model sizes"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Data & Orchestration Layer",
+      "text": "Store data on Hyperdisk Exapools with Anywhere Cache for low latency. Orchestrate jobs on GKE (Spanner) and monitor MFU via Vertex AI.",
+      "spoken_audio": "Hyperdisk Exapools and Anywhere Cache optimize data. GKE orchestrates, Vertex AI monitors MFU.",
+      "keywords": {
+        "tech_terms": [
+          "Hyperdisk Exapools",
+          "Anywhere Cache",
+          "GKE",
+          "Spanner",
+          "MFU",
+          "Vertex AI"
+        ],
+        "action_verbs": [
+          "Store",
+          "Orchestrate",
+          "monitor"
+        ],
+        "concepts": [
+          "low latency"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "AI Hardware Stack",
+      "type": "flowchart",
+      "dsl": "[[Raw Data]] -> (GCS FUSE) -> (Anywhere Cache) -> [[Hyperdisk Exapools]] -> (Compute Nodes)\n(Compute Nodes) -> [Trillium TPUs | Blackwell GPUs] -> (Titanium ML Adapter) -> (Jupiter Fabric) -> [Trillium TPUs | Blackwell GPUs]",
+      "animation_sequence": [
+        "Raw Data",
+        "GCS FUSE",
+        "Anywhere Cache",
+        "Hyperdisk Exapools",
+        "Compute Nodes",
+        "Trillium TPUs | Blackwell GPUs",
+        "Titanium ML Adapter",
+        "Jupiter Fabric"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Model Parallelism Workflow",
+      "type": "flowchart",
+      "dsl": "(Input Model) -> {Sharding Strategy?} -> [JAX/MaxText or PyTorch/DeepSpeed]\n[JAX/MaxText or PyTorch/DeepSpeed] -> (FSDP) -> (Tensor Parallelism) -> (Pipeline Parallelism) -> [Distributed Training]",
+      "animation_sequence": [
+        "Input Model",
+        "Sharding Strategy?",
+        "JAX/MaxText or PyTorch/DeepSpeed",
+        "FSDP",
+        "Tensor Parallelism",
+        "Pipeline Parallelism",
+        "Distributed Training"
+      ],
+      "direction": "TB"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Data & Ops Flow",
+      "type": "flowchart",
+      "dsl": "[[Training Data]] --> (Anywhere Cache) --> [[Hyperdisk Exapools]]\n(User Trigger) --> [GKE Cluster (Spanner)]\n[GKE Cluster (Spanner)] --> (Dynamic Workload Scheduler) --> [Train Model]\n[Train Model] --> (MFU Monitoring) --> (Vertex AI TensorBoard) --> (Cloud Profiler)\n(Cloud Profiler) --> {Optimization Feedback?}",
+      "animation_sequence": [
+        "Training Data",
+        "Anywhere Cache",
+        "Hyperdisk Exapools",
+        "User Trigger",
+        "GKE Cluster (Spanner)",
+        "Dynamic Workload Scheduler",
+        "Train Model",
+        "MFU Monitoring",
+        "Vertex AI TensorBoard",
+        "Cloud Profiler",
+        "Optimization Feedback?"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "GPT-Scale AI Training on GCP",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#Interview",
+    "#GenerativeAI",
+    "#LLMTraining"
+  ],
+  "domain": "Generative AI"
+}

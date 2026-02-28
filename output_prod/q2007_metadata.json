@@ -1,0 +1,39 @@
+{
+  "youtube": {
+    "title": "GCP Interview Q2007: Serverless Image Processing Pipeline Explained! #Shorts",
+    "description": "Designing a serverless image processing pipeline on GCP starts with users uploading content to Cloud Storage, which triggers a Cloud Pub/Sub notification. This event activates a Cloud Function, responsible for processing the image, potentially using the Cloud Vision API for analysis, and storing metadata in Firestore. Cloud Monitoring and Cloud Logging provide crucial observability throughout the workflow, ensuring operational health. Finally, processed images are served efficiently via Cloud CDN. Master this architecture to build highly scalable, cost-effective, and robust image handling solutions on Google Cloud. Level up your GCP interview game!",
+    "tags": [
+      "GCP",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "Serverless",
+      "ImageProcessing",
+      "CloudStorage",
+      "CloudFunctions",
+      "CloudPubSub",
+      "CloudVisionAPI",
+      "Firestore",
+      "CloudMonitoring",
+      "CloudLogging",
+      "CloudCDN",
+      "GoogleCloud",
+      "Architecture",
+      "TechInterview",
+      "Scalability",
+      "DataPipeline"
+    ],
+    "category": "Education",
+    "playlist": "GCP Daily Interview Questions"
+  },
+  "instagram": {
+    "caption": "Unlock massive scalability and cost efficiency with GCP serverless image processing! 🚀\n\nLearn to design robust pipelines for user-uploaded content. Automate image transformations, content moderation, and data storage. Dive deep into Cloud Storage, Cloud Functions, Pub/Sub, Vision API, and Firestore interactions. Understand the full journey from upload to delivery. \n\n#GCP #Serverless #CloudArchitecture #ImageProcessing #SystemDesign #CloudFunctions #CloudVisionAPI #Firestore #Scalability #TechInterview #GoogleCloud #DevOps #Backend #DataPipeline #CloudSolutions #ModernArchitecture #GoogleCloudPlatform #CloudEngineer #Automation",
+    "cover_text": "Scale Image Processing on GCP"
+  },
+  "tiktok": {
+    "caption": "GCP serverless image processing pipeline from scratch! 🚀 Build scalable, automated workflows with Cloud Functions, Vision API & more. Master the stack! #GCP #Serverless #Cloud",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

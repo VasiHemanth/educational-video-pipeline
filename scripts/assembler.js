@@ -12,7 +12,7 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
-const { execSync } = require('child_process');
+const { execSync, spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const { createCanvas, loadImage } = require('canvas');
@@ -433,13 +433,13 @@ function drawOutroFrame(frameNum = 0) {
 // MAIN ASSEMBLER (REMOTION BASED)
 // ══════════════════════════════════════════════════════════════════════════════
 async function assembleVideoRemotion(content, diagrams, metadata, questionNum, config = {}) {
-  const { spawn, execSync } = require('child_process');
   const domainSlug = (content.domain || 'GCP').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
   const topicSlug = (content.topic || 'video').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
   const platformSuffix = config.platform ? `_${config.platform}` : '';
   const slug = `${domainSlug}_${topicSlug}${platformSuffix}`;
   const rawOutputPath = path.join(DIRS.video, `raw_q${questionNum}_${slug}.mp4`);
   const finalOutputPath = path.join(DIRS.video, `q${questionNum}_${slug}.mp4`);
+  const thumbnailPath = path.join(DIRS.thumbnails, `q${questionNum}_${slug}_thumbnail.png`);
 
   // Encode diagrams as base64 data URIs (bypasses Remotion's static file restrictions)
   const formattedDiagrams = (diagrams || []).map(d => {
@@ -483,7 +483,8 @@ async function assembleVideoRemotion(content, diagrams, metadata, questionNum, c
   const sfxEvents = [];
 
   for (const section of content.answer_sections || []) {
-    const rawText = (section.text || '').replace(/\*/g, '');
+    const textToMeasure = section.spoken_audio || section.text || '';
+    const rawText = textToMeasure.replace(/\*/g, '');
     const wordCount = rawText.split(/\s+/).filter(x => x.length > 0).length || 1;
 
     // Phase A (Text Entry)
@@ -511,9 +512,6 @@ async function assembleVideoRemotion(content, diagrams, metadata, questionNum, c
       phaseCFrames,
       phaseDFrames
     });
-
-    // SFX overlay disabled to prevent errors when SFX files don't exist
-    // Add custom SFX logic here when files are restored
 
     currentFrame += sectionDuration;
   }
@@ -549,104 +547,42 @@ async function assembleVideoRemotion(content, diagrams, metadata, questionNum, c
       rawOutputPath, `--props=${propsFile}`, '-y'
     ], { cwd: remotionDir, stdio: ['ignore', 'pipe', 'pipe'] });
 
-    let totalFrames = 0;
-    let lastPct = -1;
-
-    const printBar = (pct) => {
-      if (config.noProgress) return;
-      if (pct === lastPct) return;
-      lastPct = pct;
-      const filled = Math.round(pct / 5);
-      const empty = 20 - filled;
-      const bar = '▓'.repeat(filled) + '░'.repeat(empty);
-      process.stdout.write(`\r  Rendering [${bar}] ${pct}%  `);
-    };
-
     proc.stdout.on('data', (chunk) => {
       const text = chunk.toString();
-      // Parse "X/Y" frame progress from Remotion output
       const totalMatch = text.match(/(\d+)\/(\d+)/);
       if (totalMatch) {
         const done = parseInt(totalMatch[1]);
         const total = parseInt(totalMatch[2]);
-        if (total > 0) {
-          totalFrames = total;
-          printBar(Math.round((done / total) * 100));
+        if (total > 0 && !config.noProgress) {
+          const pct = Math.round((done / total) * 100);
+          const filled = Math.round(pct / 5);
+          const bar = '▓'.repeat(filled) + '░'.repeat(20 - filled);
+          process.stdout.write(`\r  Rendering [${bar}] ${pct}%  `);
         }
       }
-    });
-
-    proc.stderr.on('data', (chunk) => {
-      // Silently absorb stderr
     });
 
     proc.on('close', (code) => {
-      if (!config.noProgress) {
-        process.stdout.write('\r  Rendering [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%  \n');
-      }
+      if (!config.noProgress) process.stdout.write('\r  Rendering [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%  \n');
       if (code === 0) {
-        console.log(`\n✅ Raw video ready. Layering SFX with FFmpeg...`);
-
-        // Apply SFX with FFmpeg if any
-        if (sfxEvents.length > 0) {
-          try {
-            const sfxDir = path.join(__dirname, '..', 'sample_audio_files', 'sfx');
-            // We inject a silent audio track at input [1] to ensure [1:a] exists for mixing
-            let ffmpegArgs = ['-y', '-i', rawOutputPath, '-f', 'lavfi', '-i', 'anullsrc=channel_layout=stereo:sample_rate=44100'];
-            let filterComplex = '';
-
-            // Add an input (-i) for each SFX (starting at index 2)
-            for (let i = 0; i < sfxEvents.length; i++) {
-              const sfxPath = path.join(sfxDir, sfxEvents[i].type);
-              ffmpegArgs.push('-i', sfxPath);
-              // Filter: delay the audio stream [i+2]
-              filterComplex += `[${i + 2}]adelay=${sfxEvents[i].delayMs}|${sfxEvents[i].delayMs}[s${i + 1}];`;
-            }
-
-            // Mix original video audio [0:a] OR silent track [1:a] with all delayed sfx streams
-            const mixInputs = sfxEvents.map((_, i) => `[s${i + 1}]`).join('');
-
-            // Assuming the video has NO audio initially for now, we baseline against the silent track
-            filterComplex += `[1:a]${mixInputs}amix=inputs=${sfxEvents.length + 1}[aout]`;
-
-            ffmpegArgs.push('-filter_complex', filterComplex);
-            ffmpegArgs.push('-map', '0:v', '-map', '[aout]');
-            ffmpegArgs.push('-c:v', 'copy', '-c:a', 'aac', '-shortest', finalOutputPath);
-
-            // console.log('ffmpeg', ffmpegArgs.join(' ')); // DEBUG
-            execSync(`/opt/homebrew/bin/ffmpeg ${ffmpegArgs.map(x => `"${x}"`).join(' ')}`, { stdio: 'ignore' });
-
-            // Remove raw output
-            fs.unlinkSync(rawOutputPath);
-          } catch (err) {
-            console.error(`  ⚠️ SFX overlay failed. Defaulting to raw output.`, err.message);
-            fs.renameSync(rawOutputPath, finalOutputPath);
-          }
-        } else {
-          // No SFX, just rename
-          fs.renameSync(rawOutputPath, finalOutputPath);
-        }
-
+        fs.renameSync(rawOutputPath, finalOutputPath);
         console.log(`\n✅ Final Video ready: ${finalOutputPath}`);
 
-        // Extract thumbnail by rendering the Thumbnail composition
-        const thumbnailPath = path.join(DIRS.thumbnails, `q${questionNum}_${slug}_thumbnail.png`);
-        if (!fs.existsSync(path.dirname(thumbnailPath))) {
-          fs.mkdirSync(path.dirname(thumbnailPath), { recursive: true });
-        }
+        // Extract thumbnail
+        if (!fs.existsSync(path.dirname(thumbnailPath))) fs.mkdirSync(path.dirname(thumbnailPath), { recursive: true });
         
-        // Add thumbnail-specific props to the payload
         propsPayload.config.thumbnail_headline = metadata?.thumbnail?.headline;
         propsPayload.config.thumbnail_subheadline = metadata?.thumbnail?.subheadline;
+        
         const thumbPropsFile = path.join(__dirname, '..', 'remotion', `thumb_props_q${questionNum}.json`);
         fs.writeFileSync(thumbPropsFile, JSON.stringify(propsPayload, null, 2));
 
         if (!fs.existsSync(thumbnailPath)) {
-          console.log(`  📸 Rendering custom thumbnail...`);
+          console.log(`  📸 Generating professional thumbnail...`);
           try {
-            execSync(`npx remotion render src/index.ts Thumbnail "${thumbnailPath}" --props="${thumbPropsFile}"`, {
+            execSync(`npx remotion still src/index.ts Thumbnail "${thumbnailPath}" --props="${thumbPropsFile}" --frame=0 -y`, {
               cwd: remotionDir,
-              stdio: 'ignore'
+              stdio: 'inherit'
             });
             console.log(`  ✅ Thumbnail saved: ${thumbnailPath}`);
           } catch (e) {
@@ -663,7 +599,7 @@ async function assembleVideoRemotion(content, diagrams, metadata, questionNum, c
   });
 
   try { fs.unlinkSync(propsFile); } catch (e) { }
-  return finalOutputPath;
+  return { videoPath: finalOutputPath, thumbnailPath };
 }
 
 
@@ -674,68 +610,32 @@ async function assembleVideoCanvas(content, diagrams, audioPath, questionNum) {
   const frameDir = path.join(DIRS.frames, `q${questionNum}`);
   fs.mkdirSync(frameDir, { recursive: true });
 
-  // Pre-load real diagram images
   const diagImages = {};
   for (const d of diagrams || []) {
     if (d.png_path && fs.existsSync(d.png_path)) {
-      try {
-        diagImages[d.id] = await loadImage(d.png_path);
-        console.log(`  🖼  Loaded: ${d.title}`);
-      } catch (e) {
-        console.warn(`  ⚠️  Could not load ${d.png_path}`);
-      }
+      try { diagImages[d.id] = await loadImage(d.png_path); } catch (e) { }
     }
   }
 
   let n = 0;
-  const save = (buf) => {
-    fs.writeFileSync(
-      path.join(frameDir, `frame_${String(n).padStart(5, '0')}.png`), buf
-    );
-    n++;
-  };
+  const save = (buf) => { fs.writeFileSync(path.join(frameDir, `frame_${String(n).padStart(5, '0')}.png`), buf); n++; };
 
-  // Intro
-  console.log(`\\n🎬 Intro (${INTRO_FRAMES / FPS}s)...`);
   for (let i = 0; i < INTRO_FRAMES; i++) save(drawIntroFrame(content));
-
-  // Content sections
   const sections = content.answer_sections || [];
   for (let s = 0; s < sections.length; s++) {
     const sec = sections[s];
     const diag = (diagrams || []).find(d => d.section_id === sec.id);
-    const img = diagImages[diag?.id] || null;
-    console.log(`🎬 Section ${s + 1}/${sections.length}: "${sec.title}" (${SECTION_FRAMES / FPS}s)`);
-    for (let i = 0; i < SECTION_FRAMES; i++) {
-      save(drawContentFrame(sec, diag, i / SECTION_FRAMES, content, img));
-    }
+    for (let i = 0; i < SECTION_FRAMES; i++) save(drawContentFrame(sec, diag, i / SECTION_FRAMES, content, diagImages[diag?.id]));
   }
-
-  // Outro
-  console.log(`🎬 Outro (${OUTRO_FRAMES / FPS}s)...`);
   for (let i = 0; i < OUTRO_FRAMES; i++) save(drawOutroFrame(i));
 
-  // Encode
   const domainSlug = (content.domain || 'GCP').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
   const topicSlug = (content.topic || 'video').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
   const slug = `${domainSlug}_${topicSlug}`;
   const out = path.join(DIRS.video, `q${questionNum}_${slug}.mp4`);
-  const dur = (INTRO_FRAMES + sections.length * SECTION_FRAMES + OUTRO_FRAMES) / FPS;
-
-  console.log(`\\n🎞️  Encoding ${n} frames → ~${dur.toFixed(0)}s MP4...`);
-
-  const parts = [
-    `/opt/homebrew/bin/ffmpeg -y`,
-    `-framerate ${FPS} -i "${frameDir}/frame_%05d.png"`,
-  ];
-  if (audioPath && fs.existsSync(audioPath)) {
-    parts.push(`-i "${audioPath}" -c:a aac -b:a 128k -shortest`);
-  }
-  parts.push(`-c:v libx264 -preset fast -crf 20 -pix_fmt yuv420p -movflags +faststart "${out}"`);
-  execSync(parts.join(' \\\n  '), { stdio: 'inherit' });
-
-  console.log(`\\n✅ Video ready: ${out}  (~${dur.toFixed(0)}s)`);
-  return out;
+  
+  execSync(`/opt/homebrew/bin/ffmpeg -y -framerate ${FPS} -i "${frameDir}/frame_%05d.png" -c:v libx264 -preset fast -crf 20 -pix_fmt yuv420p "${out}"`, { stdio: 'inherit' });
+  return { videoPath: out, thumbnailPath: null };
 }
 
 // Global dispatcher
@@ -743,7 +643,7 @@ async function assembleVideo(content, diagrams, metadata, questionNum, useRemoti
   if (useRemotion) {
     return assembleVideoRemotion(content, diagrams, metadata, questionNum, config);
   } else {
-    return assembleVideoCanvas(content, diagrams, null, questionNum, config);
+    return assembleVideoCanvas(content, diagrams, null, questionNum);
   }
 }
 

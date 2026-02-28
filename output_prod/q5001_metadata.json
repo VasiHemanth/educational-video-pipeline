@@ -1,0 +1,41 @@
+{
+  "youtube": {
+    "title": "GCP Real-time Fraud Detection: Architecting AI at Scale #Shorts",
+    "description": "Explore a cutting-edge, scalable, real-time AI fraud detection system on Google Cloud, designed to process millions of transactions per second. This video breaks down an architecture leveraging Pub/Sub for ingestion, Dataflow for real-time processing, and Vertex AI for sophisticated model inference. Feature Store ensures low-latency feature serving, while BigQuery stores historical data for model retraining. Cloud Functions orchestrate microservices, and Looker provides analytical dashboards for immediate insights. Master the integration of these services to build robust, high-performance fraud prevention solutions. Elevate your cloud architecture skills now!",
+    "tags": [
+      "Generative AI",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "FraudDetection",
+      "GoogleCloud",
+      "GCP",
+      "PubSub",
+      "Dataflow",
+      "VertexAI",
+      "FeatureStore",
+      "BigQuery",
+      "CloudFunctions",
+      "Looker",
+      "RealTimeAI",
+      "ScalableArchitecture",
+      "MachineLearning"
+    ],
+    "category": "Education",
+    "playlist": "Generative AI Daily Interview Questions"
+  },
+  "thumbnail": {
+    "headline": "Real-time Fraud AI",
+    "subheadline": "Detect millions of fraud transactions per second on Google Cloud"
+  },
+  "instagram": {
+    "caption": "Stop fraud in real-time with AI on Google Cloud!\n\n🚀 Scale to millions of transactions per second.\n🧠 Leverage Vertex AI, Pub/Sub, Dataflow, BigQuery & more.\n💡 Essential for robust, modern financial systems.\n\n#GenerativeAI #CloudArchitect #FraudDetection #GCP #RealTimeAI #SystemDesign #MachineLearning #DataEngineering #GoogleCloud #PubSub #Dataflow #VertexAI #BigQuery #CloudFunctions #Looker #AI #TechInterview #ScalableSolutions #Security #Innovation",
+    "cover_text": "GCP AI Fraud Detection"
+  },
+  "tiktok": {
+    "caption": "GCP AI Fraud Detection: Millions of transactions, zero fraud. See how we built it with Pub/Sub, Vertex AI, BigQuery & more! Boost your cloud skills. #GCP #FraudDetection #AI #SystemDesign",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

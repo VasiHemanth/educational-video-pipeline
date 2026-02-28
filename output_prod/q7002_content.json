@@ -1,0 +1,144 @@
+{
+  "question_number": 7002,
+  "topic": "GCP Event-Driven Serverless Scaling",
+  "question_text": "How would you design a highly scalable, event-driven architecture on GCP to process millions of IoT sensor readings per second, ensuring reliability and minimal operational overhead?",
+  "hook_text": "Scale IoT data processing to millions per second! This GCP event-driven architecture handles massive real-time streams.",
+  "cta_text": "Master serverless scaling on GCP. Follow for advanced cloud architect strategies!",
+  "tech_terms": [
+    "GCP",
+    "Eventarc Advanced",
+    "Pub/Sub",
+    "Cloud Run",
+    "Cloud Functions",
+    "Workflows",
+    "Cloud Storage",
+    "Memorystore",
+    "BigQuery",
+    "IAM"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Ingestion & Fan-out",
+      "text": "Pub/Sub ingests raw IoT data. Eventarc Advanced routes events flexibly. Cloud Run processes data streams, autoscaling efficiently.",
+      "spoken_audio": "Pub/Sub ingests data. Eventarc routes events. Cloud Run processes streams, autoscaling efficiently.",
+      "keywords": {
+        "tech_terms": [
+          "Pub/Sub",
+          "Eventarc Advanced",
+          "Cloud Run"
+        ],
+        "action_verbs": [
+          "ingests",
+          "routes",
+          "processes"
+        ],
+        "concepts": [
+          "IoT data",
+          "data streams",
+          "autoscaling"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Orchestration & Persistence",
+      "text": "Cloud Workflows orchestrates complex tasks. Cloud Storage archives raw data. BigQuery stores processed data for analytics.",
+      "spoken_audio": "Workflows orchestrate complex tasks. Cloud Storage archives raw data. BigQuery for analytics.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Workflows",
+          "Cloud Storage",
+          "BigQuery"
+        ],
+        "action_verbs": [
+          "orchestrates",
+          "archives",
+          "stores"
+        ],
+        "concepts": [
+          "complex tasks",
+          "raw data",
+          "analytics"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Resilience & Security",
+      "text": "Implement idempotency with Memorystore. Use Dead-Letter Queues for failures. Apply strict IAM for least privilege access.",
+      "spoken_audio": "Idempotency with Memorystore. Dead-Letter Queues for failures. Strict IAM security.",
+      "keywords": {
+        "tech_terms": [
+          "Memorystore",
+          "IAM"
+        ],
+        "action_verbs": [
+          "Implement",
+          "Use",
+          "Apply"
+        ],
+        "concepts": [
+          "idempotency",
+          "Dead-Letter Queues",
+          "least privilege access"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Event Ingestion Flow",
+      "type": "flowchart",
+      "dsl": "(IoT Devices) --> (GCP Pub/Sub) --> {Eventarc Advanced} --> [Cloud Run Instances]",
+      "animation_sequence": [
+        "IoT Devices",
+        "GCP Pub/Sub",
+        "Eventarc Advanced",
+        "Cloud Run Instances"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Orchestrated Processing",
+      "type": "flowchart",
+      "dsl": "{Eventarc Advanced} --> (Cloud Workflows) --> [Cloud Run Service A] --> [Cloud Run Service B] --> [[BigQuery]]",
+      "animation_sequence": [
+        "Eventarc Advanced",
+        "Cloud Workflows",
+        "Cloud Run Service A",
+        "Cloud Run Service B",
+        "BigQuery"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Resilience Pattern",
+      "type": "flowchart",
+      "dsl": "[Cloud Run] --> (Memorystore Cache) -- Check --> (Processed) \n [Cloud Run] -- Failure --> (Pub/Sub DLQ)",
+      "animation_sequence": [
+        "Cloud Run",
+        "Memorystore Cache",
+        "Processed",
+        "Pub/Sub DLQ"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "Scale IoT with Serverless GCP",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#Interview",
+    "#Serverless",
+    "#EventDriven",
+    "#IoT"
+  ],
+  "domain": "GCP"
+}

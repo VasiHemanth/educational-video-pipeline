@@ -1,0 +1,137 @@
+{
+  "question_number": 2,
+  "topic": "Serverless Architecture on GCP",
+  "question_text": "How would you design a highly scalable and cost-effective serverless architecture on GCP to process user-uploaded images, including resizing, watermarking, and storing metadata?",
+  "hook_text": "Build a serverless image processing pipeline on Google Cloud that scales automatically and only pays for what it uses.",
+  "cta_text": "Master serverless on GCP for your next interview. Follow for more cloud architecture deep dives!",
+  "tech_terms": [
+    "Cloud Storage",
+    "Eventarc",
+    "Cloud Pub/Sub",
+    "Cloud Functions",
+    "Cloud Run",
+    "Firestore"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Event-Driven Ingestion",
+      "text": "User uploads image to Cloud Storage. Eventarc captures this event, triggering a Pub/Sub message. This cleanly decouples storage from processing workflows.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Storage",
+          "Eventarc",
+          "Pub/Sub"
+        ],
+        "action_verbs": [
+          "uploads",
+          "captures",
+          "triggering",
+          "decouples"
+        ],
+        "concepts": [
+          "Event-Driven",
+          "Decoupling"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Serverless Processing",
+      "text": "Pub/Sub triggers Cloud Functions for lightweight tasks, like metadata extraction. Complex image transformations, such as resizing and watermarking, utilize Cloud Run.",
+      "keywords": {
+        "tech_terms": [
+          "Pub/Sub",
+          "Cloud Functions",
+          "Cloud Run"
+        ],
+        "action_verbs": [
+          "triggers",
+          "extraction",
+          "utilize"
+        ],
+        "concepts": [
+          "Lightweight tasks",
+          "Complex transformations",
+          "Containerization"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Data Persistence & Notifications",
+      "text": "Processed images are saved to Cloud Storage. Image metadata, along with processing logs, persists in Firestore. Final events trigger user notifications.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Storage",
+          "Firestore"
+        ],
+        "action_verbs": [
+          "saved",
+          "persists",
+          "trigger"
+        ],
+        "concepts": [
+          "Data Persistence",
+          "Metadata",
+          "Notifications"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Image Ingestion Flow",
+      "type": "flowchart",
+      "dsl": "(User) as user_node -> (Upload Image) as upload_node -> [Cloud Storage] as cloud_storage_node\n[Cloud Storage] as cloud_storage_node --> \"Object Finalized Event\" (Eventarc) as eventarc_node\n(Eventarc) as eventarc_node -> [Cloud Pub/Sub Topic] as pubsub_topic_node",
+      "animation_sequence": [
+        "user_node",
+        "upload_node",
+        "cloud_storage_node",
+        "eventarc_node",
+        "pubsub_topic_node"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Processing with Functions & Run",
+      "type": "flowchart",
+      "dsl": "[Cloud Pub/Sub Topic] as pubsub_topic_node_2 -> [Cloud Functions] as cloud_functions_node\n[Cloud Pub/Sub Topic] as pubsub_topic_node_2 -> [Cloud Run Service] as cloud_run_node",
+      "animation_sequence": [
+        "pubsub_topic_node_2",
+        "cloud_functions_node",
+        "cloud_run_node"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Storage & Notification",
+      "type": "flowchart",
+      "dsl": "[Cloud Functions] as cf_processed -> [Cloud Storage (Processed)] as cs_processed\n[Cloud Functions] as cf_processed -> [[Firestore (Metadata)]] as fs_metadata\n[Cloud Run Service] as cr_processed -> [Cloud Storage (Processed)] as cs_processed_2\n[Cloud Run Service] as cr_processed -> [[Firestore (Metadata)]] as fs_metadata_2\n[Cloud Storage (Processed)] as cs_processed_3 --> \"Processed Event\" [Cloud Pub/Sub Topic (Notifications)] as pubsub_notifications",
+      "animation_sequence": [
+        "cf_processed",
+        "cr_processed",
+        "cs_processed",
+        "fs_metadata",
+        "pubsub_notifications"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "voiceover_script": "User uploads an image to Cloud Storage. Eventarc captures this event, triggering a Pub/Sub message. This cleanly decouples storage from processing workflows. Pub/Sub then triggers Cloud Functions for lightweight tasks, like metadata extraction. Complex image transformations, such as resizing and watermarking, utilize Cloud Run. Finally, processed images are saved to Cloud Storage. Image metadata, along with processing logs, persists in Firestore. Final events then trigger user notifications.",
+  "title_card_text": "GCP Serverless Image Processing",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#GoogleCloud",
+    "#Interview",
+    "#Serverless"
+  ],
+  "domain": "GCP"
+}

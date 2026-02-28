@@ -1,0 +1,38 @@
+{
+  "youtube": {
+    "title": "GCP Interview Q2005: Design a Serverless IoT Pipeline on GCP #Shorts",
+    "description": "Design a highly scalable, cost-effective, and fault-tolerant serverless pipeline on Google Cloud Platform to process millions of IoT device sensor data in real-time. Incoming data is ingested via Pub/Sub, triggering real-time analytics with Cloud Functions or Cloud Run, before being stored in BigQuery for powerful insights. This architecture leverages Eventarc for seamless service orchestration and integrates Cloud Monitoring and Logging for robust observability. Master these GCP services for your next cloud architect interview. Learn more now!",
+    "tags": [
+      "GCP",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "Serverless",
+      "IoT",
+      "PubSub",
+      "CloudFunctions",
+      "CloudRun",
+      "BigQuery",
+      "Eventarc",
+      "CloudMonitoring",
+      "CloudLogging",
+      "GoogleCloud",
+      "DataPipeline",
+      "RealtimeAnalytics",
+      "Scalability",
+      "FaultTolerance"
+    ],
+    "category": "Education",
+    "playlist": "GCP Daily Interview Questions"
+  },
+  "instagram": {
+    "caption": "Crush your next GCP interview by mastering serverless IoT architecture!\n\nLearn to design highly scalable, cost-effective, and fault-tolerant data pipelines for millions of IoT devices.\nDiscover how Pub/Sub, Cloud Functions, Cloud Run, BigQuery, and Eventarc seamlessly integrate for real-time analytics.\nUnderstand the exact mechanism of service interaction for robust data processing.\nElevate your cloud architecture skills with this critical system design walkthrough.\n\n#GCP #CloudArchitect #Serverless #IoT #SystemDesign #GoogleCloud #CloudComputing #DataPipeline #RealtimeAnalytics #PubSub #CloudFunctions #CloudRun #BigQuery #Eventarc #CloudMonitoring #CloudLogging #InterviewPrep #TechInterview #DevOps #CloudSkills",
+    "cover_text": "GCP Serverless IoT: Scalable & Fault-Tolerant!"
+  },
+  "tiktok": {
+    "caption": "GCP serverless IoT pipeline: Pub/Sub -> Cloud Functions/Run -> BigQuery for real-time data from millions of devices! Master your cloud architecture. Learn how!",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

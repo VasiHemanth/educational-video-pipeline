@@ -1,0 +1,146 @@
+{
+  "question_number": 5,
+  "topic": "Managing large scale Gen AI Project",
+  "question_text": "You're tasked with deploying a large-scale Generative AI application for a Fortune 500 company, integrating it with diverse proprietary data sources and ensuring high performance, cost-efficiency, and ethical compliance. How would you architect and manage this project from concept to production?",
+  "hook_text": "Architecting large-scale Gen AI applications requires bleeding-edge MLOps and infrastructure. Here’s how to do it right.",
+  "cta_text": "Master these concepts for your next AI role! Follow for daily Cloud Architect tips.",
+  "tech_terms": [
+    "Generative AI",
+    "LLM",
+    "RAG",
+    "Vector Database",
+    "Kubernetes",
+    "MLOps",
+    "Observability",
+    "Data Governance",
+    "Model Monitoring",
+    "Cloud AI Platform",
+    "Ethical AI"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Scalable RAG Architecture",
+      "text": "Implement RAG workflow.\nVector DB retrieval.\nOptimize inference performance.\nScale grounded AI responses.",
+      "spoken_audio": "Leverage RAG architecture with robust data ingestion, vector database, and high-throughput inference endpoints for scalable Gen AI.",
+      "keywords": {
+        "tech_terms": [
+          "RAG architecture",
+          "vector database",
+          "Gen AI"
+        ],
+        "action_verbs": [
+          "Leverage",
+          "ingestion"
+        ],
+        "concepts": [
+          "high-throughput inference endpoints",
+          "scalable"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "LLM MLOps & Observability",
+      "text": "Setup LLM MLOps lifecycle.\nAutomate CI/CD deployments.\nMonitor GenAI performance metrics.\nAlert on model hallucinations.",
+      "spoken_audio": "Implement MLOps for LLM versioning, automated deployment, and continuous monitoring of Gen AI specific metrics like hallucination.",
+      "keywords": {
+        "tech_terms": [
+          "MLOps",
+          "LLM",
+          "Gen AI"
+        ],
+        "action_verbs": [
+          "Implement",
+          "monitoring"
+        ],
+        "concepts": [
+          "versioning",
+          "automated deployment",
+          "hallucination"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Governance, Cost, & Ethics",
+      "text": "Enforce strict data governance.\nOptimize cost via model selection.\nDeploy bias detection filters.\nMitigate ethical AI risks.",
+      "spoken_audio": "Address data governance, optimize costs via model selection, and enforce ethical AI guidelines with continuous bias detection.",
+      "keywords": {
+        "tech_terms": [
+          "ethical AI"
+        ],
+        "action_verbs": [
+          "Address",
+          "optimize",
+          "enforce"
+        ],
+        "concepts": [
+          "data governance",
+          "model selection",
+          "bias detection"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "RAG Flow",
+      "type": "flowchart",
+      "dsl": "([User Query]) -> (Search) -> [[Vector DB]] -> [Retrieve Context] -> (Prompt Engineering) -> [LLM Inference] -> (Response)",
+      "animation_sequence": [
+        "User Query",
+        "Search",
+        "Vector DB",
+        "Retrieve Context",
+        "Prompt Engineering",
+        "LLM Inference",
+        "Response"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "LLM MLOps Pipeline",
+      "type": "flowchart",
+      "dsl": "(Data Preprocessing) -> [Model Training/Finetuning] -> [Model Registry] -> [CI/CD Deployment] -> (LLM Inference Service) -> {Monitoring & Alerting}",
+      "animation_sequence": [
+        "Data Preprocessing",
+        "Model Training/Finetuning",
+        "Model Registry",
+        "CI/CD Deployment",
+        "LLM Inference Service",
+        "Monitoring & Alerting"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "AI Governance Cycle",
+      "type": "flowchart",
+      "dsl": "(Policy Definition) -> [Compliance Checks] -> (Ethical Review) -> [Bias Detection] -> (Mitigation Strategy) -> {Audit & Reporting}",
+      "animation_sequence": [
+        "Policy Definition",
+        "Compliance Checks",
+        "Ethical Review",
+        "Bias Detection",
+        "Mitigation Strategy",
+        "Audit & Reporting"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "Scale Gen AI Projects",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#Interview",
+    "#GenAI",
+    "#MLOps"
+  ],
+  "domain": "Generative AI"
+}

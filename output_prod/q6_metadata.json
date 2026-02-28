@@ -1,0 +1,43 @@
+{
+  "youtube": {
+    "title": "Generative AI Interview Q6: Building GPT-Scale AI on Google Cloud #Shorts",
+    "description": "Designing a GPT-scale model on Google Cloud demands extreme performance and cost-efficiency. This workflow leverages AI Hypercomputer, utilizing cutting-edge TPUs like Trillium and GPUs such as NVIDIA Blackwell, interconnected by Jupiter Fabric with RoCE for ultra-low latency communication. Frameworks like JAX and PyTorch, augmented by MaxText, DeepSpeed, and FSDP, implement 3D Parallelism (Tensor, Pipeline, ZeRO-3) and Multislice Training for distributed optimization. Checkpointing to Hyperdisk Exapools with Anywhere Cache and GCS FUSE ensures data resilience and rapid recovery. Dynamic Workload Scheduler orchestrates GKE clusters for optimal resource utilization, all monitored via Vertex AI TensorBoard and Cloud Profiler. Ready to master large-scale AI deployment? Learn more about building scalable and efficient AI pipelines!",
+    "tags": [
+      "Generative AI",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "GoogleCloud",
+      "TPU",
+      "GPU",
+      "AIHypercomputer",
+      "GPTScale",
+      "FoundationModel",
+      "DeepLearning",
+      "MachineLearning",
+      "JAX",
+      "PyTorch",
+      "DeepSpeed",
+      "FSDP",
+      "Kubernetes",
+      "VertexAI",
+      "CloudOptimization"
+    ],
+    "category": "Education",
+    "playlist": "Generative AI Daily Interview Questions"
+  },
+  "thumbnail": {
+    "headline": "Build GPT on Google Cloud",
+    "subheadline": "Optimize training with AI Hypercomputer, TPUs, and advanced parallelism."
+  },
+  "instagram": {
+    "caption": "Ever wondered how to train a GPT-scale AI model on Google Cloud? 🤔\n\nMastering massive AI models requires a robust, cost-effective infrastructure. Dive into the world of AI Hypercomputer, TPUs, and NVIDIA Blackwell GPUs. Discover how 3D parallelism (Tensor, Pipeline, ZeRO-3) and multislice training with JAX and PyTorch on GKE optimize performance and cost. Learn about advanced data handling with Hyperdisk Exapools, Anywhere Cache, and GCS FUSE for seamless checkpointing. Plus, see how Dynamic Workload Scheduler ensures peak efficiency. This is the blueprint for next-gen AI. Don't just build, build smart.\n\n#GenerativeAI #GoogleCloud #AIHypercomputer #GPT #MachineLearning #DeepLearning #CloudArchitecture #TPU #GPU #NVIDIABlackwell #JAX #PyTorch #DeepSpeed #FSDP #Kubernetes #VertexAI #SystemDesign #TechInterview #AIInterview #ScalableAI",
+    "cover_text": "GPT AI on Google Cloud"
+  },
+  "tiktok": {
+    "caption": "Train GPT-scale AI on Google Cloud! 🚀 Learn how AI Hypercomputer, TPUs, & 3D parallelism optimize performance & cost. Master scalable AI! #GenerativeAI #GoogleCloud #AI",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

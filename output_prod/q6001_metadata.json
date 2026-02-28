@@ -1,0 +1,42 @@
+{
+  "youtube": {
+    "title": "Generative AI Interview Q6001: Google Cloud Gen AI Architecture Unpacked #Shorts",
+    "description": "This video rigorously details architecting large-scale Generative AI on Google Cloud. It outlines an advanced MLOps pipeline leveraging Vertex AI for model training and deployment, GKE for scalable inference, and vector databases for efficient Retrieval-Augmented Generation. We explore the synergy between LangChain for orchestrating complex LLM workflows and Kubernetes for robust infrastructure management, ensuring optimal resource utilization. Discover how these services integrate to build highly scalable, cost-efficient, and production-ready Gen AI solutions. Master the MLOps practices essential for success in enterprise AI. Learn more and build your next Gen AI project!",
+    "tags": [
+      "Generative AI",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "GoogleCloud",
+      "VertexAI",
+      "GKE",
+      "VectorDatabases",
+      "RAG",
+      "RetrievalAugmentedGeneration",
+      "LangChain",
+      "LLMOps",
+      "MLOps",
+      "Kubernetes",
+      "AIArchitecture",
+      "ScalableAI",
+      "CostEfficiency",
+      "EnterpriseAI"
+    ],
+    "category": "Education",
+    "playlist": "Generative AI Daily Interview Questions"
+  },
+  "thumbnail": {
+    "headline": "Google Cloud Gen AI Scale",
+    "subheadline": "Mastering MLOps for robust, cost-efficient large-scale AI projects"
+  },
+  "instagram": {
+    "caption": "Unlock the secrets to building scalable Generative AI on Google Cloud! \n\nDive deep into an architecture integrating Vertex AI, GKE, and Vector Databases for peak performance. Explore how RAG with LangChain orchestrates complex LLM workflows. Learn MLOps best practices, Kubernetes for robust deployment, and cost-efficiency strategies. Transform your Gen AI projects from concept to production with expert insights.\n\n#GenerativeAI #CloudArchitecture #GoogleCloud #VertexAI #GKE #VectorDatabases #RAG #LangChain #LLMOps #MLOps #Kubernetes #AIArchitecture #ScalableAI #CostEfficiency #EnterpriseAI #SystemDesign #AITips #TechInterview #MachineLearning #CloudComputing",
+    "cover_text": "Google Cloud Gen AI Architecture"
+  },
+  "tiktok": {
+    "caption": "Architecting large-scale Gen AI on Google Cloud? 🚀 Master Vertex AI, GKE, RAG, LangChain & MLOps for scalable, cost-efficient solutions. Dive in now! #GenAI #GoogleCloud #MLOps",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

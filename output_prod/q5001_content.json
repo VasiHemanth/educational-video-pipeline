@@ -1,0 +1,135 @@
+{
+  "question_number": 5001,
+  "topic": "Real-time AI-powered Fraud Detection",
+  "question_text": "Design a scalable, real-time AI-powered fraud detection system on Google Cloud, handling millions of transactions per second. Detail its architecture and core components.",
+  "hook_text": "Stop fraud in its tracks! Here's how to build a real-time AI fraud detection system on Google Cloud.",
+  "cta_text": "Protect your business, subscribe for more advanced AI architectures!",
+  "tech_terms": [
+    "Google Cloud",
+    "Pub/Sub",
+    "Dataflow",
+    "Vertex AI",
+    "Feature Store",
+    "BigQuery",
+    "Cloud Functions",
+    "Looker"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Ingestion & Feature Engineering",
+      "text": "Stream transaction data via Pub/Sub to Dataflow for real-time feature engineering.",
+      "spoken_audio": "High-volume transaction data streams into Google Pub/Sub. Dataflow then processes these events in real-time, extracting and transforming critical features for fraud analysis.",
+      "keywords": {
+        "tech_terms": [
+          "Pub/Sub",
+          "Dataflow"
+        ],
+        "action_verbs": [
+          "Stream",
+          "engineering"
+        ],
+        "concepts": [
+          "transaction data",
+          "real-time feature engineering"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Real-time Prediction & Decisioning",
+      "text": "Feature Store provides low-latency data; Vertex AI for real-time fraud prediction.",
+      "spoken_audio": "Real-time features are served by Vertex AI Feature Store. Vertex AI then leverages trained models for low-latency fraud prediction, identifying suspicious activities instantly.",
+      "keywords": {
+        "tech_terms": [
+          "Feature Store",
+          "Vertex AI"
+        ],
+        "action_verbs": [
+          "provides",
+          "prediction"
+        ],
+        "concepts": [
+          "low-latency data",
+          "real-time fraud prediction"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Alerting, Feedback & Retraining",
+      "text": "Flag suspicious transactions. Cloud Functions for alerts. BigQuery for model retraining.",
+      "spoken_audio": "Suspicious transactions trigger alerts via Cloud Functions. All data is stored in BigQuery, feeding an automated loop for continuous model retraining and performance improvement.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Functions",
+          "BigQuery"
+        ],
+        "action_verbs": [
+          "Flag",
+          "alerts",
+          "retraining"
+        ],
+        "concepts": [
+          "suspicious transactions",
+          "model retraining"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Data Ingestion & Feature Engineering",
+      "type": "flowchart",
+      "dsl": "(Transaction Source) -> [Google Pub/Sub] -> [Dataflow (Feature Engineering)] -> [[Vertex AI Feature Store]]",
+      "animation_sequence": [
+        "Transaction Source",
+        "Google Pub/Sub",
+        "Dataflow (Feature Engineering)",
+        "Vertex AI Feature Store"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Real-time Prediction Workflow",
+      "type": "flowchart",
+      "dsl": "[[Vertex AI Feature Store]] -> [Vertex AI (Online Prediction)] -> [Fraud Decision Engine] -> [[BigQuery (Audit Log)]]",
+      "animation_sequence": [
+        "Vertex AI Feature Store",
+        "Vertex AI (Online Prediction)",
+        "Fraud Decision Engine",
+        "BigQuery (Audit Log)"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Alerting & Feedback Loop",
+      "type": "flowchart",
+      "dsl": "[Fraud Decision Engine] --> \"Alert\" [Cloud Functions] --> \"Notify\" (Operators) \n [Fraud Decision Engine] -> [[BigQuery (Raw/Labeled Data)]] -> [Vertex AI (Model Retraining)]",
+      "animation_sequence": [
+        "Fraud Decision Engine",
+        "Cloud Functions",
+        "Operators",
+        "BigQuery (Raw/Labeled Data)",
+        "Vertex AI (Model Retraining)"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "Real-time AI Fraud Detection: GCP Architecture",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#GoogleCloud",
+    "#Interview",
+    "#FraudDetection",
+    "#RealTimeAI"
+  ],
+  "domain": "Generative AI"
+}

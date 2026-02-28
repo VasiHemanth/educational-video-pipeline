@@ -25,7 +25,7 @@ export const Intro: React.FC<{ content: VideoProps['content'], config?: VideoPro
     return (
         <AbsoluteFill style={{
             backgroundColor: G.bg, justifyContent: 'center', alignItems: 'center',
-            padding: '60px', overflow: 'hidden', 
+            padding: '60px', overflow: 'hidden',
             fontFamily: "'Inter', '-apple-system', 'SF Pro Display', sans-serif",
         }}>
             {/* Ambient glows (Colorful Apple Event Style) */}
@@ -45,55 +45,64 @@ export const Intro: React.FC<{ content: VideoProps['content'], config?: VideoPro
                 opacity: glow * 0.8, filter: 'blur(90px)', pointerEvents: 'none',
             }} />
 
+            {/* TOP INFO ZONE (20-45%) — starts at 20% to clear Instagram top chrome */}
             <div style={{
+                position: 'absolute',
+                top: '20%',
+                width: '100%',
                 display: 'flex', flexDirection: 'column', alignItems: 'center',
-                transform: `translateY(${interpolate(titleSlide, [0, 1], [-40, 0])}px)`,
-                opacity: titleSlide,
-                marginBottom: '60px'
-            }}>
-                <div style={{ 
-                    fontSize: '36px', fontWeight: 700, color: G.blue, 
-                    letterSpacing: '3px', textTransform: 'uppercase' 
-                }}>
-                    {content.domain || 'Architecture'}
-                </div>
-                <div style={{ 
-                    fontSize: '48px', fontWeight: 800, color: G.textWhite, 
-                    letterSpacing: '-1px', marginTop: '12px' 
-                }}>
-                    Question {content.question_number}
-                </div>
-            </div>
-
-            {/* Question / Hook text */}
-            <div style={{
-                width: '100%', maxWidth: '900px',
-                transform: `translateY(${interpolate(questionSlide, [0, 1], [40, 0])}px)`,
-                opacity: Math.max(0, questionSlide),
-                textAlign: 'center'
+                padding: '0 80px'
             }}>
                 <div style={{
-                    fontSize: config?.useHook ? '64px' : '48px',
-                    fontWeight: 500, color: G.textWhite, lineHeight: 1.4,
-                    wordBreak: 'break-word', whiteSpace: 'normal',
+                    transform: `translateY(${interpolate(titleSlide, [0, 1], [40, 0])}px)`,
+                    opacity: titleSlide,
+                    display: 'flex', flexDirection: 'column', alignItems: 'center',
+                    marginBottom: '30px'
                 }}>
-                    {config?.useHook ? (content.hook_text || content.question_text) : content.question_text}
+                    <div style={{
+                        fontSize: '36px', fontWeight: 700, color: G.blue,
+                        letterSpacing: '4px', textTransform: 'uppercase'
+                    }}>
+                        {content.domain || 'Architecture'}
+                    </div>
+                    <div style={{
+                        fontSize: '56px', fontWeight: 800, color: G.textWhite,
+                        letterSpacing: '-1.5px', marginTop: '12px'
+                    }}>
+                        Question {content.question_number}
+                    </div>
+                </div>
+
+                {/* Question / Hook text */}
+                <div style={{
+                    width: '100%', maxWidth: '900px',
+                    transform: `translateY(${interpolate(questionSlide, [0, 1], [40, 0])}px)`,
+                    opacity: Math.max(0, questionSlide),
+                    textAlign: 'center'
+                }}>
+                    <div style={{
+                        fontSize: config?.useHook ? '64px' : '48px', // Reduced from 72/56
+                        fontWeight: 600, color: G.textWhite, lineHeight: 1.3,
+                        wordBreak: 'break-word', whiteSpace: 'normal',
+                        textShadow: '0 10px 30px rgba(0,0,0,0.5)'
+                    }}>                        {config?.useHook ? (content.hook_text || content.question_text) : content.question_text}
+                    </div>
                 </div>
             </div>
 
-            {/* Branding */}
+            {/* Branding (Bottom Safe Zone) */}
             <div style={{
-                position: 'absolute', bottom: '60px', width: '100%', textAlign: 'center', opacity: brandFade,
+                position: 'absolute', bottom: '100px', width: '100%', textAlign: 'center', opacity: brandFade,
                 display: 'flex', flexDirection: 'column', alignItems: 'center'
             }}>
-                <div style={{ 
-                    fontSize: '18px', fontWeight: 700, color: G.textMuted, 
+                <div style={{
+                    fontSize: '18px', fontWeight: 700, color: G.textMuted,
                     letterSpacing: '4px', textTransform: 'uppercase', opacity: 0.8
                 }}>
                     AI Cloud Architect
                 </div>
-                <div style={{ 
-                    fontSize: '14px', fontWeight: 500, color: G.textMuted, 
+                <div style={{
+                    fontSize: '14px', fontWeight: 500, color: G.textMuted,
                     letterSpacing: '2px', textTransform: 'uppercase', marginTop: '8px', opacity: 0.5
                 }}>
                     Hemanth Vasi

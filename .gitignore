@@ -11,4 +11,6 @@ client_secret_*.json
 *.sqlite
 .png
 .mp4
-output_prod/
+output_prod/*.mp4
+*.MP4
+*.mov

@@ -1,0 +1,143 @@
+{
+  "question_number": 2007,
+  "topic": "Serverless Architecture on GCP",
+  "question_text": "How would you design a serverless image processing pipeline for user-uploaded content on GCP?",
+  "hook_text": "Learn how to build a highly scalable, cost-effective serverless image processing pipeline on Google Cloud!",
+  "cta_text": "Follow for more real-world GCP architecture insights!",
+  "tech_terms": [
+    "Cloud Storage",
+    "Cloud Functions",
+    "Cloud Pub/Sub",
+    "Cloud Vision API",
+    "Firestore",
+    "Cloud Monitoring",
+    "Cloud Logging",
+    "Cloud CDN"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Ingest & Trigger",
+      "text": "User uploads to Cloud Storage. Event triggers Cloud Functions via Pub/Sub.",
+      "spoken_audio": "Users upload images directly to Cloud Storage. This event triggers a Cloud Function, published through Pub/Sub, ensuring reliable asynchronous processing.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Storage",
+          "Cloud Functions",
+          "Pub/Sub"
+        ],
+        "action_verbs": [
+          "uploads",
+          "triggers"
+        ],
+        "concepts": [
+          "event",
+          "asynchronous processing"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Process & Analyze",
+      "text": "Cloud Functions process images. Resize, watermark, analyze with Vision AI. Store in Firestore.",
+      "spoken_audio": "Cloud Functions perform image resizing, watermarking, and advanced analysis using the Vision AI API. Processed outputs and metadata are then stored in Firestore.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Functions",
+          "Vision AI",
+          "Firestore"
+        ],
+        "action_verbs": [
+          "process",
+          "resize",
+          "watermark",
+          "analyze",
+          "store"
+        ],
+        "concepts": [
+          "metadata"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Serve & Monitor",
+      "text": "Serve processed images via Cloud CDN. Monitor pipeline with Cloud Monitoring and Logging.",
+      "spoken_audio": "Serve processed images efficiently via Cloud CDN. Monitor pipeline health and performance with Cloud Monitoring and Logging for proactive alerts.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud CDN",
+          "Cloud Monitoring",
+          "Cloud Logging"
+        ],
+        "action_verbs": [
+          "serve",
+          "monitor"
+        ],
+        "concepts": [
+          "pipeline health",
+          "performance",
+          "alerts"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Image Ingestion Flow",
+      "type": "flowchart",
+      "dsl": "(User) -> [Upload] -> [[Cloud Storage]] -> (Event) -> [Pub/Sub] -> [Cloud Functions]",
+      "animation_sequence": [
+        "User",
+        "Upload",
+        "Cloud Storage",
+        "Event",
+        "Pub/Sub",
+        "Cloud Functions"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Processing Workflow",
+      "type": "flowchart",
+      "dsl": "[Cloud Functions] -> [Resize/Watermark] -> [Vision AI (Optional)] -> [[Firestore (Metadata)]]",
+      "animation_sequence": [
+        "Cloud Functions",
+        "Resize/Watermark",
+        "Vision AI (Optional)",
+        "Firestore (Metadata)"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Delivery & Observability",
+      "type": "flowchart",
+      "dsl": "[[Cloud Storage (Processed)]] -> [Cloud CDN] -> (Users) \n [Cloud Functions] --> \"Logs\" [Cloud Logging] \n [Cloud Functions] --> \"Metrics\" [Cloud Monitoring]",
+      "animation_sequence": [
+        "Cloud Storage (Processed)",
+        "Cloud CDN",
+        "Users",
+        "Cloud Functions",
+        "Cloud Logging",
+        "Cloud Monitoring"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "GCP Serverless Image Processing Pipeline",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#GoogleCloud",
+    "#Interview",
+    "#Serverless",
+    "#ImageProcessing"
+  ],
+  "domain": "GCP"
+}

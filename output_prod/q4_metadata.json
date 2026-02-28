@@ -1,0 +1,38 @@
+{
+  "youtube": {
+    "title": "Generative AI Interview Q4: Designing Fault-Tolerant AI for Long Conversations on GCP #Shorts",
+    "description": "This architecture leverages Google Cloud Run to host the stateless Generative AI agent, ensuring elastic scalability and high availability. Conversational context is persistently managed in Firestore, allowing the agent to maintain state over several days with low-latency access. Asynchronous task orchestration and fault-tolerance are achieved via Pub/Sub, decoupling agent actions and enabling robust retry mechanisms for complex multi-step processes. Vertex AI Agent Builder and LangChain provide the core AI capabilities and workflow management, integrated within Cloud Run. Comprehensive observability is delivered through OpenTelemetry, Cloud Monitoring, and Cloud Logging, with BigQuery performing advanced analytics on interaction data. Master these patterns to build the next generation of resilient AI assistants!",
+    "tags": [
+      "Generative AI",
+      "CloudArchitect",
+      "Interview Question",
+      "AI",
+      "System Design",
+      "Google Cloud",
+      "Cloud Run",
+      "Pub/Sub",
+      "Firestore",
+      "Vertex AI",
+      "LangChain",
+      "Fault Tolerance",
+      "High Availability",
+      "Conversational AI",
+      "Agentic AI",
+      "Long-Running Workflows",
+      "Cloud Functions",
+      "Observability",
+      "BigQuery",
+      "Microservices"
+    ],
+    "category": "Education",
+    "playlist": "Generative AI Daily Interview Questions"
+  },
+  "instagram": {
+    "caption": "Building an AI agent that remembers? 🤔\n\nDiscover how to architect highly available and fault-tolerant Generative AI agents on Google Cloud.\nLearn to maintain multi-day conversational context using Firestore and Pub/Sub for complex workflows.\nExplore the synergy of Cloud Run, Vertex AI, and LangChain for resilient AI system design.\nGet hands-on with observability using OpenTelemetry, Monitoring, and Logging.\n\n#GenerativeAI #CloudArchitecture #AIAgent #SystemDesign #GoogleCloud #CloudRun #Firestore #PubSub #VertexAI #LangChain #FaultTolerant #HighAvailability #ConversationalAI #AIChatbot #TechInterview #CloudEngineering #DevOps #AIdeveloper #LongRunningAI #DataArchitecture",
+    "cover_text": "Build Resilient Long-Running AI Agents on GCP"
+  },
+  "tiktok": {
+    "caption": "Need AI that remembers and never fails? 🧠 Learn to build fault-tolerant, long-running Generative AI agents on Google Cloud! #AIAgent #GCP #SystemDesign #AI",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

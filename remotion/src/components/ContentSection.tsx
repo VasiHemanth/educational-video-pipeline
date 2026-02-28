@@ -17,7 +17,7 @@ const G = {
 const ACCENTS = [G.blue, G.purple, G.orange, G.green];
 
 function isKeyword(rawWord: string, keywords: AnswerSection['keywords']): boolean {
-    const cleanWord = rawWord.replace(/\*/g, ''); 
+    const cleanWord = rawWord.replace(/\*/g, '');
     const clean = cleanWord.replace(/[.,;:!?'"()]/g, '').toLowerCase();
     if (keywords?.tech_terms?.some(k => clean.includes(k.toLowerCase()))) return true;
     if (keywords?.concepts?.some(k => clean.includes(k.toLowerCase()))) return true;
@@ -38,7 +38,11 @@ export const ContentSection: React.FC<{
 
     const animStyle = config?.animStyle || 'highlight';
 
-    const words = section.text?.split(' ') || [];
+    // Use text as primary text source for screen display
+    // Split by newlines first to handle \n line breaks in the text field
+    const rawText = section.text || section.spoken_audio || '';
+    const lines = rawText.split('\n').filter((l: string) => l.trim().length > 0);
+    const words = rawText.split(' ');
 
     const secTiming = config?.sectionTimings?.find(s => s.id === section.id);
     const phaseA = secTiming ? secTiming.phaseAFrames : words.length * 4;
@@ -56,14 +60,12 @@ export const ContentSection: React.FC<{
     const fadeOutStart = durationInFrames - 15;
     const containerOpacity = interpolate(frame, [fadeOutStart, durationInFrames], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
 
-    const baseFontSize = hasDiagram ? 52 : 64;
-    
+    const baseFontSize = hasDiagram ? 40 : 48; // Adjusted for 3-5 lines
+
     // Dynamic Font Sizing
     let fontSize = baseFontSize;
     if (words.length > 20) {
-        fontSize = baseFontSize - 8; // Adjust for slightly longer texts
-    } else if (words.length < 10) {
-        fontSize = baseFontSize + 4; // Slightly larger for very short texts
+        fontSize = baseFontSize - 4;
     }
 
     const progress = interpolate(frame, [0, durationInFrames], [0, 100], { extrapolateRight: 'clamp' });
@@ -84,27 +86,27 @@ export const ContentSection: React.FC<{
                 pointerEvents: 'none'
             }} />
 
-            {/* --- TITLE --- */}
-            <div style={{ 
-                position: 'absolute', 
-                top: 140, left: 60, right: 60, 
+            {/* --- TITLE (TOP ZONE) — cleared Instagram top chrome ~180px --- */}
+            <div style={{
+                position: 'absolute',
+                top: 200, left: 80, right: 200,
                 textAlign: 'left',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '8px'
+                gap: '4px'
             }}>
-                <div style={{ 
-                    fontSize: '24px', 
-                    fontWeight: 600, 
-                    color: accent, 
-                    letterSpacing: '2px', 
-                    textTransform: 'uppercase' 
+                <div style={{
+                    fontSize: '20px',
+                    fontWeight: 600,
+                    color: accent,
+                    letterSpacing: '3px',
+                    textTransform: 'uppercase'
                 }}>
                     Step 0{sectionIndex + 1}
                 </div>
-                <div style={{ 
-                    fontSize: '56px', 
-                    fontWeight: 800, 
+                <div style={{
+                    fontSize: '40px',
+                    fontWeight: 800,
                     color: G.textWhite,
                     letterSpacing: '-1px',
                     lineHeight: 1.1
@@ -113,69 +115,98 @@ export const ContentSection: React.FC<{
                 </div>
             </div>
 
-            {/* --- TEXT (TOP/MIDDLE ZONE) --- */}
+            {/* --- TEXT (TOP ZONE) — below title, newlines rendered as bullet lines --- */}
             <div style={{
                 position: 'absolute',
-                top: 280,
-                left: 60, right: 60,
-                height: hasDiagram ? '35%' : '65%',
+                top: 320,
+                left: 80, right: 80,
+                height: '22%',
                 display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start'
             }}>
                 <div style={{
-                    fontSize: `${fontSize}px`, 
+                    fontSize: `${fontSize}px`,
                     lineHeight: 1.5,
                     fontWeight: 400,
                     color: G.textMuted,
-                    textAlign: 'left', 
-                    wordBreak: 'break-word', 
+                    textAlign: 'left',
+                    wordBreak: 'break-word',
                     whiteSpace: 'normal',
                     width: '100%',
                 }}>
-                    {words.map((word, i) => {
-                        if (animStyle === 'type' && i >= wordsToReveal) return null;
-
-                        const cleanWord = word.replace(/\*/g, '');
-                        const highlight = isKeyword(word, section.keywords);
-
-                        let finalColor = G.textMuted;
-                        let finalOpacity = 1;
-                        let textShadow = 'none';
-                        let fontWeight = 400;
-
-                        if (animStyle === 'highlight') {
-                            const revealFrame = (i / words.length) * (phaseA * 0.8);
+                    {lines.length > 1 ? (
+                        // Render as structured lines with staggered reveal
+                        lines.map((line: string, lineIdx: number) => {
+                            const lineWords = line.split(' ');
+                            const lineStartWordIdx = lines.slice(0, lineIdx).join(' ').split(' ').filter((w: string) => w).length;
+                            const revealFrame = (lineStartWordIdx / Math.max(1, words.length)) * (phaseA * 0.8);
                             const isRevealed = frame >= revealFrame;
-                            
-                            if (isRevealed) {
-                                finalColor = highlight ? G.textWhite : '#D1D1D6';
-                                fontWeight = highlight ? 700 : 400;
-                                textShadow = highlight ? `0 0 20px ${accent}40` : 'none';
-                            } else {
-                                finalColor = G.textMuted;
-                                finalOpacity = 0.4;
+                            return (
+                                <div key={lineIdx} style={{
+                                    opacity: isRevealed ? 1 : 0.25,
+                                    color: G.textWhite,
+                                    marginBottom: '6px',
+                                    transition: 'opacity 0.2s',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                }}>
+                                    <span style={{ color: accent, fontWeight: 700, fontSize: `${fontSize * 0.7}px`, flexShrink: 0 }}>▸</span>
+                                    <span>
+                                        {lineWords.map((word: string, wi: number) => {
+                                            const highlight = isKeyword(word, section.keywords);
+                                            return (
+                                                <span key={wi} style={{
+                                                    color: highlight ? accent : G.textWhite,
+                                                    fontWeight: highlight ? 700 : 400,
+                                                }}>
+                                                    {word.replace(/\*/g, '')}{' '}
+                                                </span>
+                                            );
+                                        })}
+                                    </span>
+                                </div>
+                            );
+                        })
+                    ) : (
+                        // Single block of text — word-by-word highlight animation
+                        words.map((word: string, i: number) => {
+                            if (animStyle === 'type' && i >= wordsToReveal) return null;
+                            const highlight = isKeyword(word, section.keywords);
+                            let finalColor = G.textMuted;
+                            let finalOpacity = 1;
+                            let fontWeight = 400;
+                            if (animStyle === 'highlight') {
+                                const revealFrame = (i / words.length) * (phaseA * 0.8);
+                                const isRevealed = frame >= revealFrame;
+                                if (isRevealed) {
+                                    finalColor = highlight ? accent : G.textWhite;
+                                    fontWeight = highlight ? 700 : 400;
+                                } else {
+                                    finalColor = G.textMuted;
+                                    finalOpacity = 0.3;
+                                }
                             }
-                        }
-
-                        return (
-                            <span key={i} style={{ 
-                                color: finalColor, 
-                                opacity: finalOpacity, 
-                                transition: 'color 0.2s, opacity 0.2s',
-                                fontWeight: fontWeight,
-                                textShadow: textShadow
-                            }}>
-                                {cleanWord}{' '}
-                            </span>
-                        );
-                    })}
+                            return (
+                                <span key={i} style={{
+                                    color: finalColor,
+                                    opacity: finalOpacity,
+                                    transition: 'color 0.15s, opacity 0.15s',
+                                    fontWeight: fontWeight,
+                                }}>
+                                    {word.replace(/\*/g, '')}{' '}
+                                </span>
+                            );
+                        })
+                    )}
                 </div>
             </div>
 
-            {/* --- DIAGRAM (BOTTOM ZONE) --- */}
+            {/* --- DIAGRAM (MIDDLE ZONE) --- */}
             {hasDiagram && (
                 <div style={{
                     position: 'absolute',
-                    top: '45%', bottom: 120, left: 60, right: 60,
+                    top: '36%', bottom: '8%', // Expanded: more height for diagram (~1075px usable)
+                    left: 60, right: 60,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     transform: `translateY(${diagramY}px)`,
                     opacity: diagramOpacity,
@@ -196,31 +227,30 @@ export const ContentSection: React.FC<{
                 </div>
             )}
 
-            {/* --- WATERMARK --- */}
-            <div style={{ 
-                position: 'absolute', 
-                bottom: 40, right: 60, 
-                textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end',
+            {/* --- WATERMARK — bottom-left, avoids Instagram share/save buttons on right --- */}
+            <div style={{
+                position: 'absolute',
+                bottom: 60, left: 80,
+                textAlign: 'left', display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+                opacity: 0.55
             }}>
                 <div style={{
-                    fontSize: '12px', fontWeight: 700, color: G.textMuted,
+                    fontSize: '13px', fontWeight: 700, color: G.textMuted,
                     letterSpacing: '3px', textTransform: 'uppercase',
-                    opacity: 0.8
                 }}>
                     AI Cloud Architect
                 </div>
                 <div style={{
-                    fontSize: '10px', fontWeight: 500, color: G.textMuted, 
-                    letterSpacing: '1.5px', textTransform: 'uppercase', marginTop: '4px',
-                    opacity: 0.5
+                    fontSize: '11px', fontWeight: 500, color: G.textMuted,
+                    letterSpacing: '1px', textTransform: 'uppercase', marginTop: '4px',
                 }}>
-                    Hemanth Vasi
+                    by Hemanth Vasi
                 </div>
             </div>
 
-            {/* --- PROGRESS BAR (FULL WIDTH) --- */}
-            <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '8px', backgroundColor: G.border }}>
-                <div style={{ width: `${progress}%`, height: '100%', backgroundColor: accent }} />
+            {/* --- PROGRESS BAR (FULL WIDTH AT BOTTOM) --- */}
+            <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '12px', backgroundColor: 'rgba(255,255,255,0.05)' }}>
+                <div style={{ width: `${progress}%`, height: '100%', backgroundColor: accent, boxShadow: `0 0 20px ${accent}` }} />
             </div>
         </AbsoluteFill>
     );

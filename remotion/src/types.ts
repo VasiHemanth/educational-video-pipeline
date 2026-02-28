@@ -10,6 +10,7 @@ export interface AnswerSection {
     id: string;
     title: string;
     text: string;
+    spoken_audio?: string;  // Optional fallback if text is empty
     keywords: {
         tech_terms?: string[];
         action_verbs?: string[];

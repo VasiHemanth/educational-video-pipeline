@@ -1,0 +1,42 @@
+{
+  "youtube": {
+    "title": "Generative AI Interview Q4002: GCP Event-Driven AI: Real-time Sentiment! #Shorts",
+    "description": "Explore a robust event-driven architecture on Google Cloud for real-time customer interaction sentiment analysis. Ingest live data via Pub/Sub, process with Dataflow for sentiment extraction, and store in BigQuery for analytics. Vertex AI then leverages this data for automated response generation through its Generative AI capabilities. Cloud Monitoring and Vertex AI Model Monitoring ensure system health and model performance. Master this scalable GCP solution for intelligent customer engagement.",
+    "tags": [
+      "Generative AI",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "GCP",
+      "GoogleCloud",
+      "PubSub",
+      "Dataflow",
+      "BigQuery",
+      "VertexAI",
+      "SentimentAnalysis",
+      "RealtimeAnalytics",
+      "EventDriven",
+      "CloudMonitoring",
+      "ModelMonitoring",
+      "AutomatedResponse",
+      "TechInterview",
+      "CloudComputing"
+    ],
+    "category": "Education",
+    "playlist": "Generative AI Daily Interview Questions"
+  },
+  "thumbnail": {
+    "headline": "Real-time AI Sentiment",
+    "subheadline": "GCP Event-Driven Architecture for Automated AI Responses"
+  },
+  "instagram": {
+    "caption": "Unlock the power of real-time sentiment analysis with Generative AI on GCP!\n\nLearn how Pub/Sub, Dataflow, and BigQuery form the backbone of this event-driven architecture.\nDiscover how Vertex AI processes sentiment and generates automated responses.\nMonitor your AI models and infrastructure with Cloud Monitoring for peak performance.\nElevate customer interactions with intelligent, scalable solutions.\n#GenerativeAI #CloudArchitect #Interview #AI #SystemDesign #GCP #GoogleCloud #PubSub #Dataflow #BigQuery #VertexAI #SentimentAnalysis #RealtimeAnalytics #EventDriven #CloudMonitoring #ModelMonitoring #AutomatedResponse #TechInterview #CloudComputing",
+    "cover_text": "GCP AI Sentiment"
+  },
+  "tiktok": {
+    "caption": "Real-time sentiment analysis meets Generative AI on GCP! 🚀 Learn event-driven architecture for automated customer responses. #GCP #GenerativeAI #SentimentAnalysis #Tech",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

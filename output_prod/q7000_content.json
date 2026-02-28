@@ -1,0 +1,196 @@
+{
+  "question_number": 7000,
+  "topic": "Highly Scalable RAG Systems",
+  "question_text": "How would you design a RAG system on Google Cloud to handle 10,000 queries per second with sub-100ms latency and high accuracy?",
+  "hook_text": "Ever wondered how to build a RAG system on Google Cloud that scales to 10,000 queries per second? This is how.",
+  "cta_text": "Follow for cutting-edge Cloud Architect insights!",
+  "tech_terms": [
+    "Google Cloud",
+    "Vertex AI",
+    "Gemini",
+    "Vertex AI Vector Search",
+    "Cloud Run",
+    "Cloud Storage",
+    "Document AI",
+    "Vertex AI Embeddings API",
+    "LangChain",
+    "Vertex AI Agent Engine",
+    "Eventarc",
+    "BigQuery",
+    "VPC Service Controls",
+    "IAM",
+    "Vertex AI Safety Filters",
+    "LangGraph",
+    "Hybrid Search",
+    "Context Caching"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Scalable Data Ingestion",
+      "text": "Efficiently ingest and chunk data from Cloud Storage using Eventarc, Document AI, and Vertex AI Embeddings for Vector Search.",
+      "spoken_audio": "Data ingestion begins with Cloud Storage and Eventarc triggers, processed by Cloud Run or Document AI for chunking. Vertex AI Embeddings API then creates vector embeddings, stored efficiently in Vertex AI Vector Search.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Storage",
+          "Eventarc",
+          "Cloud Run",
+          "Document AI",
+          "Vertex AI Embeddings API",
+          "Vertex AI Vector Search"
+        ],
+        "action_verbs": [
+          "begins",
+          "triggers",
+          "processed",
+          "creates",
+          "stored"
+        ],
+        "concepts": [
+          "Data ingestion",
+          "chunking",
+          "vector embeddings"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "High-Performance Serving",
+      "text": "Serve queries with Cloud Run, retrieve context from Vertex AI Vector Search, and generate with Gemini, grounded by Vertex AI Search.",
+      "spoken_audio": "The serving pipeline uses Cloud Run for user queries, orchestrating retrieval via Vertex AI Vector Search. Grounded generation leverages Gemini 1.5 Pro or Flash, with Vertex AI Search for factual verification, ensuring accuracy and speed.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Run",
+          "Vertex AI Vector Search",
+          "Gemini 1.5 Pro",
+          "Gemini 1.5 Flash",
+          "Vertex AI Search"
+        ],
+        "action_verbs": [
+          "uses",
+          "orchestrating",
+          "leverages",
+          "ensuring"
+        ],
+        "concepts": [
+          "serving pipeline",
+          "user queries",
+          "retrieval",
+          "Grounded generation",
+          "factual verification",
+          "accuracy",
+          "speed"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Optimization & Observability",
+      "text": "Utilize Hybrid Search, Agentic RAG, and Context Caching for optimization. Evaluate RAG performance with Vertex AI Gen AI Evaluation.",
+      "spoken_audio": "Optimize with Hybrid Search for precise retrieval, Agentic RAG for complex workflows, and Gemini Context Caching for repeat queries. Monitor performance with Vertex AI Gen AI Evaluation for groundedness and safety.",
+      "keywords": {
+        "tech_terms": [
+          "Hybrid Search",
+          "Agentic RAG",
+          "Gemini Context Caching",
+          "Vertex AI Gen AI Evaluation"
+        ],
+        "action_verbs": [
+          "Optimize",
+          "Monitor",
+          "Evaluate"
+        ],
+        "concepts": [
+          "precise retrieval",
+          "complex workflows",
+          "repeat queries",
+          "performance",
+          "groundedness",
+          "safety"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Ingestion Pipeline",
+      "type": "flowchart",
+      "dsl": "(Data Source: GCS) -> [Eventarc Trigger] -> [Cloud Run / Document AI (Chunking)] -> [Vertex AI Embeddings API] -> [[Vertex AI Vector Search]]",
+      "animation_sequence": [
+        "Data Source: GCS",
+        "arrow1",
+        "Eventarc Trigger",
+        "arrow2",
+        "Cloud Run / Document AI (Chunking)",
+        "arrow3",
+        "Vertex AI Embeddings API",
+        "arrow4",
+        "Vertex AI Vector Search"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Serving Pipeline",
+      "type": "flowchart",
+      "dsl": "(User Query) -> [Cloud Run (Frontend)] -> [Orchestration (LangChain/Agent Engine)] -> [Vertex AI Vector Search (Retrieval)] -> [Gemini 1.5 Pro/Flash (Generation)] -> [Vertex AI Search (Grounding)] -> (Response)",
+      "animation_sequence": [
+        "User Query",
+        "arrow1",
+        "Cloud Run (Frontend)",
+        "arrow2",
+        "Orchestration (LangChain/Agent Engine)",
+        "arrow3",
+        "Vertex AI Vector Search (Retrieval)",
+        "arrow4",
+        "Gemini 1.5 Pro/Flash (Generation)",
+        "arrow5",
+        "Vertex AI Search (Grounding)",
+        "arrow6",
+        "Response"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Advanced Features",
+      "type": "flowchart",
+      "dsl": "[Query] --> \"Hybrid Search\" --> [Vertex AI Vector Search]\n[Complex Workflow] --> \"Agentic RAG\" --> [LLM]\n[Frequent Query] --> \"Context Caching\" --> [LLM]\n[[Performance Metrics]] -> [Vertex AI Gen AI Evaluation]",
+      "animation_sequence": [
+        "Query",
+        "arrow1",
+        "Hybrid Search",
+        "arrow2",
+        "Vertex AI Vector Search",
+        "Complex Workflow",
+        "arrow3",
+        "Agentic RAG",
+        "arrow4",
+        "LLM",
+        "Frequent Query",
+        "arrow5",
+        "Context Caching",
+        "arrow6",
+        "LLM",
+        "Performance Metrics",
+        "arrow7",
+        "Vertex AI Gen AI Evaluation"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "Building Ultra-Scalable RAG on Google Cloud",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#GoogleCloud",
+    "#Interview",
+    "#RAG",
+    "#GenerativeAI"
+  ],
+  "domain": "Generative AI"
+}

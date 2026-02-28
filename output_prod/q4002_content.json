@@ -1,0 +1,131 @@
+{
+  "question_number": 4002,
+  "topic": "Event-driven architecture for real-time analytics",
+  "question_text": "How would you design an event-driven architecture on GCP to provide real-time sentiment analysis for customer interactions, feeding into a Generative AI system for automated response generation?",
+  "hook_text": "Unlock real-time customer insights! Build an event-driven Generative AI architecture on Google Cloud that scales.",
+  "cta_text": "Master real-time AI; follow for daily Cloud Architect insights!",
+  "tech_terms": [
+    "Google Cloud",
+    "Pub/Sub",
+    "Dataflow",
+    "BigQuery",
+    "Vertex AI",
+    "Cloud Monitoring",
+    "Vertex AI Model Monitoring",
+    "Generative AI"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Ingest & Stream",
+      "text": "Capture customer events, stream to Pub/Sub, process with Dataflow.",
+      "spoken_audio": "Real-time customer interaction events are captured, published to Google Cloud Pub/Sub, and then processed for initial sentiment extraction using Dataflow.",
+      "keywords": {
+        "tech_terms": [
+          "Pub/Sub",
+          "Dataflow"
+        ],
+        "action_verbs": [
+          "Capture",
+          "stream",
+          "process"
+        ],
+        "concepts": [
+          "customer events",
+          "sentiment extraction"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Analyze & Infer",
+      "text": "Analyze processed data in BigQuery, trigger Generative AI via Vertex AI.",
+      "spoken_audio": "Processed data lands in BigQuery for real-time analytics, triggering Vertex AI for Generative AI model inference to draft intelligent responses.",
+      "keywords": {
+        "tech_terms": [
+          "BigQuery",
+          "Vertex AI",
+          "Generative AI"
+        ],
+        "action_verbs": [
+          "Analyze",
+          "trigger"
+        ],
+        "concepts": [
+          "real-time analytics",
+          "model inference"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Monitor & Refine",
+      "text": "Monitor model performance, continuously refine with feedback loop.",
+      "spoken_audio": "Continuous monitoring of Generative AI model performance using Vertex AI Model Monitoring ensures quality, with feedback loops enabling iterative model refinement.",
+      "keywords": {
+        "tech_terms": [
+          "Vertex AI Model Monitoring"
+        ],
+        "action_verbs": [
+          "Monitor",
+          "refine"
+        ],
+        "concepts": [
+          "model performance",
+          "feedback loop"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Event Ingestion Flow",
+      "type": "flowchart",
+      "dsl": "(Customer Events) -> [Pub/Sub] -> [Dataflow]",
+      "animation_sequence": [
+        "Customer Events",
+        "Pub/Sub",
+        "Dataflow"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Analytics & AI Inference",
+      "type": "flowchart",
+      "dsl": "[Dataflow] -> [[BigQuery]] -> [Vertex AI]",
+      "animation_sequence": [
+        "Dataflow",
+        "BigQuery",
+        "Vertex AI"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Continuous Improvement Loop",
+      "type": "flowchart",
+      "dsl": "[Vertex AI] --> \"logs\" [Cloud Monitoring] --> \"retrain\" [Vertex AI Workbench]",
+      "animation_sequence": [
+        "Vertex AI",
+        "Cloud Monitoring",
+        "Vertex AI Workbench"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "GCP Event-Driven AI for Real-Time Analytics",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#GoogleCloud",
+    "#Interview",
+    "#GenerativeAI",
+    "#EventDriven"
+  ],
+  "domain": "Generative AI"
+}

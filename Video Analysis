@@ -1,0 +1,159 @@
+# Video Pipeline Analysis: `instagram_q5.MP4`
+
+## Video Technical Details
+
+| Property | Value |
+|----------|-------|
+| Resolution | **886×1920** (non-standard) |
+| Codec | HEVC / H.265 |
+| Duration | 41.16 seconds |
+| FPS | ~60 fps (variable) |
+| Bitrate | ~3 Mbps |
+| Audio | AAC LC, 44.1kHz, stereo |
+
+---
+
+## 🔴 Issue 1: Wrong Output Resolution (886×1920)
+
+The Remotion composition is configured for **1080×1920** in [Root.tsx](file:///Users/hemanthvasi/Documents/Developer/education_video/remotion/src/Root.tsx#L76-L77), but the actual output is **886×1920**. This is likely caused by the screen recording/capture method rather than Remotion itself (the video was recorded from an iPhone screen — the `Core Media Video` handler confirms this). This means the video was **screen-recorded from Instagram playback**, not the raw Remotion output.
+
+> [!IMPORTANT]
+> The actual rendered Remotion output is likely 1080×1920. The issues below come from the Remotion rendering pipeline itself, viewed through the Instagram playback screen recording.
+
+---
+
+## 🔴 Issue 2: Title/Header Clashing with Instagram Safe Zone
+
+````carousel
+![Intro screen — content sits high but the bottom half is completely wasted empty space](intro_frame.jpg)
+<!-- slide -->
+![Section 1 — "STEP 01" and "Scalable RAG Architecture" clash with Instagram's top UI (Reels back arrow, search icon)](section1_text.jpg)
+````
+
+**What's wrong:** In content sections, the title zone (`top: 100px, left: 80px`) places "STEP 01" and the section title directly into the Instagram top UI safe zone where the "Reels" label, back arrow, search icon, and profile avatar sit. The text is unreadable because it overlaps with Instagram's chrome.
+
+**Root cause in** [ContentSection.tsx](file:///Users/hemanthvasi/Documents/Developer/education_video/remotion/src/components/ContentSection.tsx#L87-L113):
+```tsx
+// Title positioned at top: 100px — too close for Instagram Reels overlay
+top: 100, left: 80, right: 240,
+```
+
+**Fix needed:** Push the title zone down to at least `top: 200px` to clear Instagram's top UI chrome (~180px).
+
+---
+
+## 🔴 Issue 3: Text Uses `spoken_audio` Instead of `text` — Wrong Content Displayed
+
+![Section showing spoken_audio text rather than structured bullet points](section1_text.jpg)
+
+**What's wrong:** The content sections display the `spoken_audio` field (long prose sentences) instead of the `text` field (structured bullet points). The `text` field contains concise, scannable bullet-style content like:
+```
+"Implement RAG workflow.\nVector DB retrieval.\nOptimize inference performance.\nScale grounded AI responses."
+```
+
+But the video shows: *"Leverage RAG architecture with robust data ingestion, vector database, and high-throughput inference endpoints for scalable Gen AI."* — this is the `spoken_audio` field.
+
+**Root cause in** [ContentSection.tsx](file:///Users/hemanthvasi/Documents/Developer/education_video/remotion/src/components/ContentSection.tsx#L42):
+```tsx
+// This fallback chain means spoken_audio is used when text contains newlines
+const words = (section.text || section.spoken_audio || '').split(' ');
+```
+
+The `text` field contains `\n` characters which aren't being handled properly — the text is split by spaces only, so newlines just become invisible. The `spoken_audio` content appears because the pipeline may be passing it in the `text` field, or the `text` content isn't rendering newlines as line breaks.
+
+**Fix needed:** Parse `\n` in the `text` field as actual line breaks, and ensure the `text` field (not `spoken_audio`) is being used for on-screen display.
+
+---
+
+## 🔴 Issue 4: Diagrams Are Vertical (TB) When They Should Be Horizontal (LR)
+
+````carousel
+![Section 1 diagram — 7 nodes stacked vertically, overflowing the bottom](section1_diagram.jpg)
+<!-- slide -->
+![Section 2 diagram — 6 nodes vertically, "Monitor" node cut off at bottom](section2_diagram.jpg)
+<!-- slide -->
+![Section 3 diagram — 6 nodes vertically, "Audit" node nearly cut off](section3_diagram.jpg)
+````
+
+**What's wrong:** All three diagrams are rendered as **vertical (TB — top-to-bottom)** flowcharts, despite the content JSON specifying `"direction": "LR"` (left-to-right). With 6-7 nodes stacked vertically in a portrait video, the diagrams overflow the available space. The bottom nodes get clipped or pushed into the Instagram bottom chrome zone.
+
+**Root cause in** [NativeDiagram.tsx](file:///Users/hemanthvasi/Documents/Developer/education_video/remotion/src/components/NativeDiagram.tsx#L24):
+```tsx
+const isLR = graph.direction !== 'TB';
+```
+
+The logic is correct, but the **JSON DSL being passed in the `dsl` field** is likely overriding the direction. The `dsl` field from `q5_content.json` is a string DSL format (`([User Query]) -> (Search) -> ...`), but the DSL is being parsed by `remotionDslRefinementPrompt` into a JSON graph — and that LLM-refined JSON may be setting `direction: "TB"` regardless of the content JSON.
+
+**Fix needed:** Either:
+1. Force `direction: "LR"` when node count > 3 on a portrait canvas
+2. Or fix the LLM prompt to always output `"direction": "LR"` for flowcharts
+
+---
+
+## 🟡 Issue 5: Diagram Nodes Are Too Large and Overflow
+
+**What's wrong:** Each diagram node has `padding: 45px 60px`, `fontSize: 52px`, `minWidth: 300px` — these are **way too large** for a 1080px wide portrait frame with 6-7 nodes. The scale-down logic (`scaleFactor`) tries to compensate but the minimum is `0.55`, which still results in overflow.
+
+**Root cause in** [NativeDiagram.tsx](file:///Users/hemanthvasi/Documents/Developer/education_video/remotion/src/components/NativeDiagram.tsx#L100-L118):
+```tsx
+padding: '45px 60px',           // Too much padding
+fontSize: '52px',               // Too large for 6-7 nodes
+minWidth: '300px',              // Forces nodes wider than needed
+maxWidth: '500px',
+```
+
+**Fix needed:** Dynamic sizing based on node count — e.g., `fontSize: Math.max(24, 52 - (nodeCount * 4))`.
+
+---
+
+## 🟡 Issue 6: Massive Empty Space in Sections
+
+![Content section with text in top 25% and empty bottom 75%](section2_text.jpg)
+
+**What's wrong:** The text zone takes up only the top ~25% of the screen. Before the diagram animates in, there's a huge empty black void filling ~60% of the screen. This looks unprofessional and wastes valuable screen real estate on a Reel.
+
+**Root cause:** The text zone is positioned at `top: 220px` with `height: 20%` — it only occupies 384px of a 1920px canvas. The diagram doesn't appear until `phaseA + phaseB` frames later.
+
+**Fix needed:** 
+- Make the text zone taller and vertically centered until the diagram appears
+- Or use a staggered reveal where text starts centered, then slides up when the diagram animates in
+
+---
+
+## 🟡 Issue 7: Watermark Overlaps with Instagram Bottom UI
+
+**What's wrong:** The "AI CLOUD ARCHITECT / BY HEMANTH VASI" watermark at `bottom: 240px, right: 80px` sits right where Instagram's share button and UI controls are. It's barely visible and competes with the platform chrome.
+
+**Root cause in** [ContentSection.tsx](file:///Users/hemanthvasi/Documents/Developer/education_video/remotion/src/components/ContentSection.tsx#L196-L214):
+```tsx
+bottom: 240, right: 80,  // Conflicts with Instagram's share/save buttons
+opacity: 0.4             // Too faint
+```
+
+---
+
+## 🟢 Issue 8: Intro Screen — Good Design, But Excessive Empty Space
+
+![Intro screen with question text centered in top 40%](intro_frame.jpg)
+
+The intro looks decent — clean Apple-esque dark mode with "GENERATIVE AI / Question 5" and the question text. However, the **bottom 55% is completely empty**. On Instagram Reels, this is wasted real estate.
+
+**Minor fix:** Add a subtle visual element in the bottom half (tech term chips, animated particles, or a gradient accent).
+
+---
+
+## Summary of Issues by Priority
+
+| Priority | Issue | Component | Impact |
+|----------|-------|-----------|--------|
+| 🔴 Critical | Title clashes with Instagram top chrome | `ContentSection.tsx` | Unreadable title |
+| 🔴 Critical | Wrong text field displayed (spoken_audio vs text) | `ContentSection.tsx` | Wrong content shown |
+| 🔴 Critical | Diagrams forced vertical, overflow canvas | `NativeDiagram.tsx` | Nodes clipped/cut off |
+| 🟡 Major | Diagram nodes too large for node count | `NativeDiagram.tsx` | Visual overflow |
+| 🟡 Major | 60%+ empty space before diagram appears | `ContentSection.tsx` | Unprofessional look |
+| 🟡 Major | Watermark overlaps Instagram controls | `ContentSection.tsx` | Hidden branding |
+| 🟢 Minor | Intro has 55% empty space at bottom | `Intro.tsx` | Wasted real estate |
+| 🟢 Minor | Newlines in text not rendered as breaks | `ContentSection.tsx` | Text runs together |
+
+> [!TIP]
+> The most impactful fix would be addressing the **Instagram safe zones** (top ~200px, bottom ~300px) across all components, and fixing the **diagram direction and sizing** in `NativeDiagram.tsx`. These changes alone would dramatically improve the video quality.

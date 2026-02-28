@@ -1,0 +1,38 @@
+{
+  "youtube": {
+    "title": "GCP Interview Q1005: Architecting Scalable Multi-Agent AI on Google Cloud #Shorts",
+    "description": "This video details how to architect a scalable and secure multi-agent system on Google Cloud. Leveraging Vertex AI Agent Builder and ADK, agents are developed and orchestrated through the Vertex AI Agent Engine, with Managed Sessions providing stateful execution. Secure Code Execution and Agentic IAM govern operations, while the Agent-to-Agent Protocol facilitates inter-agent communication. BigQuery Continuous Queries and Vertex AI Search with Vector Search enable real-time data integration, powered by Gemini 1.5 Pro and Vertex AI Reasoning Engine for advanced intelligence. Frameworks like LangChain and CrewAI, alongside Firebase Genkit, streamline development. Master scalable AI on GCP!",
+    "tags": [
+      "GCP",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "VertexAI",
+      "AgenticAI",
+      "MultiAgentSystems",
+      "GenAI",
+      "GoogleCloud",
+      "CloudComputing",
+      "ArchitectureDesign",
+      "ScalableSystems",
+      "SecureAI",
+      "LongRunningWorkflows",
+      "Gemini1_5Pro",
+      "LangChain",
+      "CrewAI",
+      "FirebaseGenkit"
+    ],
+    "category": "Education",
+    "playlist": "GCP Daily Interview Questions"
+  },
+  "instagram": {
+    "caption": "Designing cutting-edge multi-agent AI on GCP? 🤔\n\n✨ Discover how Vertex AI Agent Builder, Gemini 1.5 Pro, and advanced security protocols converge to create scalable, long-running agentic workflows.\n🚀 Master the interplay of Agent Development Kit, Vertex AI Agent Engine, and Agent-to-Agent Protocol for seamless system communication.\n🔒 Implement robust security with Agentic IAM and Secure Code Execution, ensuring data integrity across your AI architecture.\n💡 Integrate BigQuery Continuous Queries & Vertex AI Search/Vector Search for dynamic, real-time data insights.\n\n#GCP #CloudArchitect #Interview #AI #SystemDesign #VertexAI #AgenticAI #MultiAgentSystems #GenAI #GoogleCloud #ArchitectureDesign #ScalableAI #SecureAI #Gemini1_5Pro #LangChain #CrewAI #FirebaseGenkit #BigQuery #VectorSearch #AIML",
+    "cover_text": "Master GCP Multi-Agent Systems"
+  },
+  "tiktok": {
+    "caption": "Build future-proof multi-agent AI on GCP! 🚀 Learn scalable architecture with Vertex AI, Gemini 1.5 Pro & more. Unlock advanced AI solutions today! #GCP #AI #AgenticAI #Cloud",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

@@ -109,10 +109,10 @@ async function run() {
 
     // Use the correct refinement prompt based on diagram mode
     const refinePrompt = DIAGRAM_MODE === 'mermaid'
-      ? mermaidDslRefinementPrompt(diagram, section?.text || '', DOMAIN)
+      ? mermaidDslRefinementPrompt(diagram, section?.spoken_audio || section?.text || '', DOMAIN)
       : DIAGRAM_MODE === 'remotion'
-      ? remotionDslRefinementPrompt(diagram, section?.text || '', DOMAIN)
-      : dslRefinementPrompt(diagram, section?.text || '', DOMAIN);
+      ? remotionDslRefinementPrompt(diagram, section?.spoken_audio || section?.text || '', DOMAIN)
+      : dslRefinementPrompt(diagram, section?.spoken_audio || section?.text || '', DOMAIN);
 
     const refinedDsl = await askJSON(refinePrompt).catch(() => ({ dsl: diagram.dsl })); // fallback to original DSL on parse fail
 
@@ -139,21 +139,23 @@ async function run() {
   fs.writeFileSync(metaPath, JSON.stringify(metadata, null, 2));
 
   // ── STEP 4: Assemble video(s) ────────────────────────────────────────────────
-  console.log('\\n🎬 STEP 4/4 — Assembling video(s)...');
+  console.log('\n🎬 STEP 4/4 — Assembling video(s)...');
   // Note: pass null for audio in prototype — wire up TTS here in Phase 2
 
   const renderedVideos = {}; // Record of platform -> filePath
+  let lastThumbnailPath = null;
 
   for (const platform of TARGET_PLATFORMS) {
-    console.log(`\\n   ⚙️  Building for platform: ${platform.toUpperCase()}`);
-    const videoPath = await assembleVideo(contentJson, diagrams, metadata, NUMBER, USE_REMOTION, {
+    console.log(`\n   ⚙️  Building for platform: ${platform.toUpperCase()}`);
+    const result = await assembleVideo(contentJson, diagrams, metadata, NUMBER, USE_REMOTION, {
       animStyle: ANIM_STYLE,
       pauseFrames: PAUSE_FRAMES,
       noProgress: NO_PROGRESS,
       useHook: USE_HOOK,
       platform: platform // Pass the platform config to Remotion!
     });
-    renderedVideos[platform] = videoPath;
+    renderedVideos[platform] = result.videoPath;
+    lastThumbnailPath = result.thumbnailPath;
   }
 
   // ── TRACK IN DB ─────────────────────────────────────────────────────────────
@@ -166,8 +168,8 @@ async function run() {
   const videoId = await trackVideo(DOMAIN, TOPIC, NUMBER, contentJson.question_text || "", allConcepts, null, path.basename(firstVideoPath));
 
   if (AUTO_POST) {
-    console.log('\\n🚀 Auto-posting flag detected! Triggering social uploads...');
-    await postToAllPlatforms(videoId, renderedVideos, metadata);
+    console.log('\n🚀 Auto-posting flag detected! Triggering social uploads...');
+    await postToAllPlatforms(videoId, renderedVideos, metadata, lastThumbnailPath);
   }
 
   // ── Summary ───────────────────────────────────────────────────────────────────

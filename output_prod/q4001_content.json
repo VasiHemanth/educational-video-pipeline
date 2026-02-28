@@ -1,0 +1,131 @@
+{
+  "question_number": 4001,
+  "topic": "Event-driven architecture for real-time analytics",
+  "question_text": "How would you design an event-driven architecture on Google Cloud for real-time customer behavior analytics, integrating Generative AI for personalized recommendations?",
+  "hook_text": "Unlock instant customer insights with GenAI. Here's how to build a real-time event-driven analytics system on Google Cloud.",
+  "cta_text": "Master real-time analytics! Save this for your next Cloud Architect challenge.",
+  "tech_terms": [
+    "Google Cloud Pub/Sub",
+    "Google Cloud Dataflow",
+    "Vertex AI",
+    "BigQuery",
+    "Looker",
+    "Generative AI",
+    "Event-driven architecture",
+    "real-time analytics"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Ingest Events with Pub/Sub",
+      "text": "Capture real-time user events via Pub/Sub for scalable, reliable ingestion.",
+      "spoken_audio": "First, we leverage Google Cloud Pub/Sub to efficiently capture vast streams of real-time user interaction events. Its global scale ensures reliable and low-latency data ingestion.",
+      "keywords": {
+        "tech_terms": [
+          "Pub/Sub"
+        ],
+        "action_verbs": [
+          "Capture"
+        ],
+        "concepts": [
+          "real-time user events",
+          "scalable, reliable ingestion"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Process and Enrich with Dataflow, GenAI",
+      "text": "Dataflow processes events, enriches them, and triggers GenAI for insights.",
+      "spoken_audio": "Google Cloud Dataflow then processes these events, performs transformations, and enriches them. Critically, it orchestrates calls to Vertex AI's Generative AI models for real-time insights and feature extraction.",
+      "keywords": {
+        "tech_terms": [
+          "Dataflow",
+          "GenAI",
+          "Vertex AI"
+        ],
+        "action_verbs": [
+          "processes",
+          "enriches",
+          "triggers"
+        ],
+        "concepts": [
+          "insights"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Real-time Personalization with BigQuery, Looker",
+      "text": "Deliver personalized recommendations and dashboards using BigQuery and Looker.",
+      "spoken_audio": "Finally, processed data flows into BigQuery for analytics and immediate personalized recommendations. Looker provides real-time dashboards for continuous monitoring and actionable business intelligence from the enriched data.",
+      "keywords": {
+        "tech_terms": [
+          "BigQuery",
+          "Looker"
+        ],
+        "action_verbs": [
+          "Deliver"
+        ],
+        "concepts": [
+          "personalized recommendations",
+          "dashboards"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Event Ingestion Flow",
+      "type": "flowchart",
+      "dsl": "(User Actions) -> [Publish Event] -> [[Google Cloud Pub/Sub]]",
+      "animation_sequence": [
+        "User Actions",
+        "Publish Event",
+        "Google Cloud Pub/Sub"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Processing & GenAI Enrichment",
+      "type": "flowchart",
+      "dsl": "[[Google Cloud Pub/Sub]] -> [Stream Dataflow] -> [Enrich Event] -> [Vertex AI GenAI Model] -> [Transformed Event]",
+      "animation_sequence": [
+        "Google Cloud Pub/Sub",
+        "Stream Dataflow",
+        "Enrich Event",
+        "Vertex AI GenAI Model",
+        "Transformed Event"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Insights & Action",
+      "type": "flowchart",
+      "dsl": "[Transformed Event] -> [[BigQuery]] -> (Personalized Recommendations) \n [[BigQuery]] --> \"BI\" [Looker Dashboard]",
+      "animation_sequence": [
+        "Transformed Event",
+        "BigQuery",
+        "Personalized Recommendations",
+        "Looker Dashboard"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "GenAI-Powered Real-time Analytics on GCP",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#GoogleCloud",
+    "#Interview",
+    "#GenerativeAI",
+    "#RealtimeAnalytics"
+  ],
+  "domain": "Generative AI"
+}

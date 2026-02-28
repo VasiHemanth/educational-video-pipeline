@@ -1,0 +1,133 @@
+{
+  "question_number": 2005,
+  "topic": "Serverless Architecture on GCP",
+  "question_text": "You need to build a highly scalable, cost-effective, and fault-tolerant serverless pipeline on GCP to process incoming sensor data from millions of IoT devices, performing real-time analytics and storing the results. How would you design this architecture?",
+  "hook_text": "Building real-time IoT data pipelines on GCP? Here's how to process millions of sensor events serverlessly!",
+  "cta_text": "Master serverless on GCP. Follow for more deep dives!",
+  "tech_terms": [
+    "Google Cloud Pub/Sub",
+    "Cloud Functions",
+    "Cloud Run",
+    "BigQuery",
+    "Cloud Monitoring",
+    "Cloud Logging",
+    "Eventarc"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Ingestion & Triggering",
+      "text": "Pub/Sub ingests data. Eventarc or direct subscriptions trigger processing.",
+      "spoken_audio": "Billions of IoT sensor readings flood in. Google Cloud Pub/Sub handles this massive ingestion, acting as a real-time messaging backbone, ensuring data durability and low latency delivery.",
+      "keywords": {
+        "tech_terms": [
+          "Pub/Sub",
+          "Eventarc"
+        ],
+        "action_verbs": [
+          "ingests",
+          "trigger"
+        ],
+        "concepts": [
+          "data",
+          "processing",
+          "subscriptions"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Processing & Transformation",
+      "text": "Cloud Functions or Cloud Run process data. Perform real-time analytics.",
+      "spoken_audio": "For light processing, Cloud Functions are ideal. For more complex transformations or ML inferences, containerized Cloud Run offers flexibility and auto-scaling, handling burst loads efficiently.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Functions",
+          "Cloud Run"
+        ],
+        "action_verbs": [
+          "process",
+          "Perform"
+        ],
+        "concepts": [
+          "data",
+          "analytics"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Storage & Observability",
+      "text": "Store results in BigQuery. Monitor with Cloud Monitoring and Logging.",
+      "spoken_audio": "Processed insights land in BigQuery, a petabyte-scale data warehouse, ready for analytics and dashboards. Cloud Monitoring and Logging provide deep visibility into pipeline health and performance.",
+      "keywords": {
+        "tech_terms": [
+          "BigQuery",
+          "Cloud Monitoring",
+          "Cloud Logging"
+        ],
+        "action_verbs": [
+          "Store",
+          "Monitor"
+        ],
+        "concepts": [
+          "results",
+          "analytics",
+          "pipeline health"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "IoT Data Ingestion",
+      "type": "flowchart",
+      "dsl": "(IoT Device) -> [Google Cloud Pub/Sub] -> [Eventarc] -> [Cloud Functions/Cloud Run]",
+      "animation_sequence": [
+        "IoT Device",
+        "Google Cloud Pub/Sub",
+        "Eventarc",
+        "Cloud Functions/Cloud Run"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Data Processing Logic",
+      "type": "flowchart",
+      "dsl": "[Cloud Functions/Cloud Run] -> [Data Processing Logic] -> [[BigQuery]]",
+      "animation_sequence": [
+        "Cloud Functions/Cloud Run",
+        "Data Processing Logic",
+        "BigQuery"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Data Storage & Monitoring",
+      "type": "flowchart",
+      "dsl": "[[BigQuery]] -> (Analytics Dashboard) @direction LR \n [Cloud Functions/Cloud Run] --> \"Logs & Metrics\" [Cloud Monitoring & Logging]",
+      "animation_sequence": [
+        "BigQuery",
+        "Analytics Dashboard",
+        "Cloud Functions/Cloud Run",
+        "Cloud Monitoring & Logging"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "Scalable IoT Data Pipelines on GCP",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#GoogleCloud",
+    "#Interview",
+    "#Serverless"
+  ],
+  "domain": "GCP"
+}

@@ -1,0 +1,36 @@
+{
+  "youtube": {
+    "title": "GCP Interview Q2: Build Serverless Image Processing on GCP #Shorts",
+    "description": "Master GCP serverless architecture! Learn to design a highly scalable and cost-effective system for image processing. User-uploaded images land in Cloud Storage, triggering an Eventarc event that publishes to Cloud Pub/Sub. This event then invokes Cloud Functions for real-time resizing and watermarking. For more complex, custom image analysis, Cloud Run microservices can be orchestrated. Finally, all processed image metadata is robustly stored in Firestore. Build resilient, auto-scaling solutions now! #GCP #Serverless #CloudArchitecture",
+    "tags": [
+      "GCP",
+      "CloudArchitect",
+      "Interview",
+      "Shorts",
+      "SystemDesign",
+      "Serverless",
+      "CloudFunctions",
+      "CloudStorage",
+      "CloudRun",
+      "Firestore",
+      "PubSub",
+      "Eventarc",
+      "ImageProcessing",
+      "Scalability",
+      "CostOptimization",
+      "GoogleCloud",
+      "Microservices",
+      "DataProcessing"
+    ],
+    "category": "Education",
+    "playlist": "GCP Daily Interview Questions"
+  },
+  "instagram": {
+    "caption": "Unlock ultimate GCP scalability! ✨\n\nDesign a robust serverless architecture on Google Cloud for seamless image processing. From user uploads to Cloud Storage, every step — resizing, watermarking, metadata storage in Firestore — is optimized. Leverage Eventarc, Pub/Sub, Cloud Functions, and Cloud Run for unparalleled efficiency and cost-effectiveness. Perfect for architects and engineers aiming to build high-performance, auto-scaling solutions.\n\n#GCP #GoogleCloud #ServerlessArchitecture #CloudComputing #SystemDesign #CloudArchitect #CloudFunctions #CloudRun #CloudStorage #Firestore #PubSub #Eventarc #ImageProcessing #ScalableArchitecture #DevOps #TechInterview #CodingLife #SoftwareEngineering",
+    "cover_text": "GCP Serverless Image Processing"
+  },
+  "tiktok": {
+    "caption": "GCP Serverless Image Processing! 🚀 Upload to Cloud Storage, resize with Cloud Functions, store metadata in Firestore. Scale infinitely, pay less! Build your cloud skills now!",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}
