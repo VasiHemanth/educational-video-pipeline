@@ -1,7 +1,67 @@
 import React from 'react';
-import { AbsoluteFill, useVideoConfig } from 'remotion';
+import { AbsoluteFill, useVideoConfig, Img, staticFile } from 'remotion';
 import { VideoProps } from '../types';
 import { NativeDiagram } from './NativeDiagram';
+
+// ── Background Wall Component ──────────────────────────────────────────────────
+const IconBackgroundWall: React.FC<{ diagrams: VideoProps['diagrams'] }> = ({ diagrams }) => {
+    // Extract unique icon names from all diagrams, limit to 3 max
+    const uniqueIcons = Array.from(new Set(
+        diagrams?.flatMap(d => {
+            if (!d.dsl) return [];
+            const parsed = typeof d.dsl === 'string' ? JSON.parse(d.dsl) : d.dsl;
+            return parsed.nodes?.map((n: any) => n.iconName)
+                .filter(Boolean)
+                .filter((name: string) => name !== 'user' && name !== 'database') || [];
+        }) || []
+    )).slice(0, 3) as string[];
+
+    if (uniqueIcons.length === 0) return null;
+
+    // Map exactly to 3 positions: Top Right, Bottom Left, Top Left
+    const scatterParams = uniqueIcons.map((iconName, i) => {
+        let left, top, size, opacity, rotate;
+        if (i === 0) {
+            // Top Left
+            left = '10%'; top = '15%'; size = '500px'; opacity = 0.15; rotate = '-15deg';
+        } else if (i === 1) {
+            // Top Right
+            left = '90%'; top = '20%'; size = '600px'; opacity = 0.12; rotate = '10deg';
+        } else {
+            // Bottom Left
+            left = '15%'; top = '85%'; size = '450px'; opacity = 0.18; rotate = '20deg';
+        }
+
+        return {
+            iconName,
+            id: `bg-icon-${i}`,
+            left, top, size, opacity, rotate
+        };
+    });
+
+    return (
+        <AbsoluteFill style={{ overflow: 'hidden', zIndex: 0, pointerEvents: 'none' }}>
+            {scatterParams.map((p) => (
+                <Img
+                    key={p.id}
+                    src={staticFile(`icons/gcp/${p.iconName.toLowerCase().replace(/[-\s]+/g, '_')}.svg`)}
+                    style={{
+                        position: 'absolute',
+                        left: p.left,
+                        top: p.top,
+                        width: p.size,
+                        height: p.size,
+                        opacity: p.opacity,
+                        transform: `translate(-50%, -50%) rotate(${p.rotate})`
+                    }}
+                    onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.display = 'none';
+                    }}
+                />
+            ))}
+        </AbsoluteFill>
+    );
+};
 
 const G = {
     blue: '#2997FF', purple: '#BF5AF2', orange: '#FF9F0A',
@@ -9,12 +69,9 @@ const G = {
 };
 
 export const Thumbnail: React.FC<VideoProps> = ({ content, diagrams, config }) => {
-    const { width, height } = useVideoConfig();
-    const accent = G.blue;
 
     const headline = config?.thumbnail_headline || content?.topic || "Cloud Architecture";
     const subheadline = config?.thumbnail_subheadline || content?.question_text || "";
-    const questionNum = content?.question_number || "5";
     const domain = content?.domain || 'Generative AI';
 
     // Get the first diagram to show a preview
@@ -29,23 +86,8 @@ export const Thumbnail: React.FC<VideoProps> = ({ content, diagrams, config }) =
             flexDirection: 'column',
             padding: '80px 60px'
         }}>
-            {/* 1. ULTRA LARGE BACKGROUND QUESTION NUMBER */}
-            <div style={{
-                position: 'absolute',
-                top: '40%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                fontSize: '1200px',
-                fontWeight: 900,
-                color: '#FFF',
-                opacity: 0.04,
-                lineHeight: 1,
-                userSelect: 'none',
-                pointerEvents: 'none',
-                letterSpacing: '-20px'
-            }}>
-                {questionNum}
-            </div>
+            {/* 1. SVG BACKGROUND WALL */}
+            <IconBackgroundWall diagrams={diagrams} />
 
             {/* 2. AMBIENT GLOWS */}
             <div style={{ position: 'absolute', top: '0%', left: '0%', width: '100%', height: '50%', background: `radial-gradient(circle at top left, ${G.purple}25, transparent 70%)`, filter: 'blur(100px)' }} />
@@ -53,12 +95,12 @@ export const Thumbnail: React.FC<VideoProps> = ({ content, diagrams, config }) =
 
             {/* 3. TOP INFO */}
             <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '16px', zIndex: 10 }}>
-                <div style={{ 
-                    fontSize: '36px', 
-                    fontWeight: 800, 
-                    color: G.blue, 
-                    letterSpacing: '8px', 
-                    textTransform: 'uppercase' 
+                <div style={{
+                    fontSize: '36px',
+                    fontWeight: 800,
+                    color: G.blue,
+                    letterSpacing: '8px',
+                    textTransform: 'uppercase'
                 }}>
                     {domain}
                 </div>
@@ -115,8 +157,8 @@ export const Thumbnail: React.FC<VideoProps> = ({ content, diagrams, config }) =
                     overflow: 'hidden',
                     zIndex: 5
                 }}>
-                    <div style={{ transform: 'scale(0.7)', width: '1000px', height: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <NativeDiagram dsl={firstDiagram.dsl} accent={G.blue} phaseA={0} phaseB={0} />
+                    <div style={{ transform: 'scale(0.85)', width: '1000px', height: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <NativeDiagram dsl={firstDiagram.dsl} accent={G.blue} phaseA={-1000} phaseB={0} />
                     </div>
                     {/* Glass Overlay Label */}
                     <div style={{

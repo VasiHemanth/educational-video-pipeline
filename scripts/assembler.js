@@ -437,9 +437,12 @@ async function assembleVideoRemotion(content, diagrams, metadata, questionNum, c
   const topicSlug = (content.topic || 'video').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
   const platformSuffix = config.platform ? `_${config.platform}` : '';
   const slug = `${domainSlug}_${topicSlug}${platformSuffix}`;
+  const baseSlug = `${domainSlug}_${topicSlug}`; // Used for thumbnail to prevent duplicates
   const rawOutputPath = path.join(DIRS.video, `raw_q${questionNum}_${slug}.mp4`);
   const finalOutputPath = path.join(DIRS.video, `q${questionNum}_${slug}.mp4`);
-  const thumbnailPath = path.join(DIRS.thumbnails, `q${questionNum}_${slug}_thumbnail.png`);
+
+  // We drop the platformSuffix from the thumbnail so it only generates once per question!
+  const thumbnailPath = path.join(DIRS.thumbnails, `q${questionNum}_${baseSlug}_thumbnail.png`);
 
   // Encode diagrams as base64 data URIs (bypasses Remotion's static file restrictions)
   const formattedDiagrams = (diagrams || []).map(d => {
@@ -570,10 +573,10 @@ async function assembleVideoRemotion(content, diagrams, metadata, questionNum, c
 
         // Extract thumbnail
         if (!fs.existsSync(path.dirname(thumbnailPath))) fs.mkdirSync(path.dirname(thumbnailPath), { recursive: true });
-        
+
         propsPayload.config.thumbnail_headline = metadata?.thumbnail?.headline;
         propsPayload.config.thumbnail_subheadline = metadata?.thumbnail?.subheadline;
-        
+
         const thumbPropsFile = path.join(__dirname, '..', 'remotion', `thumb_props_q${questionNum}.json`);
         fs.writeFileSync(thumbPropsFile, JSON.stringify(propsPayload, null, 2));
 
@@ -633,7 +636,7 @@ async function assembleVideoCanvas(content, diagrams, audioPath, questionNum) {
   const topicSlug = (content.topic || 'video').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
   const slug = `${domainSlug}_${topicSlug}`;
   const out = path.join(DIRS.video, `q${questionNum}_${slug}.mp4`);
-  
+
   execSync(`/opt/homebrew/bin/ffmpeg -y -framerate ${FPS} -i "${frameDir}/frame_%05d.png" -c:v libx264 -preset fast -crf 20 -pix_fmt yuv420p "${out}"`, { stdio: 'inherit' });
   return { videoPath: out, thumbnailPath: null };
 }
