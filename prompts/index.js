@@ -261,7 +261,7 @@ Return ONLY a valid JSON object matching this schema:
 {
   "direction": "LR" | "TB",
   "nodes": [
-    { "id": "string", "label": "string (keep to 1-2 words)", "type": "compute | storage | database | messaging | user" }
+    { "id": "string", "label": "string (keep to 1-2 words)", "type": "compute | storage | database | messaging | user", "iconName": "exact official service name, e.g. 'bigquery', 'cloud-run', 'cloud-storage', 'kubernetes-engine'" }
   ],
   "edges": [
     { "from": "node_id", "to": "node_id", "label": "optional short label" }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { AbsoluteFill, useVideoConfig, Img, staticFile } from 'remotion';
+import { Brain } from 'lucide-react';
 import { VideoProps } from '../types';
 import { NativeDiagram } from './NativeDiagram';
 
@@ -16,10 +17,11 @@ const IconBackgroundWall: React.FC<{ diagrams: VideoProps['diagrams'] }> = ({ di
         }) || []
     )).slice(0, 3) as string[];
 
-    if (uniqueIcons.length === 0) return null;
+    const hasNoIcons = uniqueIcons.length === 0;
+    const iconsToRender = hasNoIcons ? ['brain', 'brain', 'brain'] : uniqueIcons;
 
     // Map exactly to 3 positions: Top Right, Bottom Left, Top Left
-    const scatterParams = uniqueIcons.map((iconName, i) => {
+    const scatterParams = iconsToRender.map((iconName, i) => {
         let left, top, size, opacity, rotate;
         if (i === 0) {
             // Top Left
@@ -41,24 +43,36 @@ const IconBackgroundWall: React.FC<{ diagrams: VideoProps['diagrams'] }> = ({ di
 
     return (
         <AbsoluteFill style={{ overflow: 'hidden', zIndex: 0, pointerEvents: 'none' }}>
-            {scatterParams.map((p) => (
-                <Img
-                    key={p.id}
-                    src={staticFile(`icons/gcp/${p.iconName.toLowerCase().replace(/[-\s]+/g, '_')}.svg`)}
-                    style={{
-                        position: 'absolute',
-                        left: p.left,
-                        top: p.top,
-                        width: p.size,
-                        height: p.size,
-                        opacity: p.opacity,
-                        transform: `translate(-50%, -50%) rotate(${p.rotate})`
-                    }}
-                    onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).style.display = 'none';
-                    }}
-                />
-            ))}
+            {scatterParams.map((p) => {
+                const style = {
+                    position: 'absolute' as const,
+                    left: p.left,
+                    top: p.top,
+                    width: p.size,
+                    height: p.size,
+                    opacity: p.opacity,
+                    transform: `translate(-50%, -50%) rotate(${p.rotate})`
+                };
+
+                if (hasNoIcons) {
+                    return (
+                        <div key={p.id} style={style}>
+                            <Brain size="100%" color="#4285F4" strokeWidth={1} />
+                        </div>
+                    );
+                }
+
+                return (
+                    <Img
+                        key={p.id}
+                        src={staticFile(`icons/gcp/${p.iconName.toLowerCase().replace(/[-\s]+/g, '_')}.svg`)}
+                        style={style}
+                        onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).style.display = 'none';
+                        }}
+                    />
+                );
+            })}
         </AbsoluteFill>
     );
 };

@@ -1,7 +1,7 @@
 import React from 'react';
-import { interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
+import { interpolate, spring, useCurrentFrame, useVideoConfig, Img, staticFile } from 'remotion';
 
-interface Node { id: string; label: string; type: string; }
+interface Node { id: string; label: string; type: string; iconName?: string; }
 interface Edge { from: string; to: string; label?: string; }
 interface Graph { direction: string; nodes: Node[]; edges: Edge[]; }
 
@@ -30,15 +30,15 @@ function getNodeSizing(nodeCount: number, layout: LayoutMode) {
     // Vertical (TB) — 1075px usable height, slots per node:
     if (nodeCount <= 4) {
         // ~268px/slot → big, bold nodes
-        return { fontSize: 36, padV: 18, padH: 28, gap: 24, arrowLen: 50, minW: 220, maxW: 740, borderW: 4, arrowSize: 13 };
+        return { fontSize: 36, padV: 16, padH: 36, gap: 24, arrowLen: 50, minW: 240, maxW: 740, borderW: 4, arrowSize: 13 };
     }
     if (nodeCount <= 6) {
         // ~179px/slot → comfortable
-        return { fontSize: 28, padV: 14, padH: 22, gap: 18, arrowLen: 36, minW: 180, maxW: 700, borderW: 4, arrowSize: 11 };
+        return { fontSize: 28, padV: 12, padH: 26, gap: 18, arrowLen: 36, minW: 200, maxW: 700, borderW: 4, arrowSize: 11 };
     }
     if (nodeCount <= 8) {
         // ~134px/slot → compact but legible
-        return { fontSize: 22, padV: 10, padH: 18, gap: 12, arrowLen: 28, minW: 150, maxW: 660, borderW: 3, arrowSize: 9 };
+        return { fontSize: 22, padV: 10, padH: 20, gap: 12, arrowLen: 28, minW: 160, maxW: 660, borderW: 3, arrowSize: 9 };
     }
     // 9+ (GRID fallback)
     return { fontSize: 16, padV: 7, padH: 12, gap: 8, arrowLen: 18, minW: 110, maxW: 280, borderW: 2, arrowSize: 7 };
@@ -238,12 +238,29 @@ const DiagramNode: React.FC<{
         maxWidth: `${sizing.maxW}px`,
         wordBreak: 'break-word' as const,
         display: 'flex',
+        flexDirection: 'row' as const,
         alignItems: 'center',
         justifyContent: 'center',
-        lineHeight: 1.25,
-        flexShrink: 0,
-        whiteSpace: 'normal' as const,
+        gap: `${sizing.padH * 0.6}px`, // Add space between icon and text instead of margin
     }}>
-        {node.label}
+        {node.iconName && (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Img
+                    src={staticFile(`icons/gcp/${node.iconName.toLowerCase().replace(/[-\s]+/g, '_')}.svg`)}
+                    style={{
+                        height: `${Math.max(28, sizing.fontSize * 1.6)}px`,
+                        width: 'auto',
+                        filter: `drop-shadow(0 4px 6px rgba(0,0,0,0.5))`
+                    }}
+                    onError={(e) => {
+                        // Hide broken icons if LLM hallucinates a service name
+                        (e.currentTarget as HTMLImageElement).style.display = 'none';
+                    }}
+                />
+            </div>
+        )}
+        <div style={{ textAlign: 'left', lineHeight: 1.25 }}>
+            {node.label}
+        </div>
     </div>
 );
