@@ -1,0 +1,168 @@
+{
+  "question_number": 8,
+  "topic": "Building Generative AI Search on GCP",
+  "question_text": "How would you design a scalable Gen AI search solution on GCP handling diverse data sources?",
+  "hook_text": "Build a Generative AI Search system on Google Cloud that scales with your data. This architecture handles millions of queries daily.",
+  "cta_text": "Follow for cutting-edge Cloud Architect insights!",
+  "tech_terms": [
+    "Vertex AI",
+    "Matching Engine",
+    "BigQuery",
+    "Cloud Storage",
+    "LangChain",
+    "Embeddings",
+    "Vector Search",
+    "Large Language Models",
+    "Cloud Functions",
+    "Cloud Run"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Data Ingestion & Embedding",
+      "text": "Ingest diverse data via Cloud Storage, process with Dataflow. Generate high-quality vector embeddings using Vertex AI. Store embeddings in Matching Engine.",
+      "spoken_audio": "Ingest diverse data, process with Dataflow, create embeddings using Vertex AI and store them.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Storage",
+          "Dataflow",
+          "Vertex AI",
+          "Matching Engine"
+        ],
+        "action_verbs": [
+          "Ingest",
+          "process",
+          "Generate",
+          "Store"
+        ],
+        "concepts": [
+          "diverse data",
+          "vector embeddings"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Vector Search & LLM Integration",
+      "text": "User queries processed by Cloud Functions. Retrieve relevant documents using Matching Engine Vector Search. Pass context to Vertex AI LLMs for generation.",
+      "spoken_audio": "Process queries, retrieve context with Vector Search, then generate responses using Vertex AI LLMs.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Functions",
+          "Matching Engine",
+          "Vector Search",
+          "Vertex AI",
+          "LLMs"
+        ],
+        "action_verbs": [
+          "processed",
+          "Retrieve",
+          "Pass",
+          "generation"
+        ],
+        "concepts": [
+          "User queries",
+          "relevant documents",
+          "context"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Orchestration & Deployment",
+      "text": "Orchestrate end-to-end with LangChain. Deploy services on Cloud Run for scalability. Monitor performance and costs with Cloud Monitoring.",
+      "spoken_audio": "Orchestrate with LangChain, deploy on Cloud Run for scale, and monitor with Cloud Monitoring.",
+      "keywords": {
+        "tech_terms": [
+          "LangChain",
+          "Cloud Run",
+          "Cloud Monitoring"
+        ],
+        "action_verbs": [
+          "Orchestrate",
+          "Deploy",
+          "Monitor"
+        ],
+        "concepts": [
+          "end-to-end",
+          "scalability",
+          "performance",
+          "costs"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Data Pipeline",
+      "type": "flowchart",
+      "dsl": "(Raw Data) -> [Cloud Storage] -> [Dataflow] -> (Embeddings) -> [[Matching Engine]]",
+      "animation_sequence": [
+        "node1",
+        "arrow1",
+        "node2",
+        "arrow2",
+        "node3",
+        "arrow3",
+        "node4",
+        "arrow4",
+        "node5"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Query Flow",
+      "type": "flowchart",
+      "dsl": "(User Query) -> [Cloud Functions] -> (Vector Search Request) -> [[Matching Engine]] -> (Context) -> [Vertex AI LLM] -> (Generated Response)",
+      "animation_sequence": [
+        "node1",
+        "arrow1",
+        "node2",
+        "arrow2",
+        "node3",
+        "arrow3",
+        "node4",
+        "arrow4",
+        "node5",
+        "arrow5",
+        "node6",
+        "arrow6",
+        "node7"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Deployment & Ops",
+      "type": "flowchart",
+      "dsl": "[LangChain Orchestration] -> [Cloud Run Services] -> {User Interface} -> (Scalable Gen AI Search) -> [[Cloud Monitoring]]",
+      "animation_sequence": [
+        "node1",
+        "arrow1",
+        "node2",
+        "arrow2",
+        "node3",
+        "arrow3",
+        "node4",
+        "arrow4",
+        "node5"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "Scalable Gen AI Search on GCP",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#Interview",
+    "#GenerativeAI",
+    "#VectorSearch",
+    "#VertexAI"
+  ],
+  "domain": "Generative AI"
+}

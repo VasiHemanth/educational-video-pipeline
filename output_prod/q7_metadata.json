@@ -1,0 +1,41 @@
+{
+  "youtube": {
+    "title": "RAG Eval Pipeline: Master Consistent AI Responses #Shorts",
+    "description": "Design a robust evaluation pipeline for production RAG systems. This video details an architectural workflow, integrating ground truth data, synthetic data generation, and automated metrics like Faithfulness, Relevance, and Context Recall. Understand how human evaluation, A/B testing, and a continuous feedback loop ensure high-quality, consistent Generative AI responses. Elevate your RAG system's performance today!",
+    "tags": [
+      "Generative AI",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "RAGSystem",
+      "EvaluationPipeline",
+      "GroundTruth",
+      "SyntheticData",
+      "AutomatedMetrics",
+      "Faithfulness",
+      "Relevance",
+      "ContextRecall",
+      "ContextPrecision",
+      "HumanEvaluation",
+      "ABTesting",
+      "FeedbackLoop",
+      "LLM"
+    ],
+    "category": "Education",
+    "playlist": "Generative AI Daily Interview Questions"
+  },
+  "thumbnail": {
+    "headline": "RAG Eval Pipeline Explained",
+    "subheadline": "Ensure High-Quality, Consistent AI Responses in Production"
+  },
+  "instagram": {
+    "caption": "Unlock consistent, high-quality AI responses!\n\n▸ Learn to design a robust RAG evaluation pipeline.\n▸ Integrate ground truth, synthetic data, and automated metrics for precision.\n▸ Master Faithfulness, Relevance, and Context Recall in Generative AI.\n▸ Implement human evaluation & A/B testing for continuous improvement.\n\n#RAGSystem #EvaluationPipeline #GenerativeAI #LLM #AIInterview #SystemDesign #AIEvaluation #ProductionAI #MachineLearning #AITips #TechEducation #CloudArchitect #DataScience #AICommunity #AIConsistency #QualityAI #RAGEvaluation #AISuccess",
+    "cover_text": "RAG System Evaluation"
+  },
+  "tiktok": {
+    "caption": "Master RAG system evaluation for consistent, high-quality AI responses. Essential for production Generative AI pipelines! Learn more now. #RAG #AIEval #LLM",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

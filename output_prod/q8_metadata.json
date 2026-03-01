@@ -1,0 +1,42 @@
+{
+  "youtube": {
+    "title": "Gen AI Search on GCP: Scalable Architecture Q&A #Shorts",
+    "description": "Learn to design a scalable Generative AI search solution on Google Cloud Platform. Data is ingested into Cloud Storage or BigQuery, processed by Cloud Functions or Cloud Run, and transformed into embeddings via Vertex AI's LLMs. These embeddings are stored and efficiently retrieved using Matching Engine for vector search. LangChain orchestrates the entire RAG workflow, connecting diverse data sources to robust LLM responses. This architecture ensures high performance and scalability for complex Gen AI applications. Master these principles to excel in your next Cloud Architect interview!",
+    "tags": [
+      "Generative AI",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "GCP",
+      "Google Cloud",
+      "Vertex AI",
+      "Matching Engine",
+      "BigQuery",
+      "Cloud Storage",
+      "LangChain",
+      "Embeddings",
+      "Vector Search",
+      "LLM",
+      "Cloud Functions",
+      "Cloud Run",
+      "Scalability",
+      "AISearch"
+    ],
+    "category": "Education",
+    "playlist": "Generative AI Daily Interview Questions"
+  },
+  "thumbnail": {
+    "headline": "Scalable Gen AI Search Design",
+    "subheadline": "Mastering Google Cloud for diverse data and powerful AI search."
+  },
+  "instagram": {
+    "caption": "Cracking the code to scalable Gen AI search on GCP!\n\n▸ Dive deep into an architecture integrating Vertex AI, Matching Engine, BigQuery, and more.\n▸ Learn how LangChain orchestrates LLMs and vector search for diverse data sources.\n▸ Build high-performance, future-proof AI solutions.\n▸ Essential insights for Cloud Architects and Gen AI developers.\n\n#GenerativeAI #GCP #CloudArchitecture #AISearch #VertexAI #MatchingEngine #BigQuery #CloudStorage #LangChain #Embeddings #VectorSearch #LLM #CloudFunctions #CloudRun #SystemDesign #AIInterview #TechInterview #CloudSkills #GoogleCloud #DataScience",
+    "cover_text": "Gen AI Search on GCP!"
+  },
+  "tiktok": {
+    "caption": "Design a scalable Gen AI search solution on GCP with Vertex AI, Matching Engine, & LangChain. Unlock powerful insights! #GenAI #GCP #AISearch #CloudArchitect",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

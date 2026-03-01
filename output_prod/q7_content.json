@@ -1,0 +1,148 @@
+{
+  "question_number": 7,
+  "topic": "Evaluation pipeline of RAG System",
+  "question_text": "How would you design an evaluation pipeline for a production RAG system to ensure high-quality and consistent responses?",
+  "hook_text": "Is your RAG system delivering accurate answers? Building a robust evaluation pipeline is crucial. Let's explore how to guarantee high-quality Generative AI responses.",
+  "cta_text": "Follow for daily Cloud Architect tips and Gen AI insights!",
+  "tech_terms": [
+    "RAG System",
+    "Evaluation Pipeline",
+    "Ground Truth",
+    "Synthetic Data",
+    "Automated Metrics",
+    "Faithfulness",
+    "Relevance",
+    "Context Recall",
+    "Context Precision",
+    "Human Evaluation",
+    "A/B Testing",
+    "Feedback Loop",
+    "Generative AI",
+    "LLM"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Ground Truth & Data Generation",
+      "text": "Start by generating diverse ground truth data. Create golden answers paired with queries. Utilize synthetic data for scale and coverage. This forms your baseline.",
+      "spoken_audio": "Generate diverse ground truth data, create golden answers, and use synthetic data for scalable, effective evaluation.",
+      "keywords": {
+        "tech_terms": [
+          "ground truth data",
+          "synthetic data"
+        ],
+        "action_verbs": [
+          "generating",
+          "Create",
+          "Utilize",
+          "forms"
+        ],
+        "concepts": [
+          "golden answers",
+          "baseline"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Automated Metric Calculation",
+      "text": "Employ automated metrics like faithfulness and relevance. Measure context recall and precision. Integrate evaluation tools within your CI/CD workflow for continuous assessment.",
+      "spoken_audio": "Automated metrics measure faithfulness, relevance, context recall, and precision, integrated for continuous assessment.",
+      "keywords": {
+        "tech_terms": [
+          "automated metrics",
+          "faithfulness",
+          "relevance",
+          "context recall",
+          "precision",
+          "CI/CD workflow"
+        ],
+        "action_verbs": [
+          "Employ",
+          "Measure",
+          "Integrate"
+        ],
+        "concepts": [
+          "continuous assessment"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Human Feedback & A/B Testing",
+      "text": "Implement human-in-the-loop for qualitative review. Conduct A/B tests on system iterations. Gather user feedback to iteratively refine and improve RAG performance.",
+      "spoken_audio": "Human feedback and A/B testing provide qualitative review, gathering insights to refine and improve RAG performance.",
+      "keywords": {
+        "tech_terms": [
+          "human-in-the-loop",
+          "A/B tests",
+          "RAG performance"
+        ],
+        "action_verbs": [
+          "Implement",
+          "Conduct",
+          "Gather",
+          "refine",
+          "improve"
+        ],
+        "concepts": [
+          "qualitative review",
+          "user feedback",
+          "system iterations"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Data Preparation Flow",
+      "type": "flowchart",
+      "dsl": "(User Query) -> (Data Generator) -> [[Ground Truth Dataset]]",
+      "animation_sequence": [
+        "User Query",
+        "Data Generator",
+        "Ground Truth Dataset"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Automated Evaluation Loop",
+      "type": "flowchart",
+      "dsl": "[[RAG System Output]] -> [Automated Evaluator] -> (Metrics Dashboard)",
+      "animation_sequence": [
+        "RAG System Output",
+        "Automated Evaluator",
+        "Metrics Dashboard"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Feedback & Improvement Cycle",
+      "type": "flowchart",
+      "dsl": "(Metrics Dashboard) -> {Human Review?} -> (RAG Model Refinement) -> (Deployment)",
+      "animation_sequence": [
+        "Metrics Dashboard",
+        "Human Review?",
+        "RAG Model Refinement",
+        "Deployment"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "RAG System Evaluation Deep Dive",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#Interview",
+    "#RAG",
+    "#GenerativeAI",
+    "#LLMEvaluation"
+  ],
+  "domain": "Generative AI"
+}
