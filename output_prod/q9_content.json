@@ -1,0 +1,160 @@
+{
+  "question_number": 9,
+  "topic": "Model Governance and Compliance on GCP",
+  "question_text": "How would you establish a robust Model Governance and Compliance framework for Generative AI on GCP, ensuring data privacy, ethical AI, and regulatory adherence?",
+  "hook_text": "Building Gen AI on GCP requires strong governance. Here's how to ensure compliance, privacy, and ethics in your models.",
+  "cta_text": "Master Gen AI governance on GCP! Follow for more Cloud Architect insights.",
+  "tech_terms": [
+    "Vertex AI",
+    "Cloud DLP",
+    "IAM",
+    "Cloud Audit Logs",
+    "AI Workbench",
+    "Model Registry",
+    "Data Catalog",
+    "Security Command Center",
+    "Generative AI APIs"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Data Protection & Access Control",
+      "text": "Sensitive data processed by Generative AI models. Cloud DLP de-identifies, redacts, tokenizes data. IAM defines fine-grained access policies. Ensure data sovereignty with proper controls. Secure Generative AI workflows.",
+      "spoken_audio": "Protect sensitive data in Generative AI. Cloud DLP de-identifies, IAM secures access. Implement strong data sovereignty controls.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud DLP",
+          "IAM"
+        ],
+        "action_verbs": [
+          "processed",
+          "de-identifies",
+          "redacts",
+          "tokenizes",
+          "defines",
+          "ensure",
+          "secure"
+        ],
+        "concepts": [
+          "Sensitive data",
+          "Generative AI models",
+          "access policies",
+          "data sovereignty",
+          "workflows"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Responsible Model Management",
+      "text": "Vertex AI Model Registry tracks lineage. Integrate Responsible AI Toolkit for bias detection. Implement MLOps for secure deployments. Version control, auditability critical. Ensure ethical Gen AI development.",
+      "spoken_audio": "Manage models responsibly. Vertex AI tracks lineage. Responsible AI Toolkit detects bias. MLOps ensures secure, ethical deployments.",
+      "keywords": {
+        "tech_terms": [
+          "Vertex AI Model Registry",
+          "Responsible AI Toolkit",
+          "MLOps"
+        ],
+        "action_verbs": [
+          "tracks",
+          "Integrate",
+          "detects",
+          "Implement",
+          "Version control",
+          "auditability",
+          "Ensure"
+        ],
+        "concepts": [
+          "Model Registry",
+          "lineage",
+          "bias detection",
+          "secure deployments",
+          "ethical Gen AI development"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Continuous Compliance & Audit",
+      "text": "Cloud Logging captures model interactions. Cloud Audit Logs tracks administrative activities. Security Command Center identifies misconfigurations. Real-time monitoring, alerts crucial. Maintain verifiable compliance posture.",
+      "spoken_audio": "Monitor Gen AI for compliance. Cloud Logging captures interactions, Audit Logs track activity. Security Command Center identifies risks.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Logging",
+          "Cloud Audit Logs",
+          "Security Command Center"
+        ],
+        "action_verbs": [
+          "captures",
+          "tracks",
+          "identifies",
+          "Maintain"
+        ],
+        "concepts": [
+          "model interactions",
+          "administrative activities",
+          "misconfigurations",
+          "Real-time monitoring",
+          "alerts",
+          "verifiable compliance posture"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Data Protection Flow",
+      "type": "flowchart",
+      "dsl": "(Input Data) -> {Identify Sensitive Data?} -> [Cloud DLP] -> [[De-identified Data]]",
+      "animation_sequence": [
+        "Input Data",
+        "Identify Sensitive Data?",
+        "Cloud DLP",
+        "De-identified Data"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Model Development Lifecycle",
+      "type": "flowchart",
+      "dsl": "(Model Development) -> [Vertex AI Workbench] -> [Model Registry] -> {Ethical Review?} -> (Deployment)",
+      "animation_sequence": [
+        "Model Development",
+        "Vertex AI Workbench",
+        "Model Registry",
+        "Ethical Review?",
+        "Deployment"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Audit & Monitoring",
+      "type": "flowchart",
+      "dsl": "(Generative AI API) -> [Cloud Logging] -> [Cloud Audit Logs] -> [Security Command Center]",
+      "animation_sequence": [
+        "Generative AI API",
+        "Cloud Logging",
+        "Cloud Audit Logs",
+        "Security Command Center"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "GCP Gen AI Governance Deep Dive",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#Interview",
+    "#AIGovernance",
+    "#Compliance",
+    "#GenerativeAI",
+    "#VertexAI"
+  ],
+  "domain": "Generative AI"
+}

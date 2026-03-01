@@ -1,0 +1,42 @@
+{
+  "youtube": {
+    "title": "Generative AI Interview Q9: Secure AI on GCP: Model Governance Deep Dive #Shorts",
+    "description": "Establishing robust Model Governance and Compliance for Generative AI on GCP involves a multi-faceted framework. Vertex AI and Model Registry manage model lifecycle, while Cloud DLP ensures sensitive data protection throughout the pipeline. IAM and Cloud Audit Logs provide granular access control and immutable activity tracking, creating an auditable trail for regulatory adherence. AI Workbench facilitates secure development environments, and Data Catalog aids in discovery and classification of AI-related assets. Security Command Center offers centralized vulnerability management, and Generative AI APIs integrate secure AI capabilities. Implement these services to achieve comprehensive data privacy, ethical AI practices, and regulatory compliance, solidifying your Gen AI operations on GCP. Learn more about securing your Generative AI models!",
+    "tags": [
+      "Generative AI",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "GCP",
+      "ModelGovernance",
+      "Compliance",
+      "VertexAI",
+      "CloudDLP",
+      "IAM",
+      "CloudAuditLogs",
+      "AIWorkbench",
+      "ModelRegistry",
+      "DataCatalog",
+      "SecurityCommandCenter",
+      "EthicalAI",
+      "DataPrivacy",
+      "RegulatoryCompliance"
+    ],
+    "category": "Education",
+    "playlist": "Generative AI Daily Interview Questions"
+  },
+  "thumbnail": {
+    "headline": "Govern Gen AI on GCP",
+    "subheadline": "Ensure ethical, compliant, and secure AI with robust frameworks."
+  },
+  "instagram": {
+    "caption": "Unlock the secrets to compliant Generative AI on GCP!\n\n▸ Establish robust model governance frameworks.\n▸ Safeguard data with Cloud DLP and IAM.\n▸ Ensure ethical AI and regulatory adherence.\n▸ Master secure Gen AI deployment and operations.\n\n#GenerativeAI #GCP #CloudArchitect #AIgovernance #ModelCompliance #VertexAI #CloudDLP #IAM #SecurityCommandCenter #EthicalAI #DataPrivacy #RegulatoryAdherence #AIOps #CloudSecurity #AIstandards #InterviewPrep #TechSkills #Innovation #FutureofAI #CloudComputing",
+    "cover_text": "Secure Gen AI: GCP Governance"
+  },
+  "tiktok": {
+    "caption": "Mastering Gen AI governance on GCP is crucial for ethical and compliant AI. Learn to secure your models with Vertex AI, Cloud DLP, & IAM. Stay ahead! #GenAI #GCP #AIGovernance #CloudSecurity",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}
