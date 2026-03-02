@@ -591,7 +591,8 @@ async function assembleVideoRemotion(content, diagrams, metadata, questionNum, c
           } catch (e) {
             console.warn(`  ⚠️ Failed to generate thumbnail:`, e.message);
           } finally {
-            try { fs.unlinkSync(thumbPropsFile); } catch (e) { }
+            // Keep the thumb props file so `test-thumbnail.js` can be run anytime
+            // try { fs.unlinkSync(thumbPropsFile); } catch (e) { }
           }
         }
         resolve();
@@ -601,7 +602,8 @@ async function assembleVideoRemotion(content, diagrams, metadata, questionNum, c
     });
   });
 
-  try { fs.unlinkSync(propsFile); } catch (e) { }
+  // Keep the props file for debugging / Remotion Studio
+  // try { fs.unlinkSync(propsFile); } catch (e) { }
   return { videoPath: finalOutputPath, thumbnailPath };
 }
 

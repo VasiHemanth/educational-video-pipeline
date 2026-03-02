@@ -1,6 +1,7 @@
 import { Composition, getInputProps, Series } from 'remotion';
 import { MainVideo } from './MainVideo';
 import { Thumbnail } from './components/Thumbnail';
+import { AgenticReel } from './AgenticReel';
 import { VideoProps } from './types';
 import React from 'react';
 
@@ -86,6 +87,15 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
         defaultProps={activeProps}
       />
+      <Composition
+        id="AgenticReel"
+        component={AgenticReel}
+        durationInFrames={300}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
     </>
   );
 };
+

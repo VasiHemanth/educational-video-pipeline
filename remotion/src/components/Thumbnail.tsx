@@ -1,5 +1,5 @@
 import React from 'react';
-import { AbsoluteFill, useVideoConfig, Img, staticFile } from 'remotion';
+import { AbsoluteFill, Img, staticFile } from 'remotion';
 import { Brain } from 'lucide-react';
 import { VideoProps } from '../types';
 import { NativeDiagram } from './NativeDiagram';
@@ -89,7 +89,29 @@ export const Thumbnail: React.FC<VideoProps> = ({ content, diagrams, config }) =
     const domain = content?.domain || 'Generative AI';
 
     // Get the first diagram to show a preview
-    const firstDiagram = diagrams?.find(d => d.dsl);
+    let firstDiagram = diagrams?.find(d => d.dsl);
+    let previewDsl = firstDiagram?.dsl;
+
+    // Truncate the diagram to max 4 nodes for the thumbnail preview to avoid overflow
+    if (previewDsl) {
+        try {
+            const parsedDsl = typeof previewDsl === 'string' ? JSON.parse(previewDsl) : previewDsl;
+            if (parsedDsl.nodes && parsedDsl.nodes.length > 4) {
+                const truncatedNodes = parsedDsl.nodes.slice(0, 4);
+                // Keep only edges that connect between the preserved nodes
+                const nodeIds = new Set(truncatedNodes.map((n: any) => n.id));
+                const truncatedEdges = (parsedDsl.edges || []).filter((e: any) =>
+                    nodeIds.has(e.from) && nodeIds.has(e.to)
+                );
+
+                previewDsl = typeof previewDsl === 'string'
+                    ? JSON.stringify({ ...parsedDsl, nodes: truncatedNodes, edges: truncatedEdges })
+                    : { ...parsedDsl, nodes: truncatedNodes, edges: truncatedEdges };
+            }
+        } catch (e) {
+            console.warn("Failed to parse diagram DSL for thumbnail truncation", e);
+        }
+    }
 
     return (
         <AbsoluteFill style={{
@@ -152,7 +174,7 @@ export const Thumbnail: React.FC<VideoProps> = ({ content, diagrams, config }) =
             </div>
 
             {/* 5. FLOATING DIAGRAM PREVIEW (CENTERED LOWER) */}
-            {firstDiagram?.dsl && (
+            {previewDsl && (
                 <div style={{
                     position: 'relative',
                     marginTop: '100px',
@@ -172,7 +194,7 @@ export const Thumbnail: React.FC<VideoProps> = ({ content, diagrams, config }) =
                     zIndex: 5
                 }}>
                     <div style={{ transform: 'scale(0.85)', width: '1000px', height: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <NativeDiagram dsl={firstDiagram.dsl} accent={G.blue} phaseA={-1000} phaseB={0} />
+                        <NativeDiagram dsl={previewDsl} accent={G.blue} phaseA={-1000} phaseB={0} />
                     </div>
                     {/* Glass Overlay Label */}
                     <div style={{
