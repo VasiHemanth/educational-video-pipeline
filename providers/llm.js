@@ -167,4 +167,34 @@ ${schema ? `Schema:\n${schema}` : ''}`;
   }
 }
 
-module.exports = { ask, askJSON, PROVIDER };
+/**
+ * Dynamically fetch the latest Google Gemini / Vertex AI model names via web search.
+ * Returns a plain-text summary string to inject into prompts.
+ * Gracefully returns an empty string on any failure so the pipeline never breaks.
+ */
+async function askLatestModels() {
+  const today = new Date().toISOString().split('T')[0];
+  const searchPrompt = `
+Today is ${today}.
+Use your web search tool to find: "What are the latest generally available and preview Google Gemini models on Vertex AI right now?"
+Return a concise bullet list (plain text, no JSON, no markdown) of model names and their approximate release dates.
+Focus only on Gemini models. Do NOT include deprecated models like Gemini 1.5 Pro or PaLM.
+Maximum 6 bullet points.
+`;
+  try {
+    console.log('  🔍 Fetching latest Gemini model list via web search...');
+    const result = await askGemini(searchPrompt);
+    // Sanity check — must mention "Gemini" at least once and be reasonably short
+    if (result && result.toLowerCase().includes('gemini') && result.length < 2000) {
+      console.log('  ✅ Live model list fetched successfully.');
+      return result.trim();
+    }
+    console.warn('  ⚠️  Web search returned unexpected content, using fallback model list.');
+    return '';
+  } catch (e) {
+    console.warn('  ⚠️  Could not fetch latest models via web search:', e.message);
+    return '';
+  }
+}
+
+module.exports = { ask, askJSON, askLatestModels, PROVIDER };

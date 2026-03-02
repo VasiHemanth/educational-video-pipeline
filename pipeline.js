@@ -22,7 +22,7 @@
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
-const { askJSON } = require('./providers/llm');
+const { askJSON, askLatestModels } = require('./providers/llm');
 const { contentPrompt, dslRefinementPrompt, mermaidDslRefinementPrompt, remotionDslRefinementPrompt, metadataPrompt } = require('./prompts/index');
 const { renderAllDiagrams } = require('./scripts/diagrams');
 const { assembleVideo } = require('./scripts/assembler');
@@ -78,9 +78,18 @@ async function run() {
   // ── INIT DB ───────────────────────────────────────────────────────────────────
   await initDB();
 
+  // ── STEP 0: Fetch latest model list via web search ────────────────────────────
+  console.log('🔍 STEP 0/4 — Fetching latest Gemini models via web search...');
+  const liveModelsNote = await askLatestModels();
+  if (liveModelsNote) {
+    console.log('   Live models context injected into prompt.');
+  } else {
+    console.log('   Using hardcoded fallback model list.');
+  }
+
   // ── STEP 1: Content Generation ──────────────────────────────────────────────
-  console.log('📝 STEP 1/4 — Generating content with LLM...');
-  const contentJson = await askJSON(contentPrompt(NUMBER, TOPIC, DOMAIN));
+  console.log('\n📝 STEP 1/4 — Generating content with LLM...');
+  const contentJson = await askJSON(contentPrompt(NUMBER, TOPIC, DOMAIN, liveModelsNote));
   contentJson.domain = DOMAIN; // inject for rendering
 
   // Fix nested diagrams if LLM put them inside answer_sections instead of root
@@ -111,8 +120,8 @@ async function run() {
     const refinePrompt = DIAGRAM_MODE === 'mermaid'
       ? mermaidDslRefinementPrompt(diagram, section?.spoken_audio || section?.text || '', DOMAIN)
       : DIAGRAM_MODE === 'remotion'
-      ? remotionDslRefinementPrompt(diagram, section?.spoken_audio || section?.text || '', DOMAIN)
-      : dslRefinementPrompt(diagram, section?.spoken_audio || section?.text || '', DOMAIN);
+        ? remotionDslRefinementPrompt(diagram, section?.spoken_audio || section?.text || '', DOMAIN)
+        : dslRefinementPrompt(diagram, section?.spoken_audio || section?.text || '', DOMAIN);
 
     const refinedDsl = await askJSON(refinePrompt).catch(() => ({ dsl: diagram.dsl })); // fallback to original DSL on parse fail
 
