@@ -59,17 +59,31 @@ export const Intro: React.FC<{ content: VideoProps['content'], config?: VideoPro
                     display: 'flex', flexDirection: 'column', alignItems: 'center',
                     marginBottom: '30px'
                 }}>
+                    {/* Domain badge — e.g. "GCP" or "Generative AI" */}
                     <div style={{
-                        fontSize: '36px', fontWeight: 700, color: G.blue,
-                        letterSpacing: '4px', textTransform: 'uppercase'
+                        fontSize: '30px', fontWeight: 700, color: G.blue,
+                        letterSpacing: '4px', textTransform: 'uppercase',
+                        marginBottom: '16px',
                     }}>
-                        {content.domain || 'Architecture'}
+                        {content.domain || 'GCP'}
                     </div>
+
+                    {/* Topic pill — the scroll-stopper */}
                     <div style={{
-                        fontSize: '56px', fontWeight: 800, color: G.textWhite,
-                        letterSpacing: '-1.5px', marginTop: '12px'
+                        fontSize: '52px', fontWeight: 900, color: G.textWhite,
+                        letterSpacing: '-1px', lineHeight: 1.15,
+                        textAlign: 'center', maxWidth: '900px',
+                        textShadow: '0 8px 32px rgba(0,0,0,0.6)',
                     }}>
-                        Question {content.question_number}
+                        {content.title_card_text || content.topic}
+                    </div>
+
+                    {/* Question number — small subdued label */}
+                    <div style={{
+                        fontSize: '26px', fontWeight: 500, color: G.textMuted,
+                        marginTop: '14px', letterSpacing: '1px',
+                    }}>
+                        Interview Q#{content.question_number}
                     </div>
                 </div>
 

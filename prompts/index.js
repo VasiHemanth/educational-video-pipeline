@@ -245,27 +245,29 @@ Services covered: ${(content.tech_terms || []).join(', ')}
 Return JSON:
 {
   "youtube": {
-    "title": "${domain} Interview Q${content.question_number}: [catchy title] #Shorts",
-    "description": "Write a highly technical, rigorous 5-6 sentence explanation of the architectural workflow shown in the video. Explain the exact mechanism of how the services interact. End with a strong CTA.",
+    "title": "${domain} Interview Q${content.question_number}: [catchy title under 60 chars] #Shorts",
+    "description": "Write a highly technical, rigorous 5-6 sentence explanation of the architectural workflow shown in the video. Explain the exact mechanism of how the services interact. End with a strong CTA like 'Subscribe for daily Cloud Architect breakdowns.'",
     "tags": ["${domain}", "CloudArchitect", "Interview", "AI", "Shorts", "SystemDesign", "...exactly 15-20 strictly relevant technical hashtags!"],
     "category": "Education",
     "playlist": "${domain} Daily Interview Questions"
   },
   "thumbnail": {
-    "headline": "A very punchy, large-text headline for the thumbnail (max 5 words).",
+    "headline": "Punchy large-text headline for thumbnail (max 5 words, ALL CAPS).",
     "subheadline": "A slightly longer sub-headline that elaborates on the topic (max 10-12 words)."
   },
   "instagram": {
-    "caption": "Hook line\\n\\nValue lines (3-4)\\n\\nHashtags (15-20)",
-    "cover_text": "Short punchy text for the reel cover"
+    "caption": "STRICT FORMAT — follow exactly:\\nLine 1: One punchy hook sentence that creates curiosity, ends with an emoji.\\n\\nLine 2-5: Four bullet points, each starting with ► symbol, each a concrete technical insight or architecture decision from the video (not generic).\\n\\nLine 6: CTA line — e.g. 'Save this 🔖 | Comment your stack below 👇'\\n\\nLine 7: blank line\\n\\nLine 8: Hashtags — EXACTLY 5 ultra-niche + 5 mid-range + 3 broad = 13 hashtags max. Mandatory: #GCPArchitect #GenerativeAI #CloudArchitect",
+    "cover_text": "3 words max, ALL CAPS — used as the Reel cover thumbnail text overlay.",
+    "first_comment_hashtags": "8 additional hashtags to post as first comment for extra algorithmic reach (different from caption hashtags)."
   },
   "tiktok": {
-    "caption": "Hook + value + CTA (max 150 chars)",
+    "caption": "Hook + value + CTA (max 150 chars total)",
     "sounds_suggestion": "Lo-fi beats / study music genre"
   }
 }
 `;
 }
+
 
 /**
  * STEP 2c — Convert diagram spec to native JSON (Remotion component)

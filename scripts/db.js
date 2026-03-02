@@ -91,9 +91,24 @@ function trackPosting(videoId, platform, status, url = null) {
     });
 }
 
+// Check if a topic+domain combo already exists — prevents duplicate runs
+function isTopicCovered(domain, topic) {
+    return new Promise((resolve, reject) => {
+        db.get(
+            `SELECT id, question_number, created_at FROM videos WHERE domain = ? AND topic = ? LIMIT 1`,
+            [domain, topic],
+            (err, row) => {
+                if (err) reject(err);
+                else resolve(row || null); // returns existing row or null
+            }
+        );
+    });
+}
+
 module.exports = {
     initDB,
     trackVideo,
     trackPosting,
+    isTopicCovered,
     db
 };

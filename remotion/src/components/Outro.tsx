@@ -30,15 +30,15 @@ export const Outro: React.FC<{ content?: VideoProps['content'] }> = ({ content }
         }}>
             {/* Ambient glow */}
             <div style={{
-                position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', 
+                position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
                 width: '800px', height: '800px', borderRadius: '50%',
                 background: `radial-gradient(circle, ${isMeta ? '#dc2743' : G.blue}15, transparent 60%)`,
                 opacity: glow, filter: 'blur(100px)', pointerEvents: 'none',
             }} />
 
             {/* Thanks / CTA Text */}
-            <div style={{ 
-                opacity: thanksFade, textAlign: 'center', fontSize: '56px', 
+            <div style={{
+                opacity: thanksFade, textAlign: 'center', fontSize: '56px',
                 fontWeight: 700, color: G.textWhite, padding: '0 80px',
                 lineHeight: 1.3
             }}>
@@ -64,21 +64,27 @@ export const Outro: React.FC<{ content?: VideoProps['content'] }> = ({ content }
                 </div>
             </div>
 
-            {/* SUBSCRIBE CTA */}
+            {/* Platform-aware action button */}
             <div style={{
                 marginTop: '80px',
                 transform: `scale(${ctaScale * ctaPulse})`,
             }}>
                 <div style={{
                     padding: '24px 64px',
-                    background: isMeta ? 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)' : G.textWhite,
+                    background: isMeta
+                        ? 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)'
+                        : G.blue,
                     borderRadius: '50px',
                     fontSize: '32px',
-                    fontWeight: 700, 
-                    color: isMeta ? '#FFF' : G.bg,
+                    fontWeight: 800,
+                    color: '#FFF',
                     display: 'flex', alignItems: 'center', gap: '16px',
+                    letterSpacing: '0.5px',
+                    boxShadow: isMeta
+                        ? '0 8px 40px rgba(220,39,67,0.4)'
+                        : '0 8px 40px rgba(41,151,255,0.4)',
                 }}>
-                    {isMeta ? 'Follow for more' : 'Subscribe'}
+                    {isMeta ? '❤️ FOLLOW + SAVE' : '🔔 SUBSCRIBE'}
                 </div>
             </div>
         </AbsoluteFill>

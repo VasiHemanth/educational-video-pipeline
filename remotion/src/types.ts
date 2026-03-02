@@ -25,6 +25,7 @@ export interface VideoContent {
     question_text: string;
     hook_text?: string;
     cta_text?: string;
+    title_card_text?: string;   // short catchy subtitle used as scroll-stopping hero text
     tech_terms?: string[];
     domain?: string;
     answer_sections: AnswerSection[];
