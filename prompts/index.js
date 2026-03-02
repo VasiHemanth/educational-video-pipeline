@@ -8,12 +8,28 @@
  * Output drives: title card, voiceover script, keyword highlighting, diagram specs
  */
 function contentPrompt(questionNumber, topic, domain = 'GCP') {
+  const currentDate = new Date().toISOString().split('T')[0]; // e.g. 2026-03-02
   return `
 You are an AI Cloud Architect educator creating short-form video content for ${domain} interview prep.
 We focus on building crazy scalable AI systems.
-*CRITICAL*: Use your Web Search tools to find the absolute latest, bleeding-edge architectures and tools for this topic before answering! Do not rely solely on your training data.
+
+TEMPORAL CONTEXT (CRITICAL - NEVER IGNORE):
+- Today's date is: ${currentDate}
+- The LATEST Google Gemini models as of this date are:
+  * Gemini 3.1 Pro (preview, released Feb 19 2026) - the most capable reasoning model
+  * Gemini 3.0 (released Nov 2025)
+  * Gemini 3 Flash (released Dec 2025) - fast, cost-efficient
+  * Gemini 2.5 Flash (Jun 2025) - older but still widely used
+  * OUTDATED - Gemini 1.5 Pro is DEPRECATED. NEVER reference it.
+  * OUTDATED - Gemini 1.0 Pro is DEPRECATED. NEVER reference it.
+- Vertex AI Agent Engine is the production agentic platform on GCP (formerly Vertex AI Reasoning Engine).
+- Use your Web Search tools to verify any architecture claim or service name is still current before including it.
+
+WARNING: If you reference any deprecated model (Gemini 1.5 Pro, 1.0 Pro, PaLM, etc.), the answer is WRONG.
+Always use the most current service names and model versions listed above or found via web search.
 
 Generate Interview Question #${questionNumber} about: "${topic}"
+(Do NOT hardcode any specific model version from the topic string - use the latest models listed above instead)
 
 Return JSON with this exact structure:
 {
@@ -27,8 +43,8 @@ Return JSON with this exact structure:
     {
       "id": 1,
       "title": "Short Title",
-      "text": "3 to 5 lines explaining the architecture block diagram deeply. Maximum 15-20 words total. Must be technical.", 
-      "spoken_audio": "A punchy technical explanation for narration, 10-20 words max.", 
+      "text": "3 to 5 lines explaining the architecture block diagram deeply. Maximum 15-20 words total. Must be technical.",
+      "spoken_audio": "A punchy technical explanation for narration, 10-20 words max.",
       "keywords": {
         "tech_terms": ["exact words from 'text' to highlight"],
         "action_verbs": ["exact words from 'text' to highlight"],
@@ -177,7 +193,7 @@ that reveals diagram nodes in sync with the narration.
 DSL:
 ${dsl}
 
-Voiceover timestamps (word → time in seconds):
+Voiceover timestamps (word -> time in seconds):
 ${JSON.stringify(voiceoverTimestamps, null, 2)}
 
 Return JSON:
@@ -234,7 +250,7 @@ Return JSON:
     "subheadline": "A slightly longer sub-headline that elaborates on the topic (max 10-12 words)."
   },
   "instagram": {
-    "caption": "Hook line\n\nValue lines (3-4)\n\nHashtags (15-20)",
+    "caption": "Hook line\\n\\nValue lines (3-4)\\n\\nHashtags (15-20)",
     "cover_text": "Short punchy text for the reel cover"
   },
   "tiktok": {
