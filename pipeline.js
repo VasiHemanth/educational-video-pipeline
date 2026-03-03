@@ -22,6 +22,7 @@
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
+const { execSync, spawn } = require('child_process');
 const { askJSON, askLatestModels } = require('./providers/llm');
 const { contentPrompt, dslRefinementPrompt, mermaidDslRefinementPrompt, remotionDslRefinementPrompt, metadataPrompt } = require('./prompts/index');
 const { renderAllDiagrams } = require('./scripts/diagrams');
@@ -46,6 +47,8 @@ const NO_PROGRESS = hasFlag('--no-progress');
 const AUTO_POST = hasFlag('--post');
 const USE_HOOK = hasFlag('--hook');
 const DOMAIN = getArg('--domain') || 'GCP';
+const USE_VOICE = !hasFlag('--no-voice');  // Voice ON by default
+const VOICE_PRESET = getArg('--voice-preset') || 'happy_mentor_male';
 
 // Platforms parsing (e.g. --platforms "youtube,meta")
 const rawPlatforms = getArg('--platforms') || 'youtube';
@@ -71,6 +74,8 @@ async function run() {
   console.log(`║   Diagrams : ${DIAGRAM_MODE.padEnd(34)}║`);
   console.log(`║   AnimStyle: ${ANIM_STYLE.padEnd(34)}║`);
   console.log(`║   Hook Text: ${String(USE_HOOK).padEnd(34)}║`);
+  console.log(`║   Voice TTS: ${String(USE_VOICE).padEnd(34)}║`);
+  console.log(`║   Voice     : ${VOICE_PRESET.padEnd(34)}║`);
   console.log(`║   Auto-Post: ${String(AUTO_POST).padEnd(34)}║`);
   console.log('╚══════════════════════════════════════════════════╝');
   console.log('');
@@ -107,6 +112,58 @@ async function run() {
     console.log('\n🏁 Dry run complete. Content JSON ready.');
     console.log('   Re-run without --dry-run to render video.');
     return;
+  }
+
+  // ── STEP 1.5: Voice Generation (TTS) ────────────────────────────────────────
+  let voiceManifest = null;
+  if (USE_VOICE) {
+    console.log('\n🎙️  STEP 1.5 — Generating voiceover with Qwen3 TTS...');
+    const pythonBin = path.join(__dirname, '.venv-qwen', 'bin', 'python');
+    const voiceScript = path.join(__dirname, 'scripts', 'generate_voice.py');
+
+    if (!fs.existsSync(pythonBin)) {
+      console.error(`❌ Python venv not found at: ${pythonBin}`);
+      console.error('   Please set up .venv-qwen with mlx-audio installed.');
+      process.exit(1);
+    }
+
+    const voiceArgs = [
+      voiceScript,
+      '--question', String(NUMBER),
+      '--content', contentPath,
+      '--voice', VOICE_PRESET,
+    ];
+
+    await new Promise((resolve, reject) => {
+      const proc = spawn(pythonBin, voiceArgs, {
+        cwd: __dirname,
+        stdio: 'inherit',  // Stream output directly to console
+      });
+
+      proc.on('close', (code) => {
+        if (code === 0) {
+          resolve();
+        } else {
+          reject(new Error(`Voice generation failed with exit code ${code}`));
+        }
+      });
+
+      proc.on('error', (err) => {
+        reject(new Error(`Failed to spawn voice generation: ${err.message}`));
+      });
+    });
+
+    // Read the manifest
+    const manifestPath = path.join(__dirname, 'voice_output', `q${NUMBER}_manifest.json`);
+    if (fs.existsSync(manifestPath)) {
+      voiceManifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
+      console.log(`✅ Voice manifest loaded: ${voiceManifest.segments.length} segments, ${voiceManifest.total_duration_seconds}s total`);
+    } else {
+      console.error('❌ Voice manifest not found after generation!');
+      process.exit(1);
+    }
+  } else {
+    console.log('\n⏭️  Skipping voice generation (--no-voice)');
   }
 
   // ── STEP 2: Refine DSL for each diagram ─────────────────────────────────────
@@ -161,7 +218,8 @@ async function run() {
       pauseFrames: PAUSE_FRAMES,
       noProgress: NO_PROGRESS,
       useHook: USE_HOOK,
-      platform: platform // Pass the platform config to Remotion!
+      platform: platform,
+      voiceManifest: voiceManifest,  // Pass voice data to assembler
     });
     renderedVideos[platform] = result.videoPath;
     lastThumbnailPath = result.thumbnailPath;
