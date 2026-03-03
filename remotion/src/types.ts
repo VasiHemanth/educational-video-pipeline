@@ -46,6 +46,7 @@ export interface SectionTiming {
     phaseBFrames: number;
     phaseCFrames: number;
     phaseDFrames: number;
+    voicePath?: string | null;
 }
 
 export interface VideoProps {
@@ -63,6 +64,12 @@ export interface VideoProps {
         sectionTimings?: SectionTiming[];
         thumbnail_headline?: string;
         thumbnail_subheadline?: string;
+        introVoicePath?: string | null;
+        outroVoicePath?: string | null;
+        sfx?: {
+            whoosh?: string | null;
+            pop?: string | null;
+        };
     };
     fps?: number;
 }
