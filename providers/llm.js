@@ -29,7 +29,7 @@ async function askGemini(prompt) {
     const { execFileSync } = require('child_process');
     const result = execFileSync('gemini', ['--model', GEMINI_MODEL, '-y', '-p', prompt], {
       maxBuffer: 10 * 1024 * 1024,
-      timeout: 120000,
+      timeout: 300000,
       encoding: 'utf8'
     }).trim();
     return result;

@@ -1,0 +1,42 @@
+{
+  "youtube": {
+    "title": "Generative AI Interview Q11: Billion-Scale RAG for Financial Insights #Shorts",
+    "description": "Designing an autonomous financial research agent on GCP involves orchestrating several services for billion-scale RAG. Raw financial documents like earnings transcripts and SEC filings are stored in Cloud Storage and processed into BigQuery, then indexed into Vertex AI Vector Search. The Vertex AI Agent Engine leverages Gemini 3.1 Pro for multi-step reasoning, retrieving relevant context from Vector Search via RAG before generating actionable financial insights. Pub/Sub and Dataflow manage the ingestion pipeline, while Vertex AI Evaluation ensures response quality, all monitored via Cloud Monitoring and Logging for security. This robust architecture enables real-time analysis of vast financial data, providing unparalleled intelligence for market decisions. Subscribe for daily Cloud Architect breakdowns.",
+    "tags": [
+      "Generative AI",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "RAGSystem",
+      "FinancialTech",
+      "GCP",
+      "VertexAI",
+      "GeminiPro",
+      "VectorSearch",
+      "BigQuery",
+      "Dataflow",
+      "MultiStepAgent",
+      "AutonomousAI",
+      "FinIntel",
+      "SECFilings",
+      "EarningsCall"
+    ],
+    "category": "Education",
+    "playlist": "Generative AI Daily Interview Questions"
+  },
+  "thumbnail": {
+    "headline": "BILLION-SCALE RAG AGENT",
+    "subheadline": "Financial intelligence via Gemini Pro and Vertex AI on GCP"
+  },
+  "instagram": {
+    "caption": "Unlock financial insights with autonomous AI research agents! 💸\n\n► Multi-step agents use Gemini 3.1 Pro for deep reasoning.\n► Billion-scale RAG integrates diverse financial documents for context.\n► Vertex AI Agent Engine orchestrates complex research workflows.\n► GCP services like Vector Search and BigQuery power the data backend.\n\nSave this 🔖 | Comment your next big investment 👇\n\n#FinancialAI #VertexAIAgent #RAGSystem #Gemini3_1Pro #FinancialIntelligence #GCPArchitect #GenerativeAI #CloudArchitect #SystemDesign #AIAutomation #AI #CloudComputing #TechInterview",
+    "cover_text": "RAG AGENT GCP",
+    "first_comment_hashtags": "#AIinFinance #VertexAIVectorSearch #BigQueryAnalytics #DataflowPipeline #CloudSecurity #AIInnovation #TechTrends #GCPDevelopment"
+  },
+  "tiktok": {
+    "caption": "Build a financial RAG agent on GCP! 🚀 Get actionable insights from docs using Gemini 3.1 Pro. Learn how! #GCP #AI #FinTech",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

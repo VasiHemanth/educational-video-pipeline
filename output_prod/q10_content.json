@@ -1,0 +1,153 @@
+{
+  "question_number": 10,
+  "topic": "Building an agentic AI system on Google Cloud to analyze CCTV and drone security footage in real-time, detect threats and anomalies, and trigger automated alerts using Vertex AI Agent Engine and Gemini",
+  "question_text": "How would you design and implement an agentic AI system on Google Cloud to analyze real-time CCTV and drone security footage, detect threats and anomalies, and trigger automated alerts using Vertex AI Agent Engine and Gemini?",
+  "hook_text": "Build a hyper-scalable agentic AI for real-time security. Detect threats from CCTV and drone footage instantly on Google Cloud.",
+  "cta_text": "Master agentic AI on GCP for your next interview!",
+  "tech_terms": [
+    "Vertex AI Agent Engine",
+    "Gemini 3.1 Pro",
+    "Gemini 3.1 Flash Image",
+    "Cloud IoT Core",
+    "Dataflow",
+    "Cloud Storage",
+    "Cloud Pub/Sub",
+    "Cloud Functions",
+    "Cloud Logging",
+    "Cloud Monitoring",
+    "VPC Service Controls",
+    "Cloud Load Balancing"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Ingestion & Pre-processing",
+      "text": "Stream CCTV/drone footage. Cloud IoT Core ingests real-time data. Dataflow processes video, frames extracted. Stored in Cloud Storage buckets.",
+      "spoken_audio": "Real-time video ingests via Cloud IoT Core. Dataflow pre-processes, extracts frames, stores in Cloud Storage.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud IoT Core",
+          "Dataflow",
+          "Cloud Storage"
+        ],
+        "action_verbs": [
+          "Stream",
+          "ingests",
+          "processes",
+          "extracted",
+          "Stored"
+        ],
+        "concepts": [
+          "real-time data",
+          "video footage",
+          "frames"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Agentic Threat Detection",
+      "text": "Vertex AI Agent Engine orchestrates. Gemini 3.1 Flash Image analyzes frames. Detects threats, anomalies, and suspicious activity. Publishes events to Pub/Sub.",
+      "spoken_audio": "Vertex AI Agent Engine orchestrates. Gemini 3.1 Flash Image analyzes frames, detects threats and anomalies.",
+      "keywords": {
+        "tech_terms": [
+          "Vertex AI Agent Engine",
+          "Gemini 3.1 Flash Image",
+          "Pub/Sub"
+        ],
+        "action_verbs": [
+          "orchestrates",
+          "analyzes",
+          "Detects",
+          "Publishes"
+        ],
+        "concepts": [
+          "threats",
+          "anomalies",
+          "suspicious activity",
+          "events"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Alerting & Response",
+      "text": "Pub/Sub triggers Cloud Functions. Automated alerts sent to security. Integrates with PagerDuty. Cloud Logging and Monitoring track activity and system health.",
+      "spoken_audio": "Pub/Sub triggers Cloud Functions for alerts. Integrates with PagerDuty. Cloud Logging and Monitoring ensures system health.",
+      "keywords": {
+        "tech_terms": [
+          "Pub/Sub",
+          "Cloud Functions",
+          "Cloud Logging",
+          "Cloud Monitoring"
+        ],
+        "action_verbs": [
+          "triggers",
+          "sent",
+          "Integrates",
+          "track"
+        ],
+        "concepts": [
+          "Automated alerts",
+          "security",
+          "system health"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Video Ingestion & Pre-processing",
+      "type": "flowchart",
+      "dsl": "(CCTV/Drone Footage) -> (Cloud IoT Core) -> [Dataflow (Video Processing)] -> [[Cloud Storage (Frames)]]",
+      "animation_sequence": [
+        "CCTV/Drone Footage",
+        "Cloud IoT Core",
+        "Dataflow (Video Processing)",
+        "Cloud Storage (Frames)"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Agentic Analysis",
+      "type": "flowchart",
+      "dsl": "[[Cloud Storage (Frames)]] -> (Vertex AI Agent Engine) -> (Gemini 3.1 Flash Image) -> [Anomaly Detection] -> (Cloud Pub/Sub)",
+      "animation_sequence": [
+        "Cloud Storage (Frames)",
+        "Vertex AI Agent Engine",
+        "Gemini 3.1 Flash Image",
+        "Anomaly Detection",
+        "Cloud Pub/Sub"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Alerting Workflow",
+      "type": "flowchart",
+      "dsl": "(Cloud Pub/Sub) -> [Cloud Functions] -> (Automated Alerts) -> (Security Teams) @direction LR",
+      "animation_sequence": [
+        "Cloud Pub/Sub",
+        "Cloud Functions",
+        "Automated Alerts",
+        "Security Teams"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "AI Security: Real-Time Threat Detection",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#Interview",
+    "#VertexAI",
+    "#Gemini",
+    "#AgenticAI"
+  ],
+  "domain": "GCP"
+}

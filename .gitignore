@@ -14,3 +14,5 @@ client_secret_*.json
 output_prod/*.mp4
 *.MP4
 *.mov
+voice_output/
+*.png

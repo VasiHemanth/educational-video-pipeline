@@ -1,42 +1,42 @@
 {
   "youtube": {
-    "title": "Generative AI Interview Q5: Architecting Enterprise AI at Scale #Shorts",
-    "description": "Architecting a large-scale Generative AI application for a Fortune 500 demands a robust framework. This video details an architectural workflow leveraging a Cloud AI Platform to host LLMs, integrated with proprietary data via RAG using Vector Databases. Kubernetes ensures scalable deployment, while MLOps pipelines automate continuous integration and delivery. Observability tools provide real-time performance insights, complemented by Model Monitoring for drift detection and Data Governance for compliance. Master these concepts to build and deploy ethically sound, high-performing Gen AI solutions. Learn more about enterprise AI architecture today!",
+    "title": "GCP Interview Q5: Streamline Real-time ETL #Shorts",
+    "description": "Design a robust real-time ETL pipeline on GCP by leveraging Cloud Pub/Sub for scalable data ingestion. Cloud Dataflow then processes and transforms this streaming data with powerful Apache Beam pipelines, ensuring low-latency insights. The cleansed and enriched data is efficiently loaded into BigQuery, Google's serverless data warehouse, enabling real-time analytics and reporting. Cloud Storage serves as a reliable data lake, while Cloud Monitoring and Logging provide comprehensive operational visibility. Discover how these services integrate seamlessly to deliver immediate business intelligence. Master real-time data processing for your next cloud architecture!",
     "tags": [
-      "Generative AI",
+      "GCP",
       "CloudArchitect",
       "Interview",
       "AI",
       "Shorts",
       "SystemDesign",
-      "LLM",
-      "RAG",
-      "VectorDatabase",
-      "Kubernetes",
-      "MLOps",
-      "Observability",
-      "DataGovernance",
-      "ModelMonitoring",
-      "CloudAI",
-      "EthicalAI",
-      "AIArchitecture",
-      "EnterpriseAI",
-      "MLEngineering",
-      "AIDeployment"
+      "CloudDataflow",
+      "BigQuery",
+      "CloudPubSub",
+      "CloudStorage",
+      "CloudMonitoring",
+      "CloudLogging",
+      "DataCatalog",
+      "ETL",
+      "StreamingAnalytics",
+      "DataPipeline",
+      "RealtimeData",
+      "GoogleCloud",
+      "DataEngineering",
+      "CloudComputing"
     ],
     "category": "Education",
-    "playlist": "Generative AI Daily Interview Questions"
+    "playlist": "GCP Daily Interview Questions"
   },
   "thumbnail": {
-    "headline": "Architecting Enterprise AI Now",
-    "subheadline": "From concept to production: High-performance, ethical Gen AI deployment."
+    "headline": "Real-time ETL Unpacked",
+    "subheadline": "Cloud Dataflow & BigQuery for Streaming Analytics"
   },
   "instagram": {
-    "caption": "Cracking the code to enterprise-grade Generative AI deployments? 💡\n\nLearn how to architect scalable, cost-efficient, and ethically compliant Gen AI solutions for Fortune 500 companies.\nDive deep into integrating LLMs with proprietary data using RAG and Vector Databases.\nExplore the roles of Kubernetes, MLOps, Observability, and Model Monitoring in production.\nEnsure data governance and ethical AI are at the core of your strategy.\n\n#GenerativeAI #LLM #RAG #VectorDatabase #Kubernetes #MLOps #Observability #DataGovernance #ModelMonitoring #CloudAI #EthicalAI #SystemDesign #AIArchitecture #EnterpriseAI #MLEngineering #AIDeployment #ScalableAI #AIEthics #TechInterview #SolutionsArchitect",
-    "cover_text": "Architecting Gen AI"
+    "caption": "Ever wondered how to build real-time data pipelines on GCP? 🤔\n\n▸ Ingest data scalably with Cloud Pub/Sub.\n▸ Process and transform streaming data efficiently using Cloud Dataflow.\n▸ Load into BigQuery for powerful, real-time analytics.\n▸ Monitor and manage your entire pipeline seamlessly with integrated GCP services.\n\n#GCP #CloudArchitect #Interview #SystemDesign #CloudDataflow #BigQuery #CloudPubSub #CloudStorage #CloudMonitoring #CloudLogging #DataCatalog #ETL #StreamingAnalytics #DataPipeline #RealtimeData #GoogleCloud #DataEngineering #CloudComputing",
+    "cover_text": "Real-time ETL Explained"
   },
   "tiktok": {
-    "caption": "How would YOU architect Gen AI for a Fortune 500? 🤔 We're talking LLMs, RAG, Kubernetes, MLOps & Ethical AI at scale! Share your insights! 👇 #GenAI #LLM #AI",
+    "caption": "GCP real-time ETL with Dataflow & BigQuery! 🚀 Ingest with Pub/Sub, process with Dataflow, analyze instantly in BigQuery. Get your data insights now! #GCP #ETL #Dataflow #BigQuery #RealtimeAnalytics",
     "sounds_suggestion": "Lo-fi beats / study music genre"
   }
 }

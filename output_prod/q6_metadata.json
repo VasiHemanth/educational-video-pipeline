@@ -1,43 +1,41 @@
 {
   "youtube": {
-    "title": "Generative AI Interview Q6: Building GPT-Scale AI on Google Cloud #Shorts",
-    "description": "Designing a GPT-scale model on Google Cloud demands extreme performance and cost-efficiency. This workflow leverages AI Hypercomputer, utilizing cutting-edge TPUs like Trillium and GPUs such as NVIDIA Blackwell, interconnected by Jupiter Fabric with RoCE for ultra-low latency communication. Frameworks like JAX and PyTorch, augmented by MaxText, DeepSpeed, and FSDP, implement 3D Parallelism (Tensor, Pipeline, ZeRO-3) and Multislice Training for distributed optimization. Checkpointing to Hyperdisk Exapools with Anywhere Cache and GCS FUSE ensures data resilience and rapid recovery. Dynamic Workload Scheduler orchestrates GKE clusters for optimal resource utilization, all monitored via Vertex AI TensorBoard and Cloud Profiler. Ready to master large-scale AI deployment? Learn more about building scalable and efficient AI pipelines!",
+    "title": "GCP Interview Q6: Scalable ETL w/ Dataflow & BigQuery #Shorts",
+    "description": "Dive into designing a highly scalable, fault-tolerant ETL pipeline on GCP. Data is ingested via Pub/Sub or batch from Cloud Storage, processed by Cloud Dataflow (leveraging Apache Beam, Flex Templates, and UDFs) for both streaming and batch analytics. BigQuery serves as the analytical powerhouse, enabling real-time insights. The pipeline ensures data quality, handles schema evolution dynamically, and incorporates Data Loss Prevention and Data Catalog for governance. Monitor end-to-end performance and health with Stackdriver. Master this architecture for your next Cloud Architect interview!",
     "tags": [
-      "Generative AI",
+      "GCP",
       "CloudArchitect",
       "Interview",
-      "AI",
-      "Shorts",
       "SystemDesign",
-      "GoogleCloud",
-      "TPU",
-      "GPU",
-      "AIHypercomputer",
-      "GPTScale",
-      "FoundationModel",
-      "DeepLearning",
-      "MachineLearning",
-      "JAX",
-      "PyTorch",
-      "DeepSpeed",
-      "FSDP",
-      "Kubernetes",
-      "VertexAI",
-      "CloudOptimization"
+      "CloudDataflow",
+      "BigQuery",
+      "ETLPipeline",
+      "RealTimeAnalytics",
+      "SchemaEvolution",
+      "DataQuality",
+      "PubSub",
+      "CloudStorage",
+      "ApacheBeam",
+      "Streaming",
+      "Batch",
+      "FlexTemplates",
+      "DataGovernance",
+      "CloudMonitoring",
+      "GoogleCloud"
     ],
     "category": "Education",
-    "playlist": "Generative AI Daily Interview Questions"
+    "playlist": "GCP Daily Interview Questions"
   },
   "thumbnail": {
-    "headline": "Build GPT on Google Cloud",
-    "subheadline": "Optimize training with AI Hypercomputer, TPUs, and advanced parallelism."
+    "headline": "Scalable ETL on GCP",
+    "subheadline": "Dataflow & BigQuery for Real-time Analytics & Quality"
   },
   "instagram": {
-    "caption": "Ever wondered how to train a GPT-scale AI model on Google Cloud? 🤔\n\nMastering massive AI models requires a robust, cost-effective infrastructure. Dive into the world of AI Hypercomputer, TPUs, and NVIDIA Blackwell GPUs. Discover how 3D parallelism (Tensor, Pipeline, ZeRO-3) and multislice training with JAX and PyTorch on GKE optimize performance and cost. Learn about advanced data handling with Hyperdisk Exapools, Anywhere Cache, and GCS FUSE for seamless checkpointing. Plus, see how Dynamic Workload Scheduler ensures peak efficiency. This is the blueprint for next-gen AI. Don't just build, build smart.\n\n#GenerativeAI #GoogleCloud #AIHypercomputer #GPT #MachineLearning #DeepLearning #CloudArchitecture #TPU #GPU #NVIDIABlackwell #JAX #PyTorch #DeepSpeed #FSDP #Kubernetes #VertexAI #SystemDesign #TechInterview #AIInterview #ScalableAI",
-    "cover_text": "GPT AI on Google Cloud"
+    "caption": "Build robust, scalable ETL on GCP!\n\n- Real-time analytics with Dataflow & BigQuery.\n- Master schema evolution & data quality.\n- Fault-tolerant processing for critical data.\n- Leverage Pub/Sub, Cloud Storage & Apache Beam.\n\n#GCP #CloudArchitect #SystemDesign #CloudDataflow #BigQuery #ETLPipeline #RealTimeAnalytics #SchemaEvolution #DataQuality #PubSub #CloudStorage #ApacheBeam #StreamingData #BatchProcessing #FlexTemplates #DataGovernance #CloudMonitoring #GoogleCloud",
+    "cover_text": "GCP Scalable ETL"
   },
   "tiktok": {
-    "caption": "Train GPT-scale AI on Google Cloud! 🚀 Learn how AI Hypercomputer, TPUs, & 3D parallelism optimize performance & cost. Master scalable AI! #GenerativeAI #GoogleCloud #AI",
+    "caption": "GCP ETL: Dataflow & BigQuery scale. Real-time analytics, schema evolution, data quality. Master it! #GCP #ETL #Dataflow #BigQuery",
     "sounds_suggestion": "Lo-fi beats / study music genre"
   }
 }

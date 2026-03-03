@@ -1,0 +1,43 @@
+{
+  "youtube": {
+    "title": "10M Token Context in Agentic AI: How? #Shorts",
+    "description": "Designing a robust system for 10M token context in 50-turn agentic conversations involves a multi-layered approach. The Vertex AI Agent Engine orchestrates the conversation flow, leveraging Gemini 2.5 Pro or Gemini 3.1 Pro for core reasoning and generation within their respective context windows. To manage the vast context, summarization loops continuously condense past turns, preserving key information. Memory compression techniques further optimize token usage, while Retrieval Augmentation, powered by a Vector Database, fetches relevant external knowledge to enrich responses without exceeding active context limits. This ensures scalable and coherent long-form agentic interactions. Subscribe for daily Cloud Architect breakdowns.",
+    "tags": [
+      "Generative AI",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "ContextWindow",
+      "TokenManagement",
+      "AgenticAI",
+      "GeminiPro",
+      "VertexAI",
+      "Summarization",
+      "MemoryCompression",
+      "RAG",
+      "VectorDatabase",
+      "LLMArchitecture",
+      "CloudComputing",
+      "GoogleCloud",
+      "AIStrategy",
+      "AdvancedAI"
+    ],
+    "category": "Education",
+    "playlist": "Generative AI Daily Interview Questions"
+  },
+  "thumbnail": {
+    "headline": "10M TOKEN CONTEXT?",
+    "subheadline": "Agentic AI conversation with massive context window explained."
+  },
+  "instagram": {
+    "caption": "Struggling with massive context in agentic AI? This is how it's done! ✨\n\n► Vertex AI Agent Engine orchestrates multi-turn conversations.\n► Summarization loops condense past dialogue, preserving critical state.\n► Memory compression techniques optimize token efficiency for long contexts.\n► Retrieval Augmentation with Vector DB injects relevant info on demand.\n\nSave this 🔖 | Master Context Windows 👇\n\n#AgenticAI #LLMContext #TokenLimits #VertexAIEngine #GeminiPro #AILifecycle #SystemDesignAI #CloudEngineering #DataArchitecture #AIStrategy #GCPArchitect #GenerativeAI #CloudArchitect",
+    "cover_text": "10M TOKENS AI",
+    "first_comment_hashtags": "#AIInterview #LargeLanguageModels #ContextWindowManagement #MemoryInAI #RAGArchitecture #VectorSearch #AdvancedAIConcepts #AIInsights"
+  },
+  "tiktok": {
+    "caption": "Handle 10M token context in AI conversations! 🤯 Summarization, compression, & RAG keep agents smart. Learn how. #AITips #GenAI #ContextWindow",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

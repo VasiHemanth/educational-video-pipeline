@@ -1,113 +1,103 @@
 {
   "question_number": 6,
-  "topic": "Large-Scale Foundation Model Training on Google Cloud (GPT-scale)",
-  "question_text": "How would you design a GPT-scale foundation model training pipeline on Google Cloud, optimizing for performance and cost efficiency?",
-  "hook_text": "Training a GPT-scale model? Google Cloud's AI Hypercomputer is your answer. Let's build a bleeding-edge pipeline.",
-  "cta_text": "Master large-scale AI training! Follow for more advanced Cloud Architect solutions.",
+  "topic": "Cloud Dataflow and BigQuery ETL pipeline",
+  "question_text": "How would you design a highly scalable, fault-tolerant ETL pipeline using Cloud Dataflow and BigQuery for real-time analytics, handling schema evolution and data quality?",
+  "hook_text": "Build a real-time ETL pipeline on Google Cloud that scales automatically and ensures data quality. Here’s how!",
+  "cta_text": "Master Dataflow and BigQuery for your next cloud project. Follow for more deep dives!",
   "tech_terms": [
-    "AI Hypercomputer",
-    "TPU",
-    "GPU",
-    "Trillium",
-    "Ironwood",
-    "NVIDIA Blackwell",
-    "RoCE",
-    "Jupiter Fabric",
-    "JAX",
-    "MaxText",
-    "PyTorch",
-    "DeepSpeed",
-    "FSDP",
-    "3D Parallelism",
-    "Multislice Training",
-    "Hyperdisk Exapools",
-    "Anywhere Cache",
-    "GCS FUSE",
-    "Checkpointing",
-    "GKE",
-    "Dynamic Workload Scheduler",
-    "MFU",
-    "Vertex AI TensorBoard",
-    "Cloud Profiler",
-    "XLA",
-    "ZeRO-3",
-    "Tensor Parallelism",
-    "Pipeline Parallelism",
-    "Google Cloud Storage",
-    "Kubernetes"
+    "Cloud Dataflow",
+    "BigQuery",
+    "Pub/Sub",
+    "Cloud Storage",
+    "Data Catalog",
+    "Data Loss Prevention",
+    "UDFs",
+    "Streaming",
+    "Batch",
+    "Flex Templates",
+    "Apache Beam",
+    "Data Quality",
+    "Schema Evolution",
+    "Stackdriver",
+    "Cloud Monitoring"
   ],
   "answer_sections": [
     {
       "id": 1,
-      "title": "Compute & Network Foundation",
-      "text": "Leverage Trillium TPUs or Blackwell B200 GPUs. Interconnect with Titanium ML adapters and Jupiter Fabric for 3.2 Tbps RoCE network.",
-      "spoken_audio": "Trillium TPUs or Blackwell GPUs power it. Titanium ML and Jupiter Fabric ensure ultra-fast networking.",
+      "title": "Ingestion and Staging with Pub/Sub",
+      "text": "Ingest real-time data via Pub/Sub. Land raw data in Cloud Storage. Utilize Dataflow Flex Templates for staging. This ensures resilient, scalable input.",
+      "spoken_audio": "Pub/Sub ingests real-time data, landing it in Cloud Storage. Dataflow Flex Templates handle robust staging.",
       "keywords": {
         "tech_terms": [
-          "Trillium TPUs",
-          "Blackwell B200 GPUs",
-          "Titanium ML",
-          "Jupiter Fabric",
-          "RoCE"
+          "Pub/Sub",
+          "Cloud Storage",
+          "Dataflow Flex Templates"
         ],
         "action_verbs": [
-          "Leverage",
-          "Interconnect"
+          "Ingest",
+          "land",
+          "Utilize",
+          "ensures"
         ],
         "concepts": [
-          "network"
+          "real-time data",
+          "raw data",
+          "staging",
+          "resilient",
+          "scalable input"
         ]
       }
     },
     {
       "id": 2,
-      "title": "Scaling & Parallelism Strategy",
-      "text": "Employ JAX/MaxText for TPUs or PyTorch/DeepSpeed with FSDP for GPUs. Use 3D parallelism (tensor, pipeline, data) for extreme model sizes.",
-      "spoken_audio": "JAX, PyTorch, and DeepSpeed enable efficient FSDP and 3D parallelism for massive models.",
+      "title": "Dataflow Transformations & Quality",
+      "text": "Dataflow performs complex transformations, aggregations, and data quality checks using Apache Beam. Implement UDFs for custom logic, DLT for dead-letter. Manage schema.",
+      "spoken_audio": "Dataflow executes complex transformations, aggregations, and quality checks with Apache Beam and UDFs.",
       "keywords": {
         "tech_terms": [
-          "JAX",
-          "MaxText",
-          "TPUs",
-          "PyTorch",
-          "DeepSpeed",
-          "FSDP",
-          "GPUs",
-          "3D parallelism",
-          "tensor",
-          "pipeline",
-          "data"
+          "Dataflow",
+          "Apache Beam",
+          "UDFs",
+          "DLT"
         ],
         "action_verbs": [
-          "Employ",
-          "Use"
+          "performs",
+          "Implement",
+          "Manage"
         ],
         "concepts": [
-          "model sizes"
+          "complex transformations",
+          "aggregations",
+          "data quality checks",
+          "custom logic",
+          "schema"
         ]
       }
     },
     {
       "id": 3,
-      "title": "Data & Orchestration Layer",
-      "text": "Store data on Hyperdisk Exapools with Anywhere Cache for low latency. Orchestrate jobs on GKE (Spanner) and monitor MFU via Vertex AI.",
-      "spoken_audio": "Hyperdisk Exapools and Anywhere Cache optimize data. GKE orchestrates, Vertex AI monitors MFU.",
+      "title": "BigQuery Loading & Monitoring",
+      "text": "Load transformed data into BigQuery. Leverage streaming inserts for real-time. Use partitioning and clustering for performance. Monitor pipeline via Stackdriver.",
+      "spoken_audio": "Load transformed data into BigQuery using streaming inserts. Monitor pipeline health and performance with Stackdriver.",
       "keywords": {
         "tech_terms": [
-          "Hyperdisk Exapools",
-          "Anywhere Cache",
-          "GKE",
-          "Spanner",
-          "MFU",
-          "Vertex AI"
+          "BigQuery",
+          "Stackdriver"
         ],
         "action_verbs": [
-          "Store",
-          "Orchestrate",
-          "monitor"
+          "Load",
+          "Leverage",
+          "Use",
+          "Monitor"
         ],
         "concepts": [
-          "low latency"
+          "transformed data",
+          "streaming inserts",
+          "real-time",
+          "partitioning",
+          "clustering",
+          "performance",
+          "pipeline"
         ]
       }
     }
@@ -116,67 +106,54 @@
     {
       "id": 1,
       "section_id": 1,
-      "title": "AI Hardware Stack",
+      "title": "Ingestion & Staging",
       "type": "flowchart",
-      "dsl": "[[Raw Data]] -> (GCS FUSE) -> (Anywhere Cache) -> [[Hyperdisk Exapools]] -> (Compute Nodes)\n(Compute Nodes) -> [Trillium TPUs | Blackwell GPUs] -> (Titanium ML Adapter) -> (Jupiter Fabric) -> [Trillium TPUs | Blackwell GPUs]",
+      "dsl": "(Data Source) -> (Pub/Sub) -> [Dataflow Flex Template] -> [[Cloud Storage]]",
       "animation_sequence": [
-        "Raw Data",
-        "GCS FUSE",
-        "Anywhere Cache",
-        "Hyperdisk Exapools",
-        "Compute Nodes",
-        "Trillium TPUs | Blackwell GPUs",
-        "Titanium ML Adapter",
-        "Jupiter Fabric"
+        "Data Source",
+        "Pub/Sub",
+        "Dataflow Flex Template",
+        "Cloud Storage"
       ],
       "direction": "LR"
     },
     {
       "id": 2,
       "section_id": 2,
-      "title": "Model Parallelism Workflow",
+      "title": "Data Transformation",
       "type": "flowchart",
-      "dsl": "(Input Model) -> {Sharding Strategy?} -> [JAX/MaxText or PyTorch/DeepSpeed]\n[JAX/MaxText or PyTorch/DeepSpeed] -> (FSDP) -> (Tensor Parallelism) -> (Pipeline Parallelism) -> [Distributed Training]",
+      "dsl": "[[Cloud Storage]] -> [Dataflow (Apache Beam)] -> {Data Quality & Schema Checks} -> [[Staging BigQuery]]",
       "animation_sequence": [
-        "Input Model",
-        "Sharding Strategy?",
-        "JAX/MaxText or PyTorch/DeepSpeed",
-        "FSDP",
-        "Tensor Parallelism",
-        "Pipeline Parallelism",
-        "Distributed Training"
+        "Cloud Storage",
+        "Dataflow (Apache Beam)",
+        "Data Quality & Schema Checks",
+        "Staging BigQuery"
       ],
-      "direction": "TB"
+      "direction": "LR"
     },
     {
       "id": 3,
       "section_id": 3,
-      "title": "Data & Ops Flow",
+      "title": "Loading & Monitoring",
       "type": "flowchart",
-      "dsl": "[[Training Data]] --> (Anywhere Cache) --> [[Hyperdisk Exapools]]\n(User Trigger) --> [GKE Cluster (Spanner)]\n[GKE Cluster (Spanner)] --> (Dynamic Workload Scheduler) --> [Train Model]\n[Train Model] --> (MFU Monitoring) --> (Vertex AI TensorBoard) --> (Cloud Profiler)\n(Cloud Profiler) --> {Optimization Feedback?}",
+      "dsl": "[[Staging BigQuery]] -> [BigQuery Streaming Inserts] -> [[Final BigQuery Table]] -> (Stackdriver Monitoring)",
       "animation_sequence": [
-        "Training Data",
-        "Anywhere Cache",
-        "Hyperdisk Exapools",
-        "User Trigger",
-        "GKE Cluster (Spanner)",
-        "Dynamic Workload Scheduler",
-        "Train Model",
-        "MFU Monitoring",
-        "Vertex AI TensorBoard",
-        "Cloud Profiler",
-        "Optimization Feedback?"
+        "Staging BigQuery",
+        "BigQuery Streaming Inserts",
+        "Final BigQuery Table",
+        "Stackdriver Monitoring"
       ],
       "direction": "LR"
     }
   ],
-  "title_card_text": "GPT-Scale AI Training on GCP",
+  "title_card_text": "Dataflow & BigQuery ETL Mastery",
   "hashtags": [
     "#GCP",
     "#CloudArchitect",
     "#Interview",
-    "#GenerativeAI",
-    "#LLMTraining"
+    "#Dataflow",
+    "#BigQuery",
+    "#ETL"
   ],
-  "domain": "Generative AI"
+  "domain": "GCP"
 }

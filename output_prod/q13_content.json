@@ -1,0 +1,141 @@
+{
+  "question_number": 13,
+  "topic": "Q13: Long-Running Agent Deadlock Recovery. Detecting and resolving deadlocks in 24hr+ agent conversations: Custom Cloud Trace spans -> Gemini-powered deadlock analysis -> Automatic context reset with memory summarization, preserving 95% conversation state.",
+  "question_text": "How would you design a system to detect and recover from deadlocks in long-running 24hr+ agent conversations on GCP, ensuring minimal conversation state loss?",
+  "hook_text": "Long-running AI agent conversations can hit deadlocks. Here's how to detect and automatically recover, preserving 95% of context.",
+  "cta_text": "Master agent resilience. Follow for more advanced AI architecture tips!",
+  "tech_terms": [
+    "Cloud Trace",
+    "Gemini 3.1 Pro",
+    "Vertex AI Agent Engine",
+    "Memory summarization",
+    "Context reset",
+    "Deadlock detection",
+    "Observability"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Trace-Based Deadlock Detection",
+      "text": "Implement custom Cloud Trace spans. Monitor agent states,\nmessage flow, and extended idle times. Identify circular dependencies.\nDeadlocks are then automatically flagged.",
+      "spoken_audio": "Custom Cloud Trace spans monitor agent states, message flow, and extended idle times to flag deadlocks.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Trace",
+          "spans"
+        ],
+        "action_verbs": [
+          "Implement",
+          "Monitor",
+          "Identify",
+          "flagged"
+        ],
+        "concepts": [
+          "agent states",
+          "message flow",
+          "idle times",
+          "circular dependencies",
+          "Deadlocks"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "AI-Powered Deadlock Analysis",
+      "text": "Feed trace data to Gemini 3.1 Pro. Analyze patterns\nindicating deadlocks. Automate context reset strategies.\nSummarize memory, preserving 95% conversation state.",
+      "spoken_audio": "Gemini 3.1 Pro analyzes trace data for deadlocks, automating context reset and memory summarization.",
+      "keywords": {
+        "tech_terms": [
+          "Gemini 3.1 Pro",
+          "context reset",
+          "memory summarization"
+        ],
+        "action_verbs": [
+          "Feed",
+          "Analyze",
+          "Automate",
+          "Summarize",
+          "preserving"
+        ],
+        "concepts": [
+          "trace data",
+          "patterns",
+          "deadlocks",
+          "conversation state"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Automated Context Reset",
+      "text": "Upon deadlock detection, trigger automatic context reset.\nGemini 3.1 Pro summarizes conversation memory. This preserves\n95% of critical dialogue state. Re-engages agent effectively.",
+      "spoken_audio": "Triggering automatic context reset involves Gemini 3.1 Pro summarizing memory, preserving 95% of conversation state.",
+      "keywords": {
+        "tech_terms": [
+          "context reset",
+          "memory summarization",
+          "Gemini 3.1 Pro"
+        ],
+        "action_verbs": [
+          "trigger",
+          "summarizes",
+          "preserves",
+          "Re-engages"
+        ],
+        "concepts": [
+          "deadlock detection",
+          "conversation memory",
+          "dialogue state"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Deadlock Detection Flow",
+      "type": "flowchart",
+      "dsl": "(Agent Conversation) -> [Custom Cloud Trace Spans] -> {Deadlock Detected?}",
+      "animation_sequence": [
+        "Agent Conversation",
+        "Custom Cloud Trace Spans",
+        "Deadlock Detected?"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Analysis & Resolution",
+      "type": "flowchart",
+      "dsl": "{Deadlock Detected?} -> [Gemini 3.1 Pro Analysis] -> [Context Reset Strategy]",
+      "animation_sequence": [
+        "Deadlock Detected?",
+        "Gemini 3.1 Pro Analysis",
+        "Context Reset Strategy"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "State Preservation",
+      "type": "flowchart",
+      "dsl": "[Context Reset Strategy] -> (Memory Summarization by Gemini 3.1 Pro) -> (95% State Preserved)",
+      "animation_sequence": [
+        "Context Reset Strategy",
+        "Memory Summarization by Gemini 3.1 Pro",
+        "95% State Preserved"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "Agent Deadlock Recovery Solved!",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#Interview"
+  ],
+  "domain": "Generative AI"
+}

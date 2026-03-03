@@ -1,0 +1,42 @@
+{
+  "youtube": {
+    "title": "GCP Q10: Real-time AI Security with Vertex AI & Gemini #Shorts",
+    "description": "Architect a robust agentic AI system on Google Cloud for real-time CCTV and drone security. Footage is ingested via Cloud IoT Core, processed by Dataflow, and analyzed by Vertex AI Agent Engine leveraging Gemini 3.1 Pro and Flash Image for precise threat detection. Cloud Pub/Sub triggers Cloud Functions for automated alerts, ensuring immediate response to anomalies. Cloud Logging, Monitoring, and VPC Service Controls provide comprehensive security and observability. Master advanced cloud architecture with this deep dive into real-time AI security. Subscribe for more GCP interview insights!",
+    "tags": [
+      "GCP",
+      "CloudArchitect",
+      "Interview",
+      "AI",
+      "Shorts",
+      "SystemDesign",
+      "VertexAI",
+      "AgentEngine",
+      "GeminiAI",
+      "CCTV",
+      "Drones",
+      "Security",
+      "RealtimeAI",
+      "Dataflow",
+      "CloudIoT",
+      "CloudPubSub",
+      "CloudFunctions",
+      "ThreatDetection",
+      "CloudSecurity",
+      "GoogleCloud"
+    ],
+    "category": "Education",
+    "playlist": "GCP Daily Interview Questions"
+  },
+  "thumbnail": {
+    "headline": "Real-time AI Security",
+    "subheadline": "Vertex AI & Gemini for CCTV & Drone Threat Detection"
+  },
+  "instagram": {
+    "caption": "🚨 See how AI guards against threats in real-time!\n\nLearn to build an agentic AI system on Google Cloud.\nDetect anomalies in CCTV & drone footage using Vertex AI Agent Engine & Gemini.\nLeverage Cloud IoT Core, Dataflow, Pub/Sub, and Cloud Functions for automated alerts.\nEnhance security with real-time threat detection and rapid response.\n\n#GCP #CloudArchitect #AI #SystemDesign #VertexAI #GeminiAI #CCTV #Drones #Security #RealtimeAI #CloudIoT #Dataflow #PubSub #CloudFunctions #ThreatDetection #CloudSecurity #GoogleCloud #Interview",
+    "cover_text": "Real-time AI Security on GCP"
+  },
+  "tiktok": {
+    "caption": "Build a real-time AI security system on GCP with Vertex AI & Gemini for CCTV/Drones! Detect threats & trigger automated alerts. Learn more! #GCP #AI #Security",
+    "sounds_suggestion": "Lo-fi beats / study music genre"
+  }
+}

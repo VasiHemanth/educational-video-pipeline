@@ -1,87 +1,90 @@
 {
   "question_number": 7002,
   "topic": "GCP Event-Driven Serverless Scaling",
-  "question_text": "How would you design a highly scalable, event-driven architecture on GCP to process millions of IoT sensor readings per second, ensuring reliability and minimal operational overhead?",
-  "hook_text": "Scale IoT data processing to millions per second! This GCP event-driven architecture handles massive real-time streams.",
-  "cta_text": "Master serverless scaling on GCP. Follow for advanced cloud architect strategies!",
+  "question_text": "How would you design a highly scalable, event-driven serverless data ingestion and processing pipeline on GCP?",
+  "hook_text": "Scale your data ingestion effortlessly with GCP's powerful event-driven serverless architecture.",
+  "cta_text": "Master serverless scaling today. Follow for more GCP architecture tips!",
   "tech_terms": [
-    "GCP",
-    "Eventarc Advanced",
     "Pub/Sub",
-    "Cloud Run",
     "Cloud Functions",
-    "Workflows",
-    "Cloud Storage",
-    "Memorystore",
+    "Cloud Run",
+    "Eventarc",
     "BigQuery",
+    "Cloud Storage",
+    "Cloud Logging",
+    "Cloud Monitoring",
     "IAM"
   ],
   "answer_sections": [
     {
       "id": 1,
-      "title": "Ingestion & Fan-out",
-      "text": "Pub/Sub ingests raw IoT data. Eventarc Advanced routes events flexibly. Cloud Run processes data streams, autoscaling efficiently.",
-      "spoken_audio": "Pub/Sub ingests data. Eventarc routes events. Cloud Run processes streams, autoscaling efficiently.",
+      "title": "Event Ingestion with Pub/Sub",
+      "text": "Pub/Sub ingests events, acting as a buffer. It decouples producers from consumers, ensuring robust, asynchronous delivery. Fan-out enabled.",
+      "spoken_audio": "Pub/Sub ingests events, decoupling producers from consumers, ensuring robust, asynchronous, scalable event delivery.",
       "keywords": {
         "tech_terms": [
-          "Pub/Sub",
-          "Eventarc Advanced",
-          "Cloud Run"
+          "Pub/Sub"
         ],
         "action_verbs": [
           "ingests",
-          "routes",
-          "processes"
+          "decouples",
+          "ensuring"
         ],
         "concepts": [
-          "IoT data",
-          "data streams",
-          "autoscaling"
+          "events",
+          "buffer",
+          "producers",
+          "consumers",
+          "asynchronous"
         ]
       }
     },
     {
       "id": 2,
-      "title": "Orchestration & Persistence",
-      "text": "Cloud Workflows orchestrates complex tasks. Cloud Storage archives raw data. BigQuery stores processed data for analytics.",
-      "spoken_audio": "Workflows orchestrate complex tasks. Cloud Storage archives raw data. BigQuery for analytics.",
+      "title": "Serverless Processing & Scaling",
+      "text": "Cloud Run or Functions process events. Auto-scales based on demand, handles concurrent requests, cost-efficient. Ideal for stateless workloads.",
+      "spoken_audio": "Cloud Run or Functions process events, auto-scaling to meet demand. Cost-efficient for stateless, event-triggered workloads.",
       "keywords": {
         "tech_terms": [
-          "Cloud Workflows",
-          "Cloud Storage",
-          "BigQuery"
+          "Cloud Run",
+          "Functions"
         ],
         "action_verbs": [
-          "orchestrates",
-          "archives",
-          "stores"
+          "process",
+          "Auto-scales",
+          "handles"
         ],
         "concepts": [
-          "complex tasks",
-          "raw data",
-          "analytics"
+          "events",
+          "demand",
+          "concurrent requests",
+          "cost-efficient"
         ]
       }
     },
     {
       "id": 3,
-      "title": "Resilience & Security",
-      "text": "Implement idempotency with Memorystore. Use Dead-Letter Queues for failures. Apply strict IAM for least privilege access.",
-      "spoken_audio": "Idempotency with Memorystore. Dead-Letter Queues for failures. Strict IAM security.",
+      "title": "Observability & Data Storage",
+      "text": "Cloud Logging offers visibility. Cloud Monitoring provides alerts. Processed data to BigQuery, Cloud Storage for analytics. IAM secures.",
+      "spoken_audio": "Logging and Monitoring provide visibility. Processed data stored in BigQuery or Cloud Storage for analytics.",
       "keywords": {
         "tech_terms": [
-          "Memorystore",
+          "Cloud Logging",
+          "Cloud Monitoring",
+          "BigQuery",
+          "Cloud Storage",
           "IAM"
         ],
         "action_verbs": [
-          "Implement",
-          "Use",
-          "Apply"
+          "offers",
+          "provides",
+          "secures"
         ],
         "concepts": [
-          "idempotency",
-          "Dead-Letter Queues",
-          "least privilege access"
+          "visibility",
+          "alerts",
+          "analytics",
+          "data"
         ]
       }
     }
@@ -92,53 +95,48 @@
       "section_id": 1,
       "title": "Event Ingestion Flow",
       "type": "flowchart",
-      "dsl": "(IoT Devices) --> (GCP Pub/Sub) --> {Eventarc Advanced} --> [Cloud Run Instances]",
+      "dsl": "(Event Source) -> (Pub/Sub Topic) -> (Pub/Sub Subscription)",
       "animation_sequence": [
-        "IoT Devices",
-        "GCP Pub/Sub",
-        "Eventarc Advanced",
-        "Cloud Run Instances"
+        "Event Source",
+        "Pub/Sub Topic",
+        "Pub/Sub Subscription"
       ],
       "direction": "LR"
     },
     {
       "id": 2,
       "section_id": 2,
-      "title": "Orchestrated Processing",
+      "title": "Processing Unit Scaling",
       "type": "flowchart",
-      "dsl": "{Eventarc Advanced} --> (Cloud Workflows) --> [Cloud Run Service A] --> [Cloud Run Service B] --> [[BigQuery]]",
+      "dsl": "(Pub/Sub Subscription) -> [Cloud Run/Functions]",
       "animation_sequence": [
-        "Eventarc Advanced",
-        "Cloud Workflows",
-        "Cloud Run Service A",
-        "Cloud Run Service B",
-        "BigQuery"
+        "Pub/Sub Subscription",
+        "Cloud Run/Functions"
       ],
       "direction": "LR"
     },
     {
       "id": 3,
       "section_id": 3,
-      "title": "Resilience Pattern",
+      "title": "Data Persistence & Monitoring",
       "type": "flowchart",
-      "dsl": "[Cloud Run] --> (Memorystore Cache) -- Check --> (Processed) \n [Cloud Run] -- Failure --> (Pub/Sub DLQ)",
+      "dsl": "[Cloud Run/Functions] -> [[BigQuery/Cloud Storage]]\n[Cloud Run/Functions] -> (Cloud Logging) -> (Cloud Monitoring)",
       "animation_sequence": [
-        "Cloud Run",
-        "Memorystore Cache",
-        "Processed",
-        "Pub/Sub DLQ"
+        "Cloud Run/Functions",
+        "BigQuery/Cloud Storage",
+        "Cloud Logging",
+        "Cloud Monitoring"
       ],
-      "direction": "LR"
+      "direction": "TB"
     }
   ],
-  "title_card_text": "Scale IoT with Serverless GCP",
+  "title_card_text": "GCP Serverless Scaling Explained",
   "hashtags": [
     "#GCP",
     "#CloudArchitect",
-    "#Interview",
     "#Serverless",
     "#EventDriven",
-    "#IoT"
+    "#Interview"
   ],
   "domain": "GCP"
 }

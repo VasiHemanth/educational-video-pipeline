@@ -1,0 +1,167 @@
+{
+  "question_number": 11,
+  "topic": "Building a Deep Research Agent on a Billion-Scale RAG System for Financial Intelligence: Multi-Step Autonomous Research over Earnings Transcripts, SEC Filings and Analyst Reports on GCP",
+  "question_text": "How would you design a multi-step autonomous research agent on GCP, integrating billion-scale RAG for financial intelligence across earnings transcripts, SEC filings, and analyst reports to provide actionable insights with Gemini 3.1 Pro and Vertex AI Agent Engine?",
+  "hook_text": "Unlock financial secrets! Build a billion-scale RAG agent for deep market intelligence on GCP. Analyze filings, transcripts, and reports autonomously.",
+  "cta_text": "Master Gen AI finance: Follow for expert architect insights!",
+  "tech_terms": [
+    "Generative AI",
+    "RAG System",
+    "Financial Intelligence",
+    "Multi-Step Autonomous Research",
+    "Earnings Transcripts",
+    "SEC Filings",
+    "Analyst Reports",
+    "GCP",
+    "Vertex AI Agent Engine",
+    "Gemini 3.1 Pro",
+    "Vertex AI Vector Search",
+    "Cloud Storage",
+    "BigQuery",
+    "Pub/Sub",
+    "Dataflow",
+    "Cloud Monitoring",
+    "Cloud Logging",
+    "Security Command Center",
+    "Vertex AI Evaluation",
+    "Gemini 3.1 Flash Image"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Data Ingestion & Indexing Pipeline",
+      "text": "Financial data from Cloud Storage.\nDataflow transforms and chunks.\nGemini 3.1 Flash embeds.\nVertex AI Vector Search for billion-scale RAG.",
+      "spoken_audio": "Financial data ingested, transformed, embedded with Gemini 3.1 Flash Image. Indexed into Vertex AI Vector Search for efficient billion-scale retrieval.",
+      "keywords": {
+        "tech_terms": [
+          "Cloud Storage",
+          "Dataflow",
+          "Gemini 3.1 Flash",
+          "Vertex AI Vector Search",
+          "RAG"
+        ],
+        "action_verbs": [
+          "transforms",
+          "chunks",
+          "embeds"
+        ],
+        "concepts": [
+          "Financial data",
+          "billion-scale"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Autonomous Agent Orchestration",
+      "text": "Vertex AI Agent Engine orchestrates research.\nGemini 3.1 Pro reasons, retrieves context.\nRefines queries, synthesizes validated financial insights.",
+      "spoken_audio": "Vertex AI Agent Engine orchestrates multi-step research. Gemini 3.1 Pro powers reasoning, iteratively refining queries, and synthesizing validated financial insights.",
+      "keywords": {
+        "tech_terms": [
+          "Vertex AI Agent Engine",
+          "Gemini 3.1 Pro"
+        ],
+        "action_verbs": [
+          "orchestrates",
+          "reasons",
+          "retrieves",
+          "Refines",
+          "synthesizes"
+        ],
+        "concepts": [
+          "research",
+          "context",
+          "queries",
+          "financial insights"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Insight Delivery & Observability",
+      "text": "Insights published to BigQuery, triggering alerts.\nCloud Monitoring tracks performance.\nSecurity Command Center for governance.\nVertex AI Evaluation confirms quality.",
+      "spoken_audio": "Insights published to BigQuery, triggering alerts. Cloud Monitoring tracks agent performance and utilization. Security Command Center ensures data governance.",
+      "keywords": {
+        "tech_terms": [
+          "BigQuery",
+          "Cloud Monitoring",
+          "Security Command Center",
+          "Vertex AI Evaluation"
+        ],
+        "action_verbs": [
+          "published",
+          "triggering",
+          "tracks",
+          "confirms"
+        ],
+        "concepts": [
+          "Insights",
+          "alerts",
+          "performance",
+          "governance",
+          "quality"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Data Flow",
+      "type": "flowchart",
+      "dsl": "(Source Docs: Cloud Storage) -> [Event Trigger: Pub/Sub] -> [Transformation: Dataflow] -> [Embedding Gen: Gemini 3.1 Flash Image] -> [[Vector Index: Vertex AI Vector Search]]",
+      "animation_sequence": [
+        "Source Docs: Cloud Storage",
+        "Event Trigger: Pub/Sub",
+        "Transformation: Dataflow",
+        "Embedding Gen: Gemini 3.1 Flash Image",
+        "Vector Index: Vertex AI Vector Search"
+      ],
+      "direction": "TB"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Agent Workflow",
+      "type": "flowchart",
+      "dsl": "(User Query) -> [Agent Orchestrator: Vertex AI Agent Engine] -> (Reasoning: Gemini 3.1 Pro) -> {RAG Loop} -> [[Vector Search]] -> (Synthesize Output)",
+      "animation_sequence": [
+        "User Query",
+        "Agent Orchestrator: Vertex AI Agent Engine",
+        "Reasoning: Gemini 3.1 Pro",
+        "RAG Loop",
+        "Vector Search",
+        "Synthesize Output"
+      ],
+      "direction": "TB"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "Delivery & Ops",
+      "type": "flowchart",
+      "dsl": "(Synthesized Output) -> [[Insight Store: BigQuery]] -> (Alerting) -> [Monitoring: Cloud Monitoring] -> [Logging: Cloud Logging] -> {Data Governance: Security Command Center?}",
+      "animation_sequence": [
+        "Synthesized Output",
+        "Insight Store: BigQuery",
+        "Alerting",
+        "Monitoring: Cloud Monitoring",
+        "Logging: Cloud Logging",
+        "Data Governance: Security Command Center?"
+      ],
+      "direction": "TB"
+    }
+  ],
+  "title_card_text": "Billion-Scale Financial RAG Agent",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#Interview",
+    "#GenerativeAI",
+    "#RAG",
+    "#FinancialTech",
+    "#VertexAI"
+  ],
+  "domain": "Generative AI"
+}

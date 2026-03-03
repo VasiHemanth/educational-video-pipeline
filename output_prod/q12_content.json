@@ -1,0 +1,144 @@
+{
+  "question_number": 12,
+  "topic": "Context Window Management — How do you handle 10M token context across 50-turn agentic conversations without hitting limits? Summarization loops, memory compression, retrieval augmentation",
+  "question_text": "How would you design a robust system to manage 10M token context in a 50-turn agentic conversation?",
+  "hook_text": "Facing 10M token context limits in agentic AI? Here's how to master context window management on Google Cloud.",
+  "cta_text": "Save this for your next Generative AI system design interview!",
+  "tech_terms": [
+    "Gemini 2.5 Pro",
+    "Gemini 3.1 Pro",
+    "Vertex AI Agent Engine",
+    "Context Window",
+    "Summarization",
+    "Memory Compression",
+    "Retrieval Augmentation",
+    "Vector Database"
+  ],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "Token Window Strategy",
+      "text": "Utilize Gemini 2.5 Pro\nfor initial large context.\nPrioritize critical turns,\ndiscard less relevant.\nMaintain conversation flow.",
+      "spoken_audio": "Start with Gemini 2.5 Pro. Prioritize critical conversation turns and manage context by intelligently discarding less relevant information.",
+      "keywords": {
+        "tech_terms": [
+          "Gemini 2.5 Pro",
+          "context"
+        ],
+        "action_verbs": [
+          "Utilize",
+          "Prioritize",
+          "discard",
+          "Maintain"
+        ],
+        "concepts": [
+          "conversation flow",
+          "critical turns"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Dynamic Context Compaction",
+      "text": "Implement summarization loops\nwith Gemini 3.1 Pro.\nCompress memory for long\nconversations and context.\nReduces token usage.",
+      "spoken_audio": "Dynamically compact context using summarization loops with Gemini 3.1 Pro. This effectively compresses memory, reducing token limits.",
+      "keywords": {
+        "tech_terms": [
+          "Gemini 3.1 Pro",
+          "token limits"
+        ],
+        "action_verbs": [
+          "Implement",
+          "Compress",
+          "Reduces"
+        ],
+        "concepts": [
+          "summarization loops",
+          "memory",
+          "conversations",
+          "context"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Retrieval Augmented Generation",
+      "text": "Augment context with RAG\nvia Vertex AI Agent Engine.\nRetrieve external data\nfrom vector database.\nEnhance knowledge base.",
+      "spoken_audio": "Enhance agentic conversations with Retrieval Augmented Generation through Vertex AI Agent Engine, pulling external data from vector databases.",
+      "keywords": {
+        "tech_terms": [
+          "RAG",
+          "Vertex AI Agent Engine",
+          "vector database"
+        ],
+        "action_verbs": [
+          "Augment",
+          "Retrieve",
+          "Enhance"
+        ],
+        "concepts": [
+          "context",
+          "external data",
+          "knowledge base"
+        ]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1,
+      "section_id": 1,
+      "title": "Initial Context Flow",
+      "type": "flowchart",
+      "dsl": "(User Input) -> [Agent Core: Gemini 2.5 Pro] -> (Response)",
+      "animation_sequence": [
+        "User Input",
+        "arrow",
+        "Agent Core: Gemini 2.5 Pro",
+        "arrow",
+        "Response"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 2,
+      "section_id": 2,
+      "title": "Context Compaction",
+      "type": "flowchart",
+      "dsl": "(Conversation History) -> {Summarization: Gemini 3.1 Pro?} -> [[Compressed Memory]]",
+      "animation_sequence": [
+        "Conversation History",
+        "arrow",
+        "Summarization: Gemini 3.1 Pro?",
+        "arrow",
+        "Compressed Memory"
+      ],
+      "direction": "LR"
+    },
+    {
+      "id": 3,
+      "section_id": 3,
+      "title": "RAG System",
+      "type": "flowchart",
+      "dsl": "(Query) -> [Vertex AI Agent Engine] -> [[Vector Database]]",
+      "animation_sequence": [
+        "Query",
+        "arrow",
+        "Vertex AI Agent Engine",
+        "arrow",
+        "Vector Database"
+      ],
+      "direction": "LR"
+    }
+  ],
+  "title_card_text": "Mastering AI Context Windows",
+  "hashtags": [
+    "#GCP",
+    "#CloudArchitect",
+    "#Interview",
+    "#GenerativeAI",
+    "#LLM",
+    "#VertexAI"
+  ],
+  "domain": "Generative AI"
+}
