@@ -25,7 +25,8 @@ output_prod/carousels/
 *.mp4
 *.MP4
 *.mov
-*.wav
+voice_output/
+*.png*.wav
 *.mp3
 
 # Pipeline outputs and props
