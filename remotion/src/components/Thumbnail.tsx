@@ -10,10 +10,14 @@ const IconBackgroundWall: React.FC<{ diagrams: VideoProps['diagrams'] }> = ({ di
     const uniqueIcons = Array.from(new Set(
         diagrams?.flatMap(d => {
             if (!d.dsl) return [];
-            const parsed = typeof d.dsl === 'string' ? JSON.parse(d.dsl) : d.dsl;
-            return parsed.nodes?.map((n: any) => n.iconName)
-                .filter(Boolean)
-                .filter((name: string) => name !== 'user' && name !== 'database') || [];
+            try {
+                const parsed = typeof d.dsl === 'string' ? JSON.parse(d.dsl) : d.dsl;
+                return parsed.nodes?.map((n: any) => n.iconName)
+                    .filter(Boolean)
+                    .filter((name: string) => name !== 'user' && name !== 'database') || [];
+            } catch (e) {
+                return [];
+            }
         }) || []
     )).slice(0, 3) as string[];
 
