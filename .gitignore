@@ -14,3 +14,11 @@ client_secret_*.json
 output_prod/*.mp4
 *.MP4
 *.mov
+
+# Voice and Images
+voice_output/
+output_prod/thumbnails/
+output_prod/carousels/
+*.jpg
+*.jpeg
+*.png
