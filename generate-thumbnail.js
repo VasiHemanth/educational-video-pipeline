@@ -1,6 +1,7 @@
 const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const { OUT_DIR } = require('./utils/env');
 
 const questionNum = process.argv[2] || '7';
 
@@ -18,7 +19,7 @@ const domainSlug = (propsPayload.content?.domain || 'GCP').replace(/[\s/]+/g, '_
 const topicSlug = (propsPayload.content?.topic || 'video').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
 const baseSlug = `${domainSlug}_${topicSlug}`;
 
-const outputPath = path.join(__dirname, 'output_prod', 'thumbnails', `q${questionNum}_${baseSlug}_thumbnail.png`);
+const outputPath = path.join(OUT_DIR, 'thumbnails', `q${questionNum}_${baseSlug}_thumbnail.png`);
 
 console.log(`📸 Regenerating Official Thumbnail for Q${questionNum}...`);
 

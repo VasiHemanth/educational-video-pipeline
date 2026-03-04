@@ -1,6 +1,7 @@
 node_modules/
 .env
 output/
+output_prod/
 ffmpeg.zip
 remotion/node_modules/
 remotion/out/
@@ -9,16 +10,20 @@ client_secret.json
 youtube_tokens.json
 client_secret_*.json
 *.sqlite
-.png
-.mp4
-output_prod/*.mp4
-*.MP4
-*.mov
 
-# Voice and Images
-voice_output/
-output_prod/thumbnails/
-output_prod/carousels/
+# Media and temporary files
+*.png
 *.jpg
 *.jpeg
-*.png
+*.mp4
+*.MP4
+*.mov
+*.wav
+*.mp3
+
+# Pipeline outputs and props
+remotion/props_*.json
+remotion/thumb_props_*.json
+voice_output/
+legacy/
+
