@@ -1,131 +1,72 @@
 # GCP Video Pipeline 🎬
 
-Automated pipeline that generates **GCP Daily Interview Questions** shorts — question → script → diagrams → video → post.
+Automated pipeline that generates **AI Cloud Architect** educational shorts — topic → LLM script → Remotion diagrams → video → auto-post to YouTube/Instagram/Facebook.
 
-## Provider Roadmap
-
-```
-PHASE 1 (now)    →  Gemini CLI      (free, fast to set up)
-PHASE 2 (next)   →  Ollama local    (free, private, offline)
-PHASE 3 (prod)   →  Claude Code     (best quality, integrated)
-PHASE 4 (scale)  →  Anthropic API   (pay-per-token, 24/7 batch)
-```
-
-Switching providers = **one line in `.env`**. Zero code changes.
-
----
-
-## Setup
-
-### 1. Install dependencies
+## Quick Start
 
 ```bash
 npm install
-npm install googleapis # Required for YouTube uploads
 cp .env.example .env
-```
+# Edit .env with your API keys
 
-If you intend to use the YouTube Auto-Poster, place your OAuth 2.0 Client credentials downloaded from Google Cloud Console into the root of this project and name it `client_secret.json` (or update `.env` to point to it).
+# Generate a video (test environment)
+npm run video -- --topic "Cloud Run vs GKE" --number 14 --env test --dry-run
 
-### 2. Install CLI tools
+# Generate a video (production)
+npm run video -- --topic "Cloud Run vs GKE" --number 14 --env prod
 
-```bash
-# Excalidraw flowchart renderer (already works via npx, no install needed)
-npx @swiftlysingh/excalidraw-cli --version
-
-# FFmpeg (for video encoding)
-# Ubuntu/Debian:
-sudo apt install ffmpeg
-# macOS:
-brew install ffmpeg
-
-# Canvas dependencies (for assembler.js on macOS):
-brew install pkg-config cairo pango libpng jpeg giflib librsvg
-
-# Optional: Puppeteer for high-quality diagram PNG export
-npm install puppeteer
+# Generate a carousel
+npm run carousel -- --type insight --topic "AI Agents" --dry-run
 ```
 
 ---
 
-## Phase 1 — Gemini CLI (FREE, start here)
+## npm Scripts
 
-```bash
-# 1. Install Gemini CLI
-npm install -g @google/gemini-cli
-
-# 2. Login with your Google account (free)
-gemini auth login
-
-# 3. Set provider in .env
-echo "LLM_PROVIDER=gemini" >> .env
-
-# 4. Generate your first video (dry run — content only, no render)
-node pipeline.js --topic "Cloud Run vs GKE" --number 14 --dry-run
-
-# 5. Full render
-node pipeline.js --topic "Cloud Run vs GKE" --number 14
-```
-
-**Free tier limits:** 60 requests/min on gemini-2.0-flash-exp. More than enough.
+| Command | Description |
+|---------|-------------|
+| `npm run video -- [flags]` | Generate a video via the main pipeline |
+| `npm run carousel -- [flags]` | Generate a carousel (insight or technical) |
+| `npm run upload -- --number <N>` | Upload a previously-rendered video |
+| `npm run thumbnail <N>` | Regenerate thumbnail for question N |
+| `npm run token:check` | Check Meta API token status |
+| `npm run token:refresh` | Exchange short-lived Meta token for 60-day token |
 
 ---
 
-## Phase 2 — Ollama (local, free, private)
+## Environment Modes
+
+The pipeline supports two environments via `--env` flag or `PIPELINE_ENV` env var:
+
+| Mode | Database | Output Dir | Use Case |
+|------|----------|-----------|----------|
+| `test` | `content_tracker.sqlite` | `output/` | Development & testing |
+| `prod`  (default) | `prod_tracker.sqlite` | `output_prod/` | Production content |
 
 ```bash
-# 1. Install Ollama
-curl -fsSL https://ollama.ai/install.sh | sh
+# Test mode
+npm run video -- --topic "Test Topic" --number 999 --env test --dry-run
 
-# 2. Pull a model (llama3.1 is best balance of quality/speed)
-ollama pull llama3.1
-# Or for better JSON quality:
-ollama pull mistral
-
-# 3. Switch provider
-echo "LLM_PROVIDER=ollama" > .env
-echo "OLLAMA_MODEL=llama3.1" >> .env
-
-# 4. Run same command — zero other changes
-node pipeline.js --topic "BigQuery partitioning strategies" --number 15
+# Production mode (default)
+npm run video -- --topic "Cloud Armor" --number 20
 ```
-
-**Tip:** Ollama + llama3.1 works offline, no API key, no rate limits.
 
 ---
 
-## Phase 3 — Claude Code CLI
+## LLM Providers
+
+Switch providers via `LLM_PROVIDER` in `.env` — zero code changes:
+
+| Provider | Setup | Cost |
+|----------|-------|------|
+| `gemini` (default) | `npm i -g @google/gemini-cli && gemini auth login` | Free |
+| `ollama` | [ollama.ai](https://ollama.ai) + `ollama pull llama3.1` | Free (local) |
+| `claude` | `npm i -g @anthropic-ai/claude-code && claude auth` | Claude Pro/Max |
+| `anthropic` | API key at console.anthropic.com | Pay-per-token |
 
 ```bash
-# 1. Install Claude Code
-npm install -g @anthropic-ai/claude-code
-
-# 2. Auth (needs Claude Pro/Max)
-claude auth
-
-# 3. Switch provider
-echo "LLM_PROVIDER=claude" > .env
-
-# 4. Run
-node pipeline.js --topic "GKE Autopilot vs Standard" --number 16
-```
-
-**Why upgrade:** Claude produces more structured JSON, better DSL diagrams, more accurate GCP content.
-
----
-
-## Phase 4 — Anthropic API (production/batch)
-
-```bash
-# 1. Get API key at console.anthropic.com
-# 2. Set in .env:
-echo "LLM_PROVIDER=anthropic" >> .env
-echo "ANTHROPIC_API_KEY=sk-ant-..." >> .env
-
-# 3. Batch generate 10 videos:
-for i in 14 15 16 17 18 19 20 21 22 23; do
-  node pipeline.js --number $i --topic "$(node scripts/topic_picker.js $i)"
-done
+# Override on the fly
+LLM_PROVIDER=ollama npm run video -- --topic "Cloud Spanner" --number 18
 ```
 
 ---
@@ -133,7 +74,7 @@ done
 ## Pipeline Architecture
 
 ```
-Topic + Number
+Topic + Number + --env
      │
      ▼
 ┌─────────────┐
@@ -142,104 +83,130 @@ Topic + Number
      │ JSON: { question, sections, diagrams[], voiceover_script }
      ▼
 ┌─────────────────────┐
-│  Excalidraw CLI     │  ← DSL → .excalidraw → PNG
-│  (excalidraw-chart) │
+│  Voice TTS (Qwen3)  │  ← local MLX-based TTS
 └─────────────────────┘
-     │ diagram PNGs
+     │ WAV audio segments
      ▼
-┌─────────────┐
-│  Assembler  │  ← canvas frames + diagrams + (TTS audio)
-│  + FFmpeg   │
-└─────────────┘
-     │ MP4
+┌─────────────────────┐
+│  Remotion Renderer  │  ← React components → MP4
+│  + Native Diagrams  │
+└─────────────────────┘
+     │ MP4 + Thumbnails
      ▼
 ┌─────────────────────────────┐
-│  Platform APIs (Phase 3+)   │
-│  YouTube · Instagram · TikTok│
+│  Platform APIs              │
+│  YouTube · Instagram · FB   │
 └─────────────────────────────┘
 ```
 
 ---
 
-## Quick Command Reference
+## CLI Flags Reference (Video Pipeline)
 
-```bash
-# Generate content only (no render, instant)
-node pipeline.js --topic "Pub/Sub vs Kafka" --number 17 --dry-run
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--topic <str>` | Subject matter for the LLM | Required |
+| `--number <int>` | Question sequence number | Required |
+| `--domain <str>` | Technology domain (e.g. `GCP`, `Generative AI`) | `GCP` |
+| `--env <str>` | Environment: `test` or `prod` | `prod` |
+| `--diagrams <str>` | `remotion` (native), `mermaid`, or `excalidraw` | `remotion` |
+| `--anim <str>` | `highlight` (word-by-word) or `type` (typewriter) | `highlight` |
+| `--hook` | Generate a viral hook for the intro card | off |
+| `--no-voice` | Skip Qwen3 TTS voice generation | voice on |
+| `--voice-preset <str>` | TTS voice preset | `happy_mentor_male` |
+| `--platforms <str>` | Comma-separated: `youtube`, `meta` | `youtube` |
+| `--post` | Auto-upload to social platforms after render | off |
+| `--dry-run` | Generate JSON only, skip render | off |
+| `--provider <str>` | Override LLM provider for this run | from `.env` |
 
-# Basic full video with Gemini (Default)
-node pipeline.js --topic "Pub/Sub vs Kafka" --number 17
+---
 
-# 🆕 Render with a punchy viral hook, Remotion rendering, and Mermaid architecture diagrams
-node pipeline.js --topic "Large Language Models" --domain "Generative AI" --number 18 --hook --remotion --diagrams mermaid --anim type
+## CLI Flags Reference (Carousel Pipeline)
 
-# 🆕 Auto-post to YouTube Shorts (requires client_secret.json setup on first run)
-node pipeline.js --topic "Vector Embeddings" --domain "Generative AI" --number 19 --remotion --post
-
-# Switch to Ollama on the fly
-LLM_PROVIDER=ollama node pipeline.js --topic "Cloud Spanner" --number 18
-
-# Switch to Claude Code on the fly  
-LLM_PROVIDER=claude node pipeline.js --topic "Cloud Armor WAF" --number 19
-```
-
-### CLI Flags Reference
-*   `--topic <str>`: The core subject matter to ask the LLM about.
-*   `--number <int>`: The video/question sequence number.
-*   `--domain <str>`: Sets the target technology (e.g. `GCP`, `AWS`, `Generative AI`). Defaults to `GCP`.
-*   `--hook`: Instructs the LLM to generate a viral 1-2 sentence hook, and replaces the standard question intro card with massive hook text.
-*   `--remotion`: Use the React-based Remotion rendering engine instead of Canvas (much smoother).
-*   `--diagrams <str>`: `excalidraw` (default) or `mermaid` (cleaner labels, more robust).
-*   `--anim <str>`: `highlight` (default word-by-word) or `type` (typewriter effect).
-*   `--post`: Uploads the final video to YouTube Shorts automatically upon completion.
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--type <str>` | `insight` (from URL/topic) or `technical` (from existing JSON) | `insight` |
+| `--url <str>` | Blog URL to distill (insight type) | — |
+| `--topic <str>` | Topic for LLM generation (insight type) | — |
+| `--number <int>` | Question # (technical type) | — |
+| `--id <str>` | Carousel ID for output folder | auto-generated |
+| `--domain <str>` | Technology domain | `AI` |
+| `--post` | Auto-post to Instagram/Facebook | off |
+| `--dry-run` | Generate slides JSON only | off |
 
 ---
 
 ## Output Structure
 
 ```
-output/
-  q14_content.json          ← full LLM-generated content + diagram DSL
-  q14_metadata.json         ← YouTube/Instagram/TikTok metadata
+output_prod/          (or output/ in test mode)
+  q14_content.json     ← LLM-generated content + diagram specs
+  q14_metadata.json    ← YouTube/Instagram metadata
   diagrams/
-    q14_diagram_1.excalidraw
     q14_diagram_1.png
-    q14_diagram_2.png
-  frames/
-    q14/frame_00001.png ... 
   video/
-    q14_Cloud_Run_vs_GKE.mp4 ← final deliverable
+    q14_GCP_Cloud_Run_vs_GKE_youtube.mp4
+    q14_GCP_Cloud_Run_vs_GKE_meta.mp4
+  thumbnails/
+    q14_GCP_Cloud_Run_vs_GKE_thumbnail.png
+  carousels/
+    carousel_1234/
+      slides.json
+      slide_01.png ... slide_10.png
 ```
 
 ---
 
-## Adding TTS (Phase 2)
+## Project Structure
 
-Uncomment in `pipeline.js`:
-
-```js
-// Google Cloud TTS (free 1M chars/month)
-const tts = require('./scripts/tts_google');
-const audioPath = await tts.synthesize(contentJson.voiceover_script, NUMBER);
-
-// OR ElevenLabs (best voice quality)
-const tts = require('./scripts/tts_elevenlabs');
-const audioPath = await tts.synthesize(contentJson.voiceover_script, NUMBER);
+```
+├── pipeline.js           # Main video generation pipeline
+├── carousel_pipeline.js  # Carousel generation pipeline
+├── upload.js             # Standalone upload utility
+├── generate-thumbnail.js # Standalone thumbnail regenerator
+├── providers/
+│   └── llm.js            # Provider-agnostic LLM wrapper
+├── prompts/
+│   ├── index.js          # Video pipeline prompts
+│   └── carousel.js       # Carousel pipeline prompts
+├── scripts/
+│   ├── assembler.js      # Remotion video assembler
+│   ├── db.js             # SQLite tracking (dual-DB)
+│   ├── post.js           # Social media upload (YouTube/FB/IG)
+│   ├── diagrams.js       # Diagram rendering (Excalidraw/Mermaid)
+│   ├── carousel_renderer.js  # Puppeteer carousel slide renderer
+│   ├── carousel_post.js  # Carousel social posting
+│   ├── meta_token.js     # Meta API token utility
+│   └── generate_voice.py # Qwen3 TTS voice generation
+├── utils/
+│   ├── env.js            # Environment config (test vs prod)
+│   └── cli.js            # Shared CLI arg parser
+├── remotion/             # Remotion React components
+├── templates/            # HTML templates (carousel slides)
+└── assets/               # Static assets
 ```
 
 ---
 
-## GCP Topic List (seed)
+## Environment Variables (`.env`)
 
-| # | Topic |
-|---|-------|
-| 14 | Cloud Run vs GKE |
-| 15 | BigQuery partitioning strategies |
-| 16 | GKE Autopilot vs Standard |
-| 17 | Pub/Sub vs Kafka on GCP |
-| 18 | Cloud Spanner global consistency |
-| 19 | Cloud Armor WAF policies |
-| 20 | Vertex AI vs AutoML |
-| 21 | Cloud SQL HA and failover |
-| 22 | VPC peering vs Shared VPC |
-| 23 | Cloud Functions vs Cloud Run |
+```bash
+# LLM
+LLM_PROVIDER=gemini
+GEMINI_MODEL=gemini-3-flash
+
+# YouTube
+YOUTUBE_CLIENT_SECRET_FILE='./client_secret.json'
+
+# Meta Platforms
+META_APP_ID=...
+META_APP_SECRET=...
+FB_PAGE_ID=...
+IG_ACCOUNT_ID=...
+META_ACCESS_TOKEN=...
+
+# Cloudinary (for Instagram uploads)
+CLOUDINARY_CLOUD_NAME=...
+CLOUDINARY_API_KEY=...
+CLOUDINARY_API_SECRET=...
+```

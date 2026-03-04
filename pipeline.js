@@ -30,11 +30,11 @@ const { assembleVideo } = require('./scripts/assembler');
 const { initDB, trackVideo } = require('./scripts/db');
 const { postToAllPlatforms } = require('./scripts/post');
 
-// ── CLI args ──────────────────────────────────────────────────────────────────
-const args = process.argv.slice(2);
-const getArg = (flag) => { const i = args.indexOf(flag); return i !== -1 ? args[i + 1] : null; };
-const hasFlag = (flag) => args.includes(flag);
+// ── Shared utilities ─────────────────────────────────────────────────────────
+const { getArg, hasFlag } = require('./utils/cli');
+const { ENV_NAME, OUT_DIR } = require('./utils/env');
 
+// ── CLI args ──────────────────────────────────────────────────────────────────
 const TOPIC = getArg('--topic') || 'Cloud Dataflow and BigQuery ETL pipeline';
 const NUMBER = parseInt(getArg('--number') || '14', 10);
 const DRY_RUN = hasFlag('--dry-run');
@@ -47,7 +47,7 @@ const NO_PROGRESS = hasFlag('--no-progress');
 const AUTO_POST = hasFlag('--post');
 const USE_HOOK = hasFlag('--hook');
 const DOMAIN = getArg('--domain') || 'GCP';
-const USE_VOICE = !hasFlag('--no-voice');  // Voice ON by default
+const USE_VOICE = hasFlag('--voice');  // Voice OFF by default, use --voice to enable
 const VOICE_PRESET = getArg('--voice-preset') || 'happy_mentor_male';
 
 // Platforms parsing (e.g. --platforms "youtube,meta")
@@ -57,7 +57,6 @@ const TARGET_PLATFORMS = rawPlatforms.split(',').map(p => p.trim().toLowerCase()
 // Override provider from CLI flag
 if (getArg('--provider')) process.env.LLM_PROVIDER = PROVIDER;
 
-const OUT_DIR = path.join(__dirname, 'output_prod');
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
 // ── Pipeline ──────────────────────────────────────────────────────────────────
@@ -65,6 +64,7 @@ async function run() {
   console.log('');
   console.log('╔══════════════════════════════════════════════════╗');
   console.log('║   GCP Video Pipeline Starting                    ║');
+  console.log(`║   Env      : ${ENV_NAME.toUpperCase().padEnd(34)}║`);
   console.log(`║   Provider : ${PROVIDER.padEnd(34)}║`);
   console.log(`║   Domain   : ${DOMAIN.substring(0, 34).padEnd(34)}║`);
   console.log(`║   Topic    : ${TOPIC.substring(0, 34).padEnd(34)}║`);
@@ -75,8 +75,9 @@ async function run() {
   console.log(`║   AnimStyle: ${ANIM_STYLE.padEnd(34)}║`);
   console.log(`║   Hook Text: ${String(USE_HOOK).padEnd(34)}║`);
   console.log(`║   Voice TTS: ${String(USE_VOICE).padEnd(34)}║`);
-  console.log(`║   Voice     : ${VOICE_PRESET.padEnd(34)}║`);
+  console.log(`║   Voice     : ${(USE_VOICE ? VOICE_PRESET : 'disabled').padEnd(34)}║`);
   console.log(`║   Auto-Post: ${String(AUTO_POST).padEnd(34)}║`);
+  console.log(`║   Output   : ${path.basename(OUT_DIR).padEnd(34)}║`);
   console.log('╚══════════════════════════════════════════════════╝');
   console.log('');
 
@@ -251,12 +252,10 @@ async function run() {
   console.log(`⏱️  Duration       : ~${((contentJson.answer_sections?.length || 3) * 6 + 6).toFixed(0)}s`);
   console.log('─────────────────────────────────────────');
   console.log('');
-  console.log('Next steps:');
-  console.log('  1. Review content JSON, tweak prompts if needed');
-  console.log('  2. Add TTS: wire ElevenLabs/Google TTS for voiceover');
-  console.log('  3. Install puppeteer for real diagram renders');
-  console.log('  4. Switch to Remotion for smooth text animations');
-  console.log('  5. Connect YouTube Data API for auto-posting');
+  console.log('Quick actions:');
+  console.log('  • Re-upload:  npm run upload -- --number ' + NUMBER);
+  console.log('  • Thumbnail:  npm run thumbnail ' + NUMBER);
+  console.log('  • Token check: npm run token:check');
 }
 
 run().catch(err => {

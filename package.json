@@ -4,8 +4,13 @@
   "description": "Automated pipeline that generates GCP Daily Interview Questions shorts",
   "main": "pipeline.js",
   "scripts": {
-    "start": "node pipeline.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "video": "node pipeline.js",
+    "carousel": "node carousel_pipeline.js",
+    "upload": "node upload.js",
+    "thumbnail": "node generate-thumbnail.js",
+    "token:check": "node scripts/meta_token.js check",
+    "token:refresh": "node scripts/meta_token.js refresh",
+    "start": "node pipeline.js"
   },
   "dependencies": {
     "axios": "^1.13.5",

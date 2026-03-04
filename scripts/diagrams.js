@@ -8,8 +8,9 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const { OUT_DIR } = require('../utils/env');
 
-const OUTPUT_DIR = path.join(__dirname, '..', 'output_prod', 'diagrams');
+const OUTPUT_DIR = path.join(OUT_DIR, 'diagrams');
 if (!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 const MERMAID_CONFIG = path.join(__dirname, 'mermaid-config.json');
 

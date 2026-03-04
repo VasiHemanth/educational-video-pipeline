@@ -3,33 +3,24 @@ const fs = require('fs');
 const path = require('path');
 const { postToAllPlatforms } = require('./scripts/post');
 const { initDB } = require('./scripts/db');
+const { getArg, hasFlag } = require('./utils/cli');
+const { OUT_DIR } = require('./utils/env');
 
 async function run() {
-    const args = process.argv.slice(2);
-    const options = {};
-    for (let i = 0; i < args.length; i++) {
-        if (args[i].startsWith('--')) {
-            const key = args[i].substring(2);
-            const value = args[i + 1];
-            options[key] = value;
-            i++;
-        }
-    }
-
-    const NUMBER = options.number;
+    const NUMBER = getArg('--number');
     if (!NUMBER) {
         console.error('❌ Error: Missing --number argument.');
         console.log('Usage: node upload.js --number <NUMBER> [--platforms youtube,meta]');
         process.exit(1);
     }
 
-    const platformsArg = options.platforms || 'youtube,meta';
+    const platformsArg = getArg('--platforms') || 'youtube,meta';
     const targetPlatforms = platformsArg.split(',').map(p => p.trim().toLowerCase());
 
     await initDB();
 
     // 1. Find metadata
-    const metadataPath = path.join('output_prod', `q${NUMBER}_metadata.json`);
+    const metadataPath = path.join(OUT_DIR, `q${NUMBER}_metadata.json`);
     if (!fs.existsSync(metadataPath)) {
         console.error(`❌ Metadata not found: ${metadataPath}`);
         process.exit(1);
@@ -37,7 +28,7 @@ async function run() {
     const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf8'));
 
     // 2. Find videos
-    const videoDir = 'output_prod/video';
+    const videoDir = path.join(OUT_DIR, 'video');
     if (!fs.existsSync(videoDir)) {
         console.error(`❌ Video directory not found: ${videoDir}`);
         process.exit(1);
@@ -65,7 +56,7 @@ async function run() {
     }
 
     // 3. Find thumbnail
-    const thumbDir = 'output_prod/thumbnails';
+    const thumbDir = path.join(OUT_DIR, 'thumbnails');
     let thumbnailPath = null;
     if (fs.existsSync(thumbDir)) {
         const thumbFiles = fs.readdirSync(thumbDir);

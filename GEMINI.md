@@ -52,13 +52,24 @@ The LLM generates JSON payloads defining the video script and diagram structure.
 The main entry point for video generation is `pipeline.js`. It orchestrates the entire flow:
 1. **LLM Content Gen:** Gemini generates `qX_content.json`.
 2. **LLM Diagram Refinement:** Gemini converts abstract diagram DSL into strictly formatted Remotion JSON nodes/edges.
-3. **Metadata Gen:** Generates YouTube/Meta descriptions and hashtags into `qX_metadata.json`.
-4. **Remotion Render:** Spins up a child process to compile `src/index.ts` into a `.mp4`.
-5. **Auto-Post:** Uploads directly to social media.
+3. **Voice TTS:** Qwen3 generates voiceover audio segments (per section).
+4. **Metadata Gen:** Generates YouTube/Meta descriptions and hashtags into `qX_metadata.json`.
+5. **Remotion Render:** Spins up a child process to compile `src/index.ts` into a `.mp4`.
+6. **Auto-Post:** Uploads directly to social media.
 
-### Sample Command:
+### Sample Commands:
 ```bash
-node pipeline.js --topic "Large-Scale Gen AI" --number 6 --domain "Generative AI" --diagrams remotion --platforms "youtube,meta" --post
+# Production run with auto-post
+npm run video -- --topic "Large-Scale Gen AI" --number 6 --domain "Generative AI" --platforms "youtube,meta" --post
+
+# Test run (uses output/ dir and content_tracker.sqlite)
+npm run video -- --topic "Test Topic" --number 999 --env test --dry-run
+
+# Upload a previously-rendered video
+npm run upload -- --number 6 --platforms youtube,meta
+
+# Check Meta API token
+npm run token:check
 ```
 
 ---
@@ -78,3 +89,26 @@ For uploading to work, the script requires `dotenv` to be explicitly loaded at t
 - `META_ACCESS_TOKEN`
 - `FB_PAGE_ID`, `IG_ACCOUNT_ID`
 - `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
+
+---
+
+## 🔄 6. Environment Modes (`utils/env.js`)
+The pipeline supports **test** and **prod** modes via `--env` flag or `PIPELINE_ENV` env var:
+
+| Mode | Database | Output Dir | Use Case |
+|------|----------|-----------|----------|
+| `test` | `content_tracker.sqlite` | `output/` | Dev & testing |
+| `prod` (default) | `prod_tracker.sqlite` | `output_prod/` | Real content |
+
+**All modules** (`pipeline.js`, `assembler.js`, `db.js`, `upload.js`, `diagrams.js`, `carousel_renderer.js`, `generate-thumbnail.js`) read from `utils/env.js` — a single flag switches everything.
+
+---
+
+## 📁 7. Project Structure
+Key directories and utility modules:
+- **`utils/env.js`**: Central environment config (DB path, output dir) based on `--env` flag.
+- **`utils/cli.js`**: Shared CLI argument parser (`getArg`, `hasFlag`) used by all entry points.
+- **`scripts/meta_token.js`**: Meta API token utility with `check` and `refresh` subcommands.
+- **`providers/llm.js`**: Provider-agnostic LLM wrapper (gemini/ollama/claude/anthropic).
+- **`scripts/assembler.js`**: Remotion-based video assembler (props → MP4 + thumbnail).
+- **`scripts/db.js`**: SQLite tracking with dual-database support.

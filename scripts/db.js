@@ -1,8 +1,9 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
+const { DB_PATH, ENV_NAME } = require('../utils/env');
 
-const dbPath = path.join(__dirname, '..', 'prod_tracker.sqlite');
+const dbPath = DB_PATH;
 
 let db = new sqlite3.Database(dbPath, (err) => {
     if (err) {

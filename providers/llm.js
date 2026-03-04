@@ -153,11 +153,17 @@ ${schema ? `Schema:\n${schema}` : ''}`;
   const raw = await ask(jsonPrompt);
   // Strip ```json ... ``` fences if present
   let cleaned = raw.replace(/^```(?:json)?\n?/gm, '').replace(/\n?```/gm, '').trim();
-  // Fallback: extract JSON object between first { and last }
-  const firstBrace = cleaned.indexOf('{');
-  const lastBrace = cleaned.lastIndexOf('}');
-  if (firstBrace !== -1 && lastBrace !== -1 && firstBrace < lastBrace) {
-    cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+  // Detect array vs object boundaries
+  const arrStart = cleaned.indexOf('[');
+  const arrEnd = cleaned.lastIndexOf(']');
+  const objStart = cleaned.indexOf('{');
+  const objEnd = cleaned.lastIndexOf('}');
+
+  // Prefer array if it starts before object, otherwise object
+  if (arrStart !== -1 && arrEnd > arrStart && (objStart === -1 || arrStart < objStart)) {
+    cleaned = cleaned.substring(arrStart, arrEnd + 1);
+  } else if (objStart !== -1 && objEnd > objStart) {
+    cleaned = cleaned.substring(objStart, objEnd + 1);
   }
   try {
     return JSON.parse(cleaned);
