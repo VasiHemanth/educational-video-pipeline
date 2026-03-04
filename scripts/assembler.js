@@ -434,7 +434,7 @@ function drawOutroFrame(frameNum = 0) {
 // ══════════════════════════════════════════════════════════════════════════════
 async function assembleVideoRemotion(content, diagrams, metadata, questionNum, config = {}) {
   const domainSlug = (content.domain || 'GCP').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
-  const topicSlug = (content.topic || 'video').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
+  const topicSlug = (content.topic || 'video').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '').slice(0, 50);
   const platformSuffix = config.platform ? `_${config.platform}` : '';
   const slug = `${domainSlug}_${topicSlug}${platformSuffix}`;
   const baseSlug = `${domainSlug}_${topicSlug}`; // Used for thumbnail to prevent duplicates
@@ -635,7 +635,7 @@ async function assembleVideoCanvas(content, diagrams, audioPath, questionNum) {
   for (let i = 0; i < OUTRO_FRAMES; i++) save(drawOutroFrame(i));
 
   const domainSlug = (content.domain || 'GCP').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
-  const topicSlug = (content.topic || 'video').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
+  const topicSlug = (content.topic || 'video').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '').slice(0, 50);
   const slug = `${domainSlug}_${topicSlug}`;
   const out = path.join(DIRS.video, `q${questionNum}_${slug}.mp4`);
 
