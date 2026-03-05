@@ -49,6 +49,7 @@ const USE_HOOK = hasFlag('--hook');
 const DOMAIN = getArg('--domain') || 'GCP';
 const USE_VOICE = hasFlag('--voice');  // Voice OFF by default, use --voice to enable
 const VOICE_PRESET = getArg('--voice-preset') || 'happy_mentor_male';
+const SKIP_LLM = hasFlag('--skip-llm');  // If true, load existing qX_content.json instead of calling Gemini
 
 // Platforms parsing (e.g. --platforms "youtube,meta")
 const rawPlatforms = getArg('--platforms') || 'youtube';
@@ -76,6 +77,7 @@ async function run() {
   console.log(`║   Hook Text: ${String(USE_HOOK).padEnd(34)}║`);
   console.log(`║   Voice TTS: ${String(USE_VOICE).padEnd(34)}║`);
   console.log(`║   Voice     : ${(USE_VOICE ? VOICE_PRESET : 'disabled').padEnd(34)}║`);
+  console.log(`║   Skip LLM : ${String(SKIP_LLM).padEnd(34)}║`);
   console.log(`║   Auto-Post: ${String(AUTO_POST).padEnd(34)}║`);
   console.log(`║   Output   : ${path.basename(OUT_DIR).padEnd(34)}║`);
   console.log('╚══════════════════════════════════════════════════╝');
@@ -94,18 +96,30 @@ async function run() {
   }
 
   // ── STEP 1: Content Generation ──────────────────────────────────────────────
-  console.log('\n📝 STEP 1/4 — Generating content with LLM...');
-  const contentJson = await askJSON(contentPrompt(NUMBER, TOPIC, DOMAIN, liveModelsNote));
-  contentJson.domain = DOMAIN; // inject for rendering
+  const contentPath = path.join(OUT_DIR, `q${NUMBER}_content.json`);
+  let contentJson;
 
-  // Fix nested diagrams if LLM put them inside answer_sections instead of root
-  if (!contentJson.diagrams || contentJson.diagrams.length === 0) {
-    contentJson.diagrams = (contentJson.answer_sections || []).flatMap(sec => sec.diagrams || []);
+  if (SKIP_LLM) {
+    console.log(`\n⏭️  STEP 1/4 — Skipping LLM generation. Loading local JSON...`);
+    if (!fs.existsSync(contentPath)) {
+      console.error(`❌ Error: --skip-llm was specified but ${contentPath} was not found.`);
+      process.exit(1);
+    }
+    contentJson = JSON.parse(fs.readFileSync(contentPath, 'utf8'));
+  } else {
+    console.log('\n📝 STEP 1/4 — Generating content with LLM...');
+    contentJson = await askJSON(contentPrompt(NUMBER, TOPIC, DOMAIN, liveModelsNote));
+    contentJson.domain = DOMAIN; // inject for rendering
+
+    // Fix nested diagrams if LLM put them inside answer_sections instead of root
+    if (!contentJson.diagrams || contentJson.diagrams.length === 0) {
+      contentJson.diagrams = (contentJson.answer_sections || []).flatMap(sec => sec.diagrams || []);
+    }
+
+    fs.writeFileSync(contentPath, JSON.stringify(contentJson, null, 2));
+    console.log(`✅ Content saved: ${contentPath}`);
   }
 
-  const contentPath = path.join(OUT_DIR, `q${NUMBER}_content.json`);
-  fs.writeFileSync(contentPath, JSON.stringify(contentJson, null, 2));
-  console.log(`✅ Content saved: ${contentPath}`);
   console.log(`   Sections: ${contentJson.answer_sections?.length}`);
   console.log(`   Diagrams: ${contentJson.diagrams?.length}`);
 

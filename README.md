@@ -109,6 +109,7 @@ Topic + Number + --env
 | `--number <int>` | Question sequence number | Required |
 | `--domain <str>` | Technology domain (e.g. `GCP`, `Generative AI`) | `GCP` |
 | `--env <str>` | Environment: `test` or `prod` | `prod` |
+| `--skip-llm` | Skip Gemini call, use existing `qX_content.json` | off |
 | `--diagrams <str>` | `remotion` (native), `mermaid`, or `excalidraw` | `remotion` |
 | `--anim <str>` | `highlight` (word-by-word) or `type` (typewriter) | `highlight` |
 | `--hook` | Generate a viral hook for the intro card | off |

@@ -50,7 +50,8 @@ The LLM generates JSON payloads defining the video script and diagram structure.
 
 ## ⚙️ 4. Pipeline Execution (`pipeline.js`)
 The main entry point for video generation is `pipeline.js`. It orchestrates the entire flow:
-1. **LLM Content Gen:** Gemini generates `qX_content.json`.
+0. **Model Fetching:** Fetches latest Gemini models via web search for context.
+1. **LLM Content Gen:** Gemini generates `qX_content.json` (skip with `--skip-llm` if file exists).
 2. **LLM Diagram Refinement:** Gemini converts abstract diagram DSL into strictly formatted Remotion JSON nodes/edges.
 3. **Voice TTS:** Qwen3 generates voiceover audio segments (per section).
 4. **Metadata Gen:** Generates YouTube/Meta descriptions and hashtags into `qX_metadata.json`.
@@ -64,6 +65,9 @@ npm run video -- --topic "Large-Scale Gen AI" --number 6 --domain "Generative AI
 
 # Test run (uses output/ dir and content_tracker.sqlite)
 npm run video -- --topic "Test Topic" --number 999 --env test --dry-run
+
+# Render from existing JSON (skips Step 0 and 1)
+npm run video -- --number 11 --env test --skip-llm
 
 # Upload a previously-rendered video
 npm run upload -- --number 6 --platforms youtube,meta
