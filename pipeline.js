@@ -52,7 +52,7 @@ const VOICE_PRESET = getArg('--voice-preset') || 'happy_mentor_male';
 const SKIP_LLM = hasFlag('--skip-llm');  // If true, load existing qX_content.json instead of calling Gemini
 
 // Platforms parsing (e.g. --platforms "youtube,meta")
-const rawPlatforms = getArg('--platforms') || 'youtube';
+const rawPlatforms = getArg('--platforms') || 'youtube,meta';
 const TARGET_PLATFORMS = rawPlatforms.split(',').map(p => p.trim().toLowerCase());
 
 // Override provider from CLI flag

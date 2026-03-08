@@ -114,11 +114,34 @@ Topic + Number + --env
 | `--anim <str>` | `highlight` (word-by-word) or `type` (typewriter) | `highlight` |
 | `--hook` | Generate a viral hook for the intro card | off |
 | `--no-voice` | Skip Qwen3 TTS voice generation | voice on |
-| `--voice-preset <str>` | TTS voice preset | `happy_mentor_male` |
+| `--voice-preset <str>` | TTS voice preset | `aiden_calm` |
 | `--platforms <str>` | Comma-separated: `youtube`, `meta` | `youtube` |
 | `--post` | Auto-upload to social platforms after render | off |
 | `--dry-run` | Generate JSON only, skip render | off |
 | `--provider <str>` | Override LLM provider for this run | from `.env` |
+
+---
+
+## Voice Presets
+
+All presets use the `mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-8bit` model with a **fixed speaker** — consistent voice identity across every section of the video (temperature `0.3`, seed `42`).
+
+| Preset | Speaker | Speed | Style |
+|--------|---------|-------|-------|
+| `aiden_calm` ⭐ **default** | Aiden | 1.0x | Calm, warm, approachable — ideal for educational content |
+| `ryan_professional` | Ryan | 1.0x | Clear, informative, moderate — technical lecture style |
+| `ryan_energetic` | Ryan | 1.0x | Enthusiastic, passionate — cloud architect energy |
+| `happy_mentor_male` | Ryan | 1.15x | Friendly, upbeat mentor tone (slightly faster) |
+| `eric_narrator` | Eric | 1.0x | Deep, authoritative, slow & deliberate narrator |
+| `dylan_enthusiast` | Dylan | 1.0x | Energetic, rising intonation — engaging tutorial style |
+
+```bash
+# Use a specific preset
+npm run video -- --topic "Cloud Armor" --number 20 --voice --voice-preset eric_narrator
+
+# Use the default (aiden_calm)
+npm run video -- --topic "Cloud Armor" --number 20 --voice
+```
 
 ---
 

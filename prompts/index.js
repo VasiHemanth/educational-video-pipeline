@@ -247,7 +247,7 @@ Return JSON:
   "youtube": {
     "title": "${domain} Interview Q${content.question_number}: [catchy title under 60 chars] #Shorts",
     "description": "Write a highly technical, rigorous 5-6 sentence explanation of the architectural workflow shown in the video. Explain the exact mechanism of how the services interact. End with a strong CTA like 'Subscribe for daily Cloud Architect breakdowns.'",
-    "tags": ["${domain}", "CloudArchitect", "Interview", "AI", "Shorts", "SystemDesign", "...exactly 15-20 strictly relevant technical hashtags!"],
+    "tags": ["${domain}", "CloudArchitect", "Interview", "AI", "Shorts", "SystemDesign", "...exactly 20 strictly relevant technical hashtags! Avoid generic tags like #Video or #Tech. Focus on specific service names and architectural concepts."],
     "category": "Education",
     "playlist": "${domain} Daily Interview Questions"
   },
