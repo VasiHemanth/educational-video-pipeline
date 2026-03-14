@@ -27,8 +27,9 @@ const { askJSON, askLatestModels } = require('./providers/llm');
 const { contentPrompt, dslRefinementPrompt, mermaidDslRefinementPrompt, remotionDslRefinementPrompt, metadataPrompt } = require('./prompts/index');
 const { renderAllDiagrams } = require('./scripts/diagrams');
 const { assembleVideo } = require('./scripts/assembler');
-const { initDB, trackVideo } = require('./scripts/db');
+const { initDB, trackVideo, trackDriveBackup } = require('./scripts/db');
 const { postToAllPlatforms } = require('./scripts/post');
+const { backupQuestionToDrive } = require('./scripts/drive_upload');
 
 // ── Shared utilities ─────────────────────────────────────────────────────────
 const { getArg, hasFlag } = require('./utils/cli');
@@ -45,10 +46,11 @@ const ANIM_STYLE = getArg('--anim') || 'highlight'; // 'highlight', 'type', 'fad
 const PAUSE_FRAMES = parseInt(getArg('--pause') || '30', 10);
 const NO_PROGRESS = hasFlag('--no-progress');
 const AUTO_POST = hasFlag('--post');
+const FORCE_UPLOAD = hasFlag('--force-upload');
 const USE_HOOK = hasFlag('--hook');
 const DOMAIN = getArg('--domain') || 'GCP';
 const USE_VOICE = hasFlag('--voice');  // Voice OFF by default, use --voice to enable
-const VOICE_PRESET = getArg('--voice-preset') || 'happy_mentor_male';
+const VOICE_PRESET = getArg('--voice-preset') || 'aiden_calm';
 const SKIP_LLM = hasFlag('--skip-llm');  // If true, load existing qX_content.json instead of calling Gemini
 
 // Platforms parsing (e.g. --platforms "youtube,meta")
@@ -251,7 +253,22 @@ async function run() {
 
   if (AUTO_POST) {
     console.log('\n🚀 Auto-posting flag detected! Triggering social uploads...');
-    await postToAllPlatforms(videoId, renderedVideos, metadata, lastThumbnailPath);
+    await postToAllPlatforms(videoId, renderedVideos, metadata, lastThumbnailPath, FORCE_UPLOAD);
+  }
+
+  // ── DRIVE BACKUP ─────────────────────────────────────────────────────────────
+  console.log('\n☁️  Triggering Google Drive Backup...');
+  try {
+      const safeTopic = (contentJson.topic || TOPIC).substring(0, 50);
+      
+      const backupRes = await backupQuestionToDrive(OUT_DIR, NUMBER, safeTopic);
+      if (backupRes.status === 'SUCCESS') {
+          await trackDriveBackup(videoId, backupRes.folderId, 'SUCCESS', backupRes.folderUrl);
+      } else {
+          await trackDriveBackup(videoId, null, 'FAILED', null);
+      }
+  } catch (err) {
+      console.error('   ⚠️ Drive backup encountered an error but pipeline will continue:', err.message);
   }
 
   // ── Summary ───────────────────────────────────────────────────────────────────

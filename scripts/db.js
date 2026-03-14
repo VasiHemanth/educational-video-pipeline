@@ -44,6 +44,17 @@ function initDB() {
                 status TEXT NOT NULL,
                 posted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (video_id) REFERENCES videos(id)
+            )`);
+
+            // Drive Backup tracking
+            db.run(`CREATE TABLE IF NOT EXISTS drive_backups (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                video_id INTEGER NOT NULL,
+                drive_folder_id TEXT,
+                drive_folder_url TEXT,
+                status TEXT NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (video_id) REFERENCES videos(id)
             )`, (err) => {
                 if (err) reject(err);
                 else resolve();
@@ -106,10 +117,70 @@ function isTopicCovered(domain, topic) {
     });
 }
 
+// Check if a video has been posted successfully to a platform
+function hasPostedSuccessfully(videoId, platform) {
+    return new Promise((resolve, reject) => {
+        db.get(
+            `SELECT id FROM postings WHERE video_id = ? AND platform = ? AND status = 'SUCCESS' LIMIT 1`,
+            [videoId, platform],
+            (err, row) => {
+                if (err) reject(err);
+                else resolve(row !== undefined);
+            }
+        );
+    });
+}
+
+// Get the actual Database video ID from the question number
+function getVideoIdByQuestion(questionNum) {
+    return new Promise((resolve, reject) => {
+        db.get(
+            `SELECT id FROM videos WHERE question_number = ? ORDER BY id DESC LIMIT 1`,
+            [questionNum],
+            (err, row) => {
+                if (err) reject(err);
+                else resolve(row ? row.id : null);
+            }
+        );
+    });
+}
+
+// Track a Drive backup
+function trackDriveBackup(videoId, folderId, status, folderUrl = null) {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `INSERT INTO drive_backups (video_id, drive_folder_id, status, drive_folder_url) VALUES (?, ?, ?, ?)`,
+            [videoId, folderId, status, folderUrl],
+            function (err) {
+                if (err) reject(err);
+                else resolve(this.lastID);
+            }
+        );
+    });
+}
+
+// Check if a video has been backed up successfully
+function hasBackedUpSuccessfully(videoId) {
+    return new Promise((resolve, reject) => {
+        db.get(
+            `SELECT id FROM drive_backups WHERE video_id = ? AND status = 'SUCCESS' LIMIT 1`,
+            [videoId],
+            (err, row) => {
+                if (err) reject(err);
+                else resolve(row !== undefined);
+            }
+        );
+    });
+}
+
 module.exports = {
     initDB,
     trackVideo,
     trackPosting,
     isTopicCovered,
+    hasPostedSuccessfully,
+    getVideoIdByQuestion,
+    trackDriveBackup,
+    hasBackedUpSuccessfully,
     db
 };
