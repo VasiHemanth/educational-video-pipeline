@@ -1,8 +1,13 @@
 /**
- * Video Assembler  v3.0
+ * Video Assembler  v4.0 — Cinematic 5-Act Pipeline
  * ─────────────────────────────────────────────────────────────────────────────
- * Remotion-based video assembly. Generates props JSON, invokes Remotion CLI
- * to render MP4, and generates thumbnails.
+ * Remotion-based video assembly. Generates props JSON, invokes Remotion CLI.
+ *
+ * CHANGES (v4):
+ * - No longer prepends hook or appends synthesis — LLM generates ALL scenes
+ * - Auto-appends identity_cta if LLM didn't include it
+ * - Timing fields match EducationalTypes: phaseText, phaseVisual, phaseDwell
+ * - Output key is now `sceneTimings` (matches EducationalReel)
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
@@ -10,6 +15,7 @@ const { execSync, spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const { OUT_DIR } = require('../utils/env');
+const { buildSFXTrack } = require('./sfx_scheduler');
 
 // ── Output dirs ───────────────────────────────────────────────────────────────
 const DIRS = {
@@ -20,6 +26,22 @@ const DIRS = {
 };
 Object.values(DIRS).forEach(d => fs.mkdirSync(d, { recursive: true }));
 
+const SFX_FILE_CANDIDATES = {
+  whoosh: ['whoosh.wav', 'whoosh.mp3'],
+  whip: ['whip.wav', 'whoosh.wav', 'whoosh.mp3'],
+  pop: ['pop.wav', 'pop.mp3'],
+  ding: ['ding.wav', 'confirm_chime.wav', 'pop.mp3'],
+  click: ['click.wav', 'tick.wav', 'typing.wav'],
+  slide: ['slide.wav', 'whoosh.wav', 'whoosh.mp3'],
+  pageTurn: ['page_turn.wav', 'whoosh.wav', 'whoosh.mp3'],
+  uiSwitch: ['ui_switch.wav', 'tick.wav', 'typing.wav'],
+  tick: ['tick.wav', 'typing.wav'],
+  bass_rumble: ['bass_rumble.wav', 'whoosh.wav', 'whoosh.mp3'],
+  error_buzz: ['error_buzz.wav', 'tick.wav', 'typing.wav'],
+  edge_hum: ['edge_hum.wav', 'typing.wav'],
+  confirm_chime: ['confirm_chime.wav', 'ding.wav', 'pop.mp3'],
+};
+
 
 // ══════════════════════════════════════════════════════════════════════════════
 // MAIN ASSEMBLER (REMOTION BASED)
@@ -29,14 +51,12 @@ async function assembleVideo(content, diagrams, metadata, questionNum, useRemoti
   const topicSlug = (content.topic || 'video').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '').slice(0, 50);
   const platformSuffix = config.platform ? `_${config.platform}` : '';
   const slug = `${domainSlug}_${topicSlug}${platformSuffix}`;
-  const baseSlug = `${domainSlug}_${topicSlug}`; // Used for thumbnail to prevent duplicates
+  const baseSlug = `${domainSlug}_${topicSlug}`;
   const rawOutputPath = path.join(DIRS.video, `raw_q${questionNum}_${slug}.mp4`);
   const finalOutputPath = path.join(DIRS.video, `q${questionNum}_${slug}.mp4`);
-
-  // We drop the platformSuffix from the thumbnail so it only generates once per question!
   const thumbnailPath = path.join(DIRS.thumbnails, `q${questionNum}_${baseSlug}_thumbnail.png`);
 
-  // Encode diagrams as base64 data URIs (bypasses Remotion's static file restrictions)
+  // ── Encode diagrams as base64 data URIs ──
   const formattedDiagrams = (diagrams || []).map(d => {
     if (d.isNative) return d;
     let pngPath = d.png_path || d.pngPath;
@@ -50,7 +70,7 @@ async function assembleVideo(content, diagrams, metadata, questionNum, useRemoti
     return { ...d, pngPath };
   });
 
-  // Pick a random background music track
+  // ── Background music ──
   const audioDir = path.join(__dirname, '..', 'sample_audio_files');
   let bgMusicPath = null;
   if (fs.existsSync(audioDir)) {
@@ -58,34 +78,52 @@ async function assembleVideo(content, diagrams, metadata, questionNum, useRemoti
     if (mp3s.length > 0) {
       const randomFile = mp3s[Math.floor(Math.random() * mp3s.length)];
       const absPath = path.join(audioDir, randomFile);
-      // Remotion requires data URIs or public/ folder access, encode as base64
       const b64Audio = fs.readFileSync(absPath).toString('base64');
       bgMusicPath = `data:audio/mp3;base64,${b64Audio}`;
       console.log(`  🎵 Selected background music: ${randomFile}`);
     }
   }
 
-  // --- DYNAMIC PACING & SFX CALCULATIONS ---
+  // ── Voice & Timing Configuration ──
   const FPS = 30;
   const targetWpm = 140;
   const fastWpm = 200;
   const voiceManifest = config.voiceManifest || null;
 
-  // Helper: encode a local file as a base64 data URI
   const encodeFileAsDataUri = (filePath, mimeType) => {
     if (!filePath || !fs.existsSync(filePath)) return null;
     const b64 = fs.readFileSync(filePath).toString('base64');
     return `data:${mimeType};base64,${b64}`;
   };
 
-  // SFX disabled
-  const sfx = { whoosh: null, pop: null };
+  const getAudioMimeType = (filePath) => {
+    const ext = path.extname(filePath).toLowerCase();
+    if (ext === '.mp3') return 'audio/mpeg';
+    if (ext === '.wav') return 'audio/wav';
+    return 'application/octet-stream';
+  };
 
-  // ── Encode voice files if manifest exists ──
-  let introVoicePath = null;
-  let outroVoicePath = null;
-  const voiceSegmentMap = {};  // section_id -> base64 data URI
+  const resolveSfxSourceMap = (sfxDir) => {
+    const sourceMap = {};
 
+    for (const [sfxType, candidates] of Object.entries(SFX_FILE_CANDIDATES)) {
+      const filePath = candidates
+        .map((candidate) => path.join(sfxDir, candidate))
+        .find((candidatePath) => fs.existsSync(candidatePath));
+
+      if (!filePath) continue;
+
+      const dataUri = encodeFileAsDataUri(filePath, getAudioMimeType(filePath));
+      if (dataUri) {
+        sourceMap[sfxType] = dataUri;
+      }
+    }
+
+    return sourceMap;
+  };
+
+  // ── Encode voice files ──
+  const voiceSegmentMap = {};
   if (voiceManifest && voiceManifest.segments) {
     console.log('  🎙️  Encoding voice files for Remotion...');
     for (const seg of voiceManifest.segments) {
@@ -95,105 +133,124 @@ async function assembleVideo(content, diagrams, metadata, questionNum, useRemoti
         console.warn(`  ⚠️  Voice file not found: ${seg.path}`);
         continue;
       }
-      if (seg.key === 'intro') {
-        introVoicePath = dataUri;
-      } else if (seg.key === 'outro') {
-        outroVoicePath = dataUri;
-      } else {
-        voiceSegmentMap[seg.key] = dataUri;
-      }
+      voiceSegmentMap[seg.key] = dataUri;
     }
   }
 
-  // ── Calculate intro/outro frames ──
-  let introFrames;
-  if (voiceManifest) {
-    const introSeg = voiceManifest.segments.find(s => s.key === 'intro');
-    // Audio length + 30 frame buffer (1s linger)
-    introFrames = introSeg ? Math.round(introSeg.duration_seconds * FPS) + 30 : 180;
-  } else {
-    introFrames = config.useHook ? 75 : 180;
+  // ── Build scene list ──
+  // The LLM now generates ALL scenes (hook → chaos → reveal → steps)
+  // We only auto-append a CTA if the LLM didn't include one
+  const scenes = [...(content.scenes || [])];
+
+  const hasCtaScene = scenes.some(s =>
+    s.sceneType === 'cta' || s.sceneType === 'identity_cta'
+  );
+
+  if (!hasCtaScene) {
+    scenes.push({
+      id: 'cta',
+      sceneType: 'identity_cta',
+      title: '',
+      text: content.cta_text || 'Save this for your next build 🔖',
+      spokenAudio: '',
+      visualFormat: 'text_only',
+      visualData: null,
+      keywords: {},
+      accentColor: '#B026FF',
+      moodColor: '#050210',
+      transitionStyle: 'none',
+      durationSeconds: 4,
+    });
   }
 
-  let outroFrames;
-  if (voiceManifest) {
-    const outroSeg = voiceManifest.segments.find(s => s.key === 'outro');
-    outroFrames = outroSeg ? Math.round(outroSeg.duration_seconds * FPS) + 60 : 180;
-  } else {
-    outroFrames = 180;
-  }
+  // ── Calculate per-scene timing ──
+  let currentFrame = 0;
+  const sceneTimings = [];
 
-  let currentFrame = introFrames;
-  const sectionTimings = [];
-
-  for (const section of content.answer_sections || []) {
-    const sectionId = section.id;
-
-    // Check if this section has a diagram
-    const hasDiagram = Boolean((diagrams || []).find(d => d.section_id === sectionId));
-
-    let sectionDuration, phaseAFrames, phaseBFrames, phaseCFrames, phaseDFrames;
-
-    // Look for audio-based duration from voice manifest
+  for (const scene of scenes) {
+    const sectionId = scene.id;
+    const hasDiagram = scene.visualFormat === 'diagram';
     const voiceSeg = voiceManifest?.segments?.find(s => s.key === sectionId);
 
+    let phaseText, phaseVisual, phaseDwell, phaseTransition;
+    let sceneDuration;
+
     if (voiceSeg && voiceSeg.duration_seconds > 0) {
-      // ── AUDIO-DRIVEN TIMING ──
-      const audioDurationFrames = Math.round(voiceSeg.duration_seconds * FPS);
-      // Text entry occupies ~40% of voice duration
-      phaseAFrames = Math.round(audioDurationFrames * 0.4);
-      phaseBFrames = 15; // 0.5s pause
-      phaseCFrames = hasDiagram ? 20 : 0;
-      // Dwell fills the rest of audio + 30-frame buffer for diagram linger
-      phaseDFrames = Math.max(30, audioDurationFrames - phaseAFrames + 30);
-      sectionDuration = phaseAFrames + phaseBFrames + phaseCFrames + phaseDFrames;
-      console.log(`    Section ${sectionId}: ${voiceSeg.duration_seconds}s audio → ${sectionDuration} frames (audio-driven)`);
+      // ── Voice-driven timing ──
+      const audioFrames = Math.round(voiceSeg.duration_seconds * FPS);
+      phaseText = Math.round(audioFrames * 0.35);
+      phaseVisual = hasDiagram ? 30 : 20;
+      phaseDwell = Math.max(30, audioFrames - phaseText + 24);
+      phaseTransition = 12;
+      sceneDuration = phaseText + phaseVisual + phaseDwell + phaseTransition;
+      console.log(`    Scene ${sectionId}: ${voiceSeg.duration_seconds}s audio → ${sceneDuration} frames (voice-driven)`);
     } else {
-      // ── WPM FALLBACK ──
-      const textToMeasure = section.spoken_audio || section.text || '';
-      const rawText = textToMeasure.replace(/\*/g, '');
-      const wordCount = rawText.split(/\s+/).filter(x => x.length > 0).length || 1;
-      phaseAFrames = Math.round((wordCount / fastWpm) * 60 * FPS);
-      const totalReadingFrames = Math.round((wordCount / targetWpm) * 60 * FPS);
-      phaseBFrames = 15;
-      phaseCFrames = hasDiagram ? 20 : 0;
-      phaseDFrames = Math.max(120, totalReadingFrames - phaseAFrames);
-      sectionDuration = phaseAFrames + phaseBFrames + phaseCFrames + phaseDFrames;
-      console.log(`    Section ${sectionId}: WPM estimated → ${sectionDuration} frames (fallback)`);
+      // ── WPM estimation (tuned for 30-second Shorts) ──
+      const textToMeasure = scene.spokenAudio || scene.text || '';
+      const wordCount = textToMeasure.replace(/\*/g, '').split(/\s+/).filter(x => x.length > 0).length || 1;
+      phaseText = Math.round((wordCount / fastWpm) * 60 * FPS);
+      const totalReadFrames = Math.round((wordCount / targetWpm) * 60 * FPS);
+      phaseVisual = hasDiagram ? 24 : 12;
+      phaseDwell = Math.max(45, totalReadFrames - phaseText + 15);
+      phaseTransition = 8;
+      sceneDuration = phaseText + phaseVisual + phaseDwell + phaseTransition;
+      console.log(`    Scene ${sectionId}: WPM → ${sceneDuration} frames (${wordCount} words)`);
     }
 
-    sectionTimings.push({
+    // Ensure minimum scene duration (no scene shorter than 2.5s)
+    sceneDuration = Math.max(sceneDuration, 75);
+
+    sceneTimings.push({
       id: sectionId,
       startFrame: currentFrame,
-      durationFrames: sectionDuration,
-      phaseAFrames,
-      phaseBFrames,
-      phaseCFrames,
-      phaseDFrames,
+      durationFrames: sceneDuration,
+      phaseText,
+      phaseVisual,
+      phaseDwell,
+      phaseTransition,
       voicePath: voiceSegmentMap[sectionId] || null,
     });
 
-    currentFrame += sectionDuration;
+    scene.durationSeconds = sceneDuration / FPS;
+    currentFrame += sceneDuration;
   }
 
-  const totalFrames = currentFrame + outroFrames;
+  const totalFrames = currentFrame;
+
+  // ── Build final content ──
+  const eduContent = { ...content, scenes };
+
+  // ── Auto-Generate SFX Track ──
+  const sfxSourceMap = resolveSfxSourceMap(path.join(__dirname, '..', 'sample_audio_files', 'sfx'));
+  const missingSfxTypes = new Set();
+  const sfxEvents = buildSFXTrack(eduContent, sceneTimings).map((event) => {
+    const sourceUrl = sfxSourceMap[event.sfxType] || null;
+    if (!sourceUrl) {
+      missingSfxTypes.add(event.sfxType);
+    }
+
+    return {
+      ...event,
+      sourceUrl,
+    };
+  });
+
+  if (missingSfxTypes.size > 0) {
+    console.warn(`  ⚠️  Missing SFX assets for: ${Array.from(missingSfxTypes).join(', ')}`);
+  }
 
   const propsPayload = {
-    content,
-    diagrams: formattedDiagrams,
+    content: eduContent,
     config: {
       animStyle: config.animStyle || 'highlight',
       pauseFrames: config.pauseFrames || 30,
-      useHook: config.useHook || false,
-      bgMusicPath: bgMusicPath,
+      bgMusicPath,
       platform: config.platform,
-      introFrames,
-      outroFrames,
       totalFrames,
-      sectionTimings,
-      introVoicePath,
-      outroVoicePath,
-      sfx,
+      sceneTimings,  // ← matches EducationalReelProps.config.sceneTimings
+      sfxEvents,
+      watermark: config.watermark || 'Cloud Architect',
+      watermarkSub: config.watermarkSub || '',
     }
   };
 
@@ -206,7 +263,7 @@ async function assembleVideo(content, diagrams, metadata, questionNum, useRemoti
 
   await new Promise((resolve, reject) => {
     const proc = spawn('npx', [
-      'remotion', 'render', 'src/index.ts', 'MainVideo',
+      'remotion', 'render', 'src/index.ts', 'EducationalReel',
       rawOutputPath, `--props=${propsFile}`, '-y'
     ], { cwd: remotionDir, stdio: ['ignore', 'pipe', 'pipe'] });
 
@@ -233,9 +290,8 @@ async function assembleVideo(content, diagrams, metadata, questionNum, useRemoti
         fs.renameSync(rawOutputPath, finalOutputPath);
         console.log(`\n✅ Final Video ready: ${finalOutputPath}`);
 
-        // Extract thumbnail
+        // Generate thumbnail
         if (!fs.existsSync(path.dirname(thumbnailPath))) fs.mkdirSync(path.dirname(thumbnailPath), { recursive: true });
-
         propsPayload.config.thumbnail_headline = metadata?.thumbnail?.headline;
         propsPayload.config.thumbnail_subheadline = metadata?.thumbnail?.subheadline;
 
