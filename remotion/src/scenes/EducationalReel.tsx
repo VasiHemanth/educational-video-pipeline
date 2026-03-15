@@ -16,6 +16,7 @@ import { HookScene } from './HookScene';
 import { TickerHookScene } from './TickerHookScene';
 import { PainChaosScene } from './PainChaosScene';
 import { TimelineStepsScene } from './TimelineStepsScene';
+import { DecisionLoopScene } from './DecisionLoopScene';
 import { ConceptScene } from './ConceptScene';
 import { SynthesisScene } from './SynthesisScene';
 import { CTAScene } from './CTAScene';
@@ -35,6 +36,9 @@ const SceneRenderer: React.FC<{
     // ── New cinematic scene types ──────────────────────────────────────────
     case 'ticker_hook':
       return <TickerHookScene scene={scene} />;
+
+    case 'decision_loop':
+      return <DecisionLoopScene scene={scene} timing={timing} />;
 
     case 'pain_chaos':
     case 'problem':

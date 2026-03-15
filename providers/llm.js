@@ -4,6 +4,7 @@
  * SWAP PROVIDERS by changing LLM_PROVIDER in .env:
  *   LLM_PROVIDER=gemini     → Google Gemini CLI (free)
  *   LLM_PROVIDER=ollama     → Local Ollama (e.g. llama3, mistral)
+ *   LLM_PROVIDER=qwen       → Local Ollama running Qwen (e.g. qwen2.5)
  *   LLM_PROVIDER=claude     → Claude via claude CLI / Claude Code
  *   LLM_PROVIDER=anthropic  → Anthropic API directly
  */
@@ -16,8 +17,11 @@ const path = require('path');
 const PROVIDER = process.env.LLM_PROVIDER || 'gemini';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3.1';
 const OLLAMA_HOST = process.env.OLLAMA_HOST || 'http://localhost:11434';
+const QWEN_MODEL = process.env.QWEN_MODEL || 'qwen2.5';
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3-flash';
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
+const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o';
 
 // ─────────────────────────────────────────────
 // GEMINI CLI  (google/gemini-cli — free tier)
@@ -27,10 +31,16 @@ const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3-flash';
 async function askGemini(prompt) {
   try {
     const { execFileSync } = require('child_process');
+    const os = require('os');
+    const home = os.homedir();
+    // The gemini CLI is installed globally via nvm — ensure the nvm bin dir is in PATH
+    const nvmBin = `${home}/.nvm/versions/node/v22.16.0/bin`;
+    const richPath = `${nvmBin}:${process.env.PATH || '/usr/local/bin:/usr/bin:/bin'}`;
     const result = execFileSync('gemini', ['--model', GEMINI_MODEL, '-y', '-p', prompt], {
       maxBuffer: 10 * 1024 * 1024,
       timeout: 300000,
-      encoding: 'utf8'
+      encoding: 'utf8',
+      env: { ...process.env, PATH: richPath },
     }).trim();
     return result;
   } catch (error) {
@@ -39,15 +49,17 @@ async function askGemini(prompt) {
   }
 }
 
+
+
 // ─────────────────────────────────────────────
 // OLLAMA  (local, free, privacy-first)
 // Install: https://ollama.ai
 // Run:     ollama pull llama3.1
 // ─────────────────────────────────────────────
-async function askOllama(prompt) {
+async function askOllama(prompt, modelOverride) {
   return new Promise((resolve, reject) => {
     const body = JSON.stringify({
-      model: OLLAMA_MODEL,
+      model: modelOverride || OLLAMA_MODEL,
       prompt,
       stream: false,
       options: { temperature: 0.7, num_predict: 2048 }
@@ -128,6 +140,45 @@ async function askAnthropic(prompt) {
 }
 
 // ─────────────────────────────────────────────
+// OPENAI  (GPT-4o, GPT-4o-mini, etc.)
+// Set OPENAI_API_KEY in .env
+// ─────────────────────────────────────────────
+async function askOpenAI(prompt) {
+  const https = require('https');
+  const body = JSON.stringify({
+    model: OPENAI_MODEL,
+    messages: [{ role: 'user', content: prompt }],
+    temperature: 0.7,
+    max_tokens: 8192,
+  });
+  return new Promise((resolve, reject) => {
+    const req = https.request({
+      hostname: 'api.openai.com',
+      path: '/v1/chat/completions',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Content-Length': Buffer.byteLength(body),
+      },
+    }, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.error) return reject(new Error('OpenAI error: ' + parsed.error.message));
+          resolve(parsed.choices?.[0]?.message?.content || '');
+        } catch { reject(new Error('OpenAI parse error: ' + data)); }
+      });
+    });
+    req.on('error', reject);
+    req.write(body);
+    req.end();
+  });
+}
+
+// ─────────────────────────────────────────────
 // UNIFIED INTERFACE
 // ─────────────────────────────────────────────
 async function ask(prompt) {
@@ -135,9 +186,11 @@ async function ask(prompt) {
   switch (PROVIDER) {
     case 'gemini': return askGemini(prompt);
     case 'ollama': return askOllama(prompt);
+    case 'qwen': return askOllama(prompt, QWEN_MODEL);
     case 'claude': return askClaude(prompt);
     case 'anthropic': return askAnthropic(prompt);
-    default: throw new Error(`Unknown provider: ${PROVIDER}. Use: gemini | ollama | claude | anthropic`);
+    case 'openai': return askOpenAI(prompt);
+    default: throw new Error(`Unknown provider: ${PROVIDER}. Use: gemini | ollama | qwen | claude | anthropic | openai`);
   }
 }
 

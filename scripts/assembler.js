@@ -301,7 +301,7 @@ async function assembleVideo(content, diagrams, metadata, questionNum, useRemoti
         if (!fs.existsSync(thumbnailPath)) {
           console.log(`  📸 Generating professional thumbnail...`);
           try {
-            execSync(`npx remotion still src/index.ts Thumbnail "${thumbnailPath}" --props="${thumbPropsFile}" --frame=0 -y`, {
+            execSync(`npx remotion still src/index.ts EducationalThumbnail "${thumbnailPath}" --props="${thumbPropsFile}" --frame=0 -y`, {
               cwd: remotionDir,
               stdio: 'inherit'
             });

@@ -1,302 +1,333 @@
 /**
- * Prompt templates for GCP Daily Interview Questions video pipeline
- * Each prompt is tuned for JSON output to drive downstream rendering
+ * Prompt templates for Educational Video Pipeline
+ * 5-Act Cinematic Structure:
+ *   Hook → Tension → Reveal → Proof → Win
  */
 
 /**
- * STEP 1 — Generate question + full answer content
- * Output drives: title card, voiceover script, keyword highlighting, diagram specs
+ * STEP 1 — Generate cinematic script with 5-act narrative structure
  */
-function contentPrompt(questionNumber, topic, domain = 'GCP', liveModelsNote = '') {
-  const currentDate = new Date().toISOString().split('T')[0]; // e.g. 2026-03-02
+function contentPrompt(questionNumber, topic, domain = 'Technology', liveModelsNote = '') {
+  const currentDate = new Date().toISOString().split('T')[0];
   const liveSection = liveModelsNote
-    ? `LIVE MODEL LIST (fetched via web search today):
-${liveModelsNote}
+    ? `LIVE CONTEXT (fetched via web search today):\n${liveModelsNote}\n\n`
+    : '';
 
-FALLBACK REFERENCE LIST (use if the above is incomplete):`
-    : 'REFERENCE MODEL LIST:';
   return `
-You are an AI Cloud Architect educator creating short-form video content for ${domain} interview prep.
-We focus on building crazy scalable AI systems.
+You are an elite motion designer and technical educator producing SHORT-FORM cinematic videos about ${domain}.
+Your content is mechanism-first: each video opens on the core decision loop, not a full architecture map.
 
-TEMPORAL CONTEXT (CRITICAL - NEVER IGNORE):
+TEMPORAL CONTEXT:
 - Today's date is: ${currentDate}
-- ${liveSection}
-  * Gemini 3.1 Pro (preview, released Feb 19 2026) - the most capable reasoning model
-  * Gemini 3.0 (released Nov 2025)
-  * Gemini 3 Flash (released Dec 2025) - fast, cost-efficient
-  * Gemini 2.5 Flash (Jun 2025) - older but still widely used
-  * OUTDATED - Gemini 1.5 Pro is DEPRECATED. NEVER reference it.
-  * OUTDATED - Gemini 1.0 Pro is DEPRECATED. NEVER reference it.
-- Vertex AI Agent Engine is the current production agentic platform on GCP.
-- Always prefer the LIVE MODEL LIST above over the fallback if both are present.
+${liveSection}
 
-WARNING: If you reference any deprecated model (Gemini 1.5 Pro, 1.0 Pro, PaLM, etc.), the answer is WRONG.
-Always use the most current service names and model versions.
+Generate a HIGHLY ENGAGING mechanism-first explainer for: "${topic}"
 
-Generate Interview Question #${questionNumber} about: "${topic}"
-(Do NOT hardcode any specific model version from the topic string - use the latest models listed above instead)
+THE MECHANISM-FIRST STRUCTURE (non-negotiable):
+1. HOOK          — ticker_hook scene: bold question that stops scrolling.
+2. MECHANISM     — decision_loop scene: the confidence gate and branching action.
+3. PROOF         — concept scene: specialist swarm or key mechanism proof.
+4. SYSTEM PULLBACK — concept scene: full architecture map as payoff.
+5. SYNTHESIS     — synthesis scene: compressed replay of the loop.
 
-Return JSON with this exact structure:
+Return JSON with this EXACT structure:
 {
   "question_number": ${questionNumber},
   "topic": "${topic}",
-  "question_text": "How would you [specific scenario]?",
-  "hook_text": "A punchy, viral 1-2 sentence hook opening the video (e.g. 'Here is how to build a RAG system that handles 10,000 queries/day on Google Cloud').",
-  "cta_text": "A strong, brief call to action for the end of the video (e.g. 'Save this for your next AI build' or 'Follow for daily Cloud Architect tips').",
-  "tech_terms": ["list", "of", "${domain}", "services", "or", "technologies", "involved"],
-  "answer_sections": [
+  "question_text": "One punchy question about the topic",
+  "hook_text": "Scroll-stopping 1-sentence hook (what the viewer learns)",
+  "cta_text": "Identity-close CTA: 'You now understand [X]. Follow for more.'",
+  "tech_terms": ["list", "of", "core", "terms"],
+  "scenes": [
     {
-      "id": 1,
-      "title": "Short Title",
-      "text": "3 to 5 lines explaining the architecture block diagram deeply. Maximum 15-20 words total. Must be technical.",
-      "spoken_audio": "A punchy technical explanation for narration, 10-20 words max.",
-      "keywords": {
-        "tech_terms": ["exact words from 'text' to highlight"],
-        "action_verbs": ["exact words from 'text' to highlight"],
-        "concepts": ["exact words from 'text' to highlight"]
-      }
-    }
-  ],
-  "diagrams": [
-    {
-      "id": 1,
-      "section_id": 1,
-      "title": "Architecture Overview",
-      "type": "flowchart",
-      "dsl": "(Source) -> [Process] -> [[Storage]]",
-      "animation_sequence": ["node1", "arrow", "node2"],
-      "direction": "LR"
-    }
-  ],
-  "title_card_text": "Catchy subtitle (max 6 words)",
-  "hashtags": ["#GCP", "#CloudArchitect", "#Interview"]
-}
-
-DIAGRAM DSL RULES:
-- [Label]     = rectangle
-- {Label?}    = diamond
-- (Label)     = ellipse
-- [[Label]]   = database
-- ->          = arrow
-- @direction LR|TB
-
-KEYWORD RULES:
-- highlight exact words from 'text'
-
-CRITICAL CONSTRAINTS:
-1. Generate EXACTLY 2-3 answer sections.
-2. 'spoken_audio' MUST BE 10-20 words.
-3. 'text' (on-screen summary) MUST BE 15-20 words total, spread across 3-5 short lines.
-4. Each section needs 1 diagram.
-5. NO MARKDOWN. Plain text only.
-
-Topic-specific guidance for "${topic}":
-  - Be precise about ${domain}-specific APIs, configs, and patterns
-  - Reference real console paths or SDK commands where helpful
-  - Include a monitoring/observability section if relevant
-`;
-}
-
-/**
- * STEP 2 — Convert diagram spec to clean Excalidraw DSL
- * Called per diagram with the LLM-generated diagram spec
- */
-function dslRefinementPrompt(diagramSpec, sectionText, domain = 'GCP') {
-  return `
-Convert this ${domain} architecture diagram specification into clean Excalidraw-flowchart DSL.
-
-Section context: "${sectionText}"
-
-Diagram spec:
-${JSON.stringify(diagramSpec, null, 2)}
-
-EXCALIDRAW DSL SYNTAX:
-  (Label)    = ellipse (start/end/external)
-  [Label]    = rectangle (service/process)  
-  {Label?}   = diamond (decision)
-  [[Label]]  = database/storage cylinder
-  ->         = solid arrow
-  --> "text" = labeled solid arrow
-  @direction LR|TB|RL|BT
-  @spacing 80
-
-RULES:
-1. Keep labels INCREDIBLY SHORT — strictly 1-2 words max per node. They must be readable on a small mobile screen.
-2. Service names: use official short forms (e.g. PubSub, EC2, Databricks)
-3. Always start with @direction and @spacing
-4. Decision diamonds must end with ?
-5. No special characters except ? in labels
-
-Return ONLY the DSL string, nothing else. Example:
-@direction LR
-@spacing 80
-(PubSub) -> [Dataflow] -> "clean" -> [[BigQuery]]
-[Dataflow] -> "errors" --> [[GCS]]
-`;
-}
-
-/**
- * STEP 2b — Convert diagram spec to Mermaid DSL (colorful, reliable CLI)
- */
-function mermaidDslRefinementPrompt(diagramSpec, sectionText, domain = 'GCP') {
-  return `
-Convert this ${domain} architecture diagram specification into Mermaid flowchart syntax.
-
-Section context: "${sectionText}"
-
-Diagram spec:
-${JSON.stringify(diagramSpec, null, 2)}
-
-MERMAID SYNTAX:
-flowchart LR
-  A[Service Name] --> B[Another Service]
-  B --> C[(Database)]
-  B --> D{Decision?}
-  D -->|Yes| E[Result]
-  D -->|No| F[Other]
-
-NODE SHAPES:
-  A[Label]     = rectangle (process/service)
-  A[(Label)]   = cylinder (database/storage like BigQuery, GCS, Spanner)
-  A{Label}     = diamond (decision)
-  A([Label])   = rounded (start/end)
-  A[[Label]]   = subroutine
-
-STYLE RULES:
-1. Use "flowchart LR" (horizontal) for 3 or fewer nodes. Use "flowchart TB" (vertical) for more than 3 nodes — portrait canvas has ample vertical space.
-2. Keep labels INCREDIBLY SHORT — strictly 1-2 words max per node! They must be massive and readable on a mobile screen.
-3. Service names: use official short forms (Pub/Sub, Lambda, S3)
-4. Use labeled arrows for data flow descriptions ONLY if absolutely necessary, kept to 1 word: -->|label|
-5. Add style classes for color coding after the flowchart:
-   - style A fill:#4285F4,stroke:#2A6DD9,color:#fff   (for compute/processing)
-   - style B fill:#34A853,stroke:#1E8E3E,color:#fff   (for storage/databases)
-   - style C fill:#EA4335,stroke:#C5221F,color:#fff   (for messaging/streaming)
-   - style D fill:#FBBC04,stroke:#E8A400,color:#000   (for monitoring/management)
-6. NO markdown fences — return raw Mermaid code only
-
-Return ONLY the Mermaid DSL string, nothing else. Example:
-flowchart LR
-  A([Source]) -->|ingest| B[Dataflow]
-  B -->|transform| C[(BigQuery)]
-  B -->|errors| D[(GCS)]
-  style A fill:#EA4335,stroke:#C5221F,color:#fff
-  style B fill:#4285F4,stroke:#2A6DD9,color:#fff
-  style C fill:#34A853,stroke:#1E8E3E,color:#fff
-  style D fill:#34A853,stroke:#1E8E3E,color:#fff
-`;
-}
-
-/**
- * STEP 3 — Generate animation sequence JSON
- * Drives Remotion frame-by-frame node reveal
- */
-function animationPrompt(dsl, voiceoverTimestamps) {
-  return `
-Given this Excalidraw DSL diagram and voiceover word timestamps, generate an animation sequence
-that reveals diagram nodes in sync with the narration.
-
-DSL:
-${dsl}
-
-Voiceover timestamps (word -> time in seconds):
-${JSON.stringify(voiceoverTimestamps, null, 2)}
-
-Return JSON:
-{
-  "animation_steps": [
-    {
-      "step": 1,
-      "action": "show_node",
-      "node_label": "PubSub",
-      "trigger_word": "integrate",
-      "start_time_s": 2.4,
-      "duration_ms": 400,
-      "easing": "ease-out"
+      "id": "1",
+      "sceneType": "ticker_hook",
+      "accentColor": "#00D4FF",
+      "moodColor": "#0A0318",
+      "transitionStyle": "wipe_right",
+      "voicePacing": "fast",
+      "title": "Short Title (2-4 words)",
+      "text": "Max 10 words on screen.",
+      "spokenAudio": "Punchy 1-sentence hook. Max 18 words.",
+      "visualFormat": "ticker_hook",
+      "visualData": {
+        "hookStyle": "question",
+        "question": "Act or Escalate?",
+        "reveal": "Confidence Gate"
+      },
+      "keywords": { "tech_terms": ["exact", "terms"], "concepts": ["exact", "concepts"] }
     },
     {
-      "step": 2,
-      "action": "show_arrow",
-      "from": "PubSub",
-      "to": "Dataflow",
-      "trigger_word": "streams",
-      "start_time_s": 3.1,
-      "duration_ms": 300
+      "id": "2",
+      "sceneType": "decision_loop",
+      "accentColor": "#5EE4FF",
+      "moodColor": "#081425",
+      "transitionStyle": "wipe_right",
+      "voicePacing": "normal",
+      "title": "Route, Evaluate, Decide",
+      "text": "Every signal goes through specialists, then a confidence gate.",
+      "spokenAudio": "Every signal goes through specialists, then a confidence gate decides the action.",
+      "visualFormat": "diagram",
+      "visualData": {
+        "direction": "LR",
+        "nodes": [
+          { "id": "event", "label": "Event", "type": "messaging", "position": { "x": 12, "y": 50 } },
+          { "id": "orchestrator", "label": "Orchestrator", "type": "process", "position": { "x": 28, "y": 50 } },
+          { "id": "agent_a", "label": "Agent A", "type": "compute", "position": { "x": 46, "y": 28 } },
+          { "id": "agent_b", "label": "Agent B", "type": "compute", "position": { "x": 46, "y": 50 } },
+          { "id": "agent_c", "label": "Agent C", "type": "compute", "position": { "x": 46, "y": 72 } },
+          { "id": "consensus", "label": "Consensus", "type": "process", "position": { "x": 66, "y": 50 } },
+          { "id": "gate", "label": "Gate", "type": "decision", "position": { "x": 80, "y": 50 } },
+          { "id": "execute", "label": "Execute", "type": "process", "position": { "x": 92, "y": 34 } },
+          { "id": "escalate", "label": "Escalate", "type": "user", "position": { "x": 92, "y": 66 } },
+          { "id": "audit", "label": "Audit Log", "type": "storage", "position": { "x": 80, "y": 84 } }
+        ],
+        "edges": [
+          { "id": "event-orch", "from": "event", "to": "orchestrator" },
+          { "id": "orch-a", "from": "orchestrator", "to": "agent_a" },
+          { "id": "orch-b", "from": "orchestrator", "to": "agent_b" },
+          { "id": "orch-c", "from": "orchestrator", "to": "agent_c" },
+          { "id": "a-consensus", "from": "agent_a", "to": "consensus" },
+          { "id": "b-consensus", "from": "agent_b", "to": "consensus" },
+          { "id": "c-consensus", "from": "agent_c", "to": "consensus" },
+          { "id": "consensus-gate", "from": "consensus", "to": "gate" },
+          { "id": "gate-exec", "from": "gate", "to": "execute", "label": "auto" },
+          { "id": "gate-esc", "from": "gate", "to": "escalate", "label": "human" },
+          { "id": "exec-audit", "from": "execute", "to": "audit" },
+          { "id": "esc-audit", "from": "escalate", "to": "audit" }
+        ],
+        "beats": [
+          {
+            "id": "beat-1",
+            "label": "Signal In",
+            "title": "Route the event",
+            "detail": "Capture the event and pass it to the orchestrator.",
+            "chip": "Event",
+            "activeNodeIds": ["event", "orchestrator"],
+            "activeEdgeIds": ["event-orch"]
+          },
+          {
+            "id": "beat-2",
+            "label": "Specialists",
+            "title": "Parallel analysis",
+            "detail": "Specialist agents evaluate the signal in parallel.",
+            "chip": "Agents",
+            "activeNodeIds": ["agent_a", "agent_b", "agent_c"],
+            "activeEdgeIds": ["orch-a", "orch-b", "orch-c"]
+          },
+          {
+            "id": "beat-3",
+            "label": "Consensus",
+            "title": "Merge evidence",
+            "detail": "Aggregate outputs into a shared confidence score.",
+            "chip": "Consensus",
+            "activeNodeIds": ["consensus"],
+            "activeEdgeIds": ["a-consensus", "b-consensus", "c-consensus"]
+          },
+          {
+            "id": "beat-4",
+            "label": "Gate",
+            "title": "Decide the path",
+            "detail": "If confidence is high, execute. If not, escalate.",
+            "chip": "Gate",
+            "activeNodeIds": ["gate"],
+            "activeEdgeIds": ["consensus-gate"]
+          }
+        ]
+      },
+      "keywords": { "tech_terms": ["orchestrator", "agents"], "concepts": ["confidence gate"] }
+    },
+    {
+      "id": "3",
+      "sceneType": "concept",
+      "accentColor": "#92FF7A",
+      "moodColor": "#081A23",
+      "transitionStyle": "wipe_right",
+      "voicePacing": "normal",
+      "title": "Specialist Swarm",
+      "text": "Each agent owns a single lens: risk, context, action.",
+      "spokenAudio": "Each agent owns a single lens: risk, context, and action.",
+      "visualFormat": "diagram",
+      "visualData": {
+        "dsl": "(Risk Agent) -> [Confidence] -> (Decision)"
+      },
+      "keywords": { "tech_terms": ["agents"], "concepts": ["specialist", "confidence"] }
+    },
+    {
+      "id": "4",
+      "sceneType": "concept",
+      "accentColor": "#7D8CFF",
+      "moodColor": "#0D1525",
+      "transitionStyle": "wipe_right",
+      "voicePacing": "normal",
+      "title": "System Pullback",
+      "text": "Ingest, orchestrate, decide, and notify in one flow.",
+      "spokenAudio": "Ingest, orchestrate, decide, and notify in one flow.",
+      "visualFormat": "diagram",
+      "visualData": {
+        "dsl": "(Ingest) -> [Stream] -> [Agent Mesh] -> [Gate] -> (Actions)"
+      },
+      "keywords": { "tech_terms": ["ingest", "stream"], "concepts": ["architecture"] }
+    },
+    {
+      "id": "5",
+      "sceneType": "synthesis",
+      "accentColor": "#FFD76A",
+      "moodColor": "#121A2D",
+      "transitionStyle": "flash",
+      "voicePacing": "fast",
+      "title": "Loop Summary",
+      "text": "Route. Compare. Decide. Log. Repeat.",
+      "spokenAudio": "Route, compare, decide, log, repeat.",
+      "visualFormat": "text_only",
+      "visualData": null,
+      "keywords": { "tech_terms": [], "concepts": ["loop"] }
     }
+  ],
+  "title_card_text": "Catchy subtitle (max 5 words)"
+}
+
+CRITICAL RULES:
+1. EXACTLY 5 scenes in the structure above (hook → decision_loop → proof → pullback → synthesis). CTA is auto-appended.
+2. "text" field = max 12 words. Visual does the talking.
+3. "spokenAudio" = conversational, max 25 words per scene. Voice of a mentor, not a lecturer.
+4. decision_loop nodes MUST include "position" with x/y from 0-100 (no decimals).
+5. decision_loop beats: 4-7 beats. Each beat needs activeNodeIds and activeEdgeIds.
+6. For other diagram scenes, keep to 4-6 nodes for phone readability.
+7. Avoid emojis. Use plain text labels only.
+8. NO MARKDOWN. Return pure JSON only.
+`;
+}
+
+/**
+ * STEP 2 — Refine Diagram into exact JSON needed by the DynamicDiagram React component
+ */
+function remotionDslRefinementPrompt(diagramSpec, sectionText, domain = 'Technology') {
+  return `
+Convert this ${domain} architecture diagram specification into a strict JSON payload for the video rendering engine.
+
+Section context (what the narrator says while this renders):
+"${sectionText}"
+
+Diagram spec from Step 1:
+${JSON.stringify(diagramSpec, null, 2)}
+
+Return ONLY a valid JSON object matching this schema (NO MARKDOWN FENCES, just raw JSON):
+{
+  "direction": "LR" | "TB",
+  "nodes": [
+    { 
+      "id": "string",
+      "label": "string (1-2 words MAX — abbreviate aggressively)",
+      "type": "compute" | "storage" | "database" | "messaging" | "user" | "process" | "decision",
+      "iconName": "optional 1-character emoji like 👤, ⚡, 💾, or 📨"
+    }
+  ],
+  "edges": [
+    { "from": "node_id", "to": "node_id", "label": "optional very short label (1 word)" }
   ]
 }
 
-Actions: show_node | show_arrow | highlight_node | pulse_node
-Match each node reveal to the moment the narrator first mentions that component.
+VISUAL DESIGN RULES:
+1. "direction": Use "LR" for ≤3 nodes, "TB" for 4-8 nodes.
+2. "label": MUST be incredibly short. "Amazon Elastic Compute Cloud" → "EC2". "User Browser" → "Browser".
+3. "type": Closest logical shape. Users = circles, databases = cylinders, compute = rounded rects.
+4. Keep node count to 4-6 for optimal visual clarity on a phone screen.
+5. Create a logical narrative flow that maps to the spoken audio.
 `;
 }
 
 /**
- * STEP 4 — Generate YouTube/Reels metadata
+ * STEP 2b — Refine chaos_grid data for PainChaosScene
  */
-function metadataPrompt(content, domain = 'GCP') {
+function refineChaosGridPrompt(rawProblems, sectionText, domain) {
   return `
-Generate optimized social media metadata for this ${domain} interview question video.
+Refine these pain point items for a ${domain} educational video chaos scene.
 
-Question: ${content.question_text}
+Scene voiceover: "${sectionText}"
+Raw problems: ${JSON.stringify(rawProblems)}
+
+Return ONLY raw JSON (no markdown):
+{
+  "problems": ["3 words max", "3 words max", "3 words max"],
+  "tagline": "One sentence, rhetorical. E.g. 'There has to be a better way.'"
+}
+
+Rules:
+- Each problem is MAX 3 words. Specific, painful, punchy.
+- Tagline creates emotional urgency for the next scene.
+`;
+}
+
+/**
+ * STEP 2c — Refine timeline_steps data for TimelineStepsScene
+ */
+function refineTimelineStepsPrompt(rawSteps, sectionText, domain) {
+  return `
+Refine these timeline steps for a ${domain} educational video.
+
+Scene voiceover: "${sectionText}"
+Raw steps: ${JSON.stringify(rawSteps)}
+
+Return ONLY raw JSON (no markdown):
+{
+  "steps": [
+    { "n": "1", "icon": "⚡", "title": "2-3 words", "detail": "One clear sentence." },
+    { "n": "2", "icon": "🔄", "title": "2-3 words", "detail": "One clear sentence." },
+    { "n": "3", "icon": "✅", "title": "2-3 words", "detail": "One clear sentence." }
+  ]
+}
+
+Rules:
+- title: MAX 3 words. Action-oriented.
+- detail: MAX 1 sentence. Explains the "why" or mechanism.
+- icon: Relevant emoji that visually represents the step.
+- Max 4 steps total.
+`;
+}
+
+
+/**
+ * Legacy stubs for backwards compatibility
+ */
+function dslRefinementPrompt() { return ''; }
+function mermaidDslRefinementPrompt() { return ''; }
+
+/**
+ * STEP 3 — Generate Social Metadata
+ */
+function metadataPrompt(content, domain = 'Technology') {
+  return `
+Generate optimized social media metadata for this ${domain} educational video.
+
 Topic: ${content.topic}
-Services covered: ${(content.tech_terms || []).join(', ')}
+Services/Concepts covered: ${(content.tech_terms || []).join(', ')}
+Core mechanism: decision loop, confidence gate, act vs escalate
 
 Return JSON:
 {
   "youtube": {
-    "title": "${domain} Interview Q${content.question_number}: [catchy title under 60 chars] #Shorts",
-    "description": "Write a highly technical, rigorous 5-6 sentence explanation of the architectural workflow shown in the video. Explain the exact mechanism of how the services interact. End with a strong CTA like 'Subscribe for daily Cloud Architect breakdowns.'",
-    "tags": ["${domain}", "CloudArchitect", "Interview", "AI", "Shorts", "SystemDesign", "...exactly 20 strictly relevant technical hashtags! Avoid generic tags like #Video or #Tech. Focus on specific service names and architectural concepts."],
-    "category": "Education",
-    "playlist": "${domain} Daily Interview Questions"
+    "title": "${domain} Explained: [catchy title under 60 chars] #Shorts",
+    "description": "Write a highly technical explanation of the architectural workflow shown in the video. End with 'Subscribe for daily breakdowns.'",
+    "tags": ["${domain}", "Architecture", "Engineering", "SystemDesign", "...20 highly specific tech tags"]
   },
   "thumbnail": {
-    "headline": "Punchy large-text headline for thumbnail (max 5 words, ALL CAPS).",
-    "subheadline": "A slightly longer sub-headline that elaborates on the topic (max 10-12 words)."
+    "headline": "Punchy large-text headline for thumbnail (max 4 words, ALL CAPS).",
+    "subheadline": "A slightly longer sub-headline (max 8 words)."
   },
   "instagram": {
-    "caption": "STRICT FORMAT — follow exactly:\\nLine 1: One punchy hook sentence that creates curiosity, ends with an emoji.\\n\\nLine 2-5: Four bullet points, each starting with ► symbol, each a concrete technical insight or architecture decision from the video (not generic).\\n\\nLine 6: CTA line — e.g. 'Save this 🔖 | Comment your stack below 👇'\\n\\nLine 7: blank line\\n\\nLine 8: Hashtags — EXACTLY 5 ultra-niche + 5 mid-range + 3 broad = 13 hashtags max. Mandatory: #GCPArchitect #GenerativeAI #CloudArchitect",
-    "cover_text": "3 words max, ALL CAPS — used as the Reel cover thumbnail text overlay.",
-    "first_comment_hashtags": "8 additional hashtags to post as first comment for extra algorithmic reach (different from caption hashtags)."
-  },
-  "tiktok": {
-    "caption": "Hook + value + CTA (max 150 chars total)",
-    "sounds_suggestion": "Lo-fi beats / study music genre"
+    "caption": "STRICT FORMAT:\\nLine 1: Punchy hook.\\n\\nLine 2-5: Four bullet points (►), highly technical insights.\\n\\nLine 6: 'Save this 🔖'\\n\\nLine 7: hashtags (15 highly segmented niche tags)."
   }
 }
 `;
 }
 
-
-/**
- * STEP 2c — Convert diagram spec to native JSON (Remotion component)
- */
-function remotionDslRefinementPrompt(diagramSpec, sectionText, domain = 'GCP') {
-  return `
-Convert this ${domain} architecture diagram specification into a simple JSON graph format for direct UI rendering.
-
-Section context: "${sectionText}"
-
-Diagram spec:
-${JSON.stringify(diagramSpec, null, 2)}
-
-Return ONLY a valid JSON object matching this schema:
-{
-  "direction": "LR" | "TB",
-  "nodes": [
-    { "id": "string", "label": "string (keep to 1-2 words)", "type": "compute | storage | database | messaging | user", "iconName": "exact official service name, e.g. 'bigquery', 'cloud-run', 'cloud-storage', 'kubernetes-engine'" }
-  ],
-  "edges": [
-    { "from": "node_id", "to": "node_id", "label": "optional short label" }
-  ]
-}
-
-RULES:
-1. "direction": Use "LR" for 3 or fewer nodes. Use "TB" for more than 3 nodes — the portrait canvas (1920px tall) fits tall diagrams much better than wide ones.
-2. "label" MUST BE INCREDIBLY SHORT — strictly 1-2 words max per node!
-3. Do not include markdown fences (like \`\`\`json). Just the raw JSON object.
-`;
-}
-
-module.exports = { contentPrompt, dslRefinementPrompt, mermaidDslRefinementPrompt, remotionDslRefinementPrompt, animationPrompt, metadataPrompt };
+module.exports = { 
+  contentPrompt, 
+  dslRefinementPrompt, 
+  mermaidDslRefinementPrompt, 
+  remotionDslRefinementPrompt,
+  refineChaosGridPrompt,
+  refineTimelineStepsPrompt,
+  metadataPrompt 
+};

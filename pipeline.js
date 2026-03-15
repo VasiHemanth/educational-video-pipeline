@@ -11,6 +11,7 @@
  * Usage:
  *   node pipeline.js --topic "Cloud Run vs GKE" --number 14
  *   node pipeline.js --topic "BigQuery partitioning" --number 15 --provider ollama
+ *   node pipeline.js --topic "Realtime decision loops" --number 15 --provider qwen
  *   node pipeline.js --dry-run   ← generates JSON only, no video render
  *
  * Provider override:
@@ -24,7 +25,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync, spawn } = require('child_process');
 const { askJSON, askLatestModels } = require('./providers/llm');
-const { contentPrompt, dslRefinementPrompt, mermaidDslRefinementPrompt, remotionDslRefinementPrompt, metadataPrompt } = require('./prompts/index');
+const { contentPrompt, dslRefinementPrompt, mermaidDslRefinementPrompt, remotionDslRefinementPrompt, refineChaosGridPrompt, refineTimelineStepsPrompt, metadataPrompt } = require('./prompts/index');
 const { renderAllDiagrams } = require('./scripts/diagrams');
 const { assembleVideo } = require('./scripts/assembler');
 const { initDB, trackVideo, trackDriveBackup } = require('./scripts/db');
@@ -49,7 +50,7 @@ const AUTO_POST = hasFlag('--post');
 const FORCE_UPLOAD = hasFlag('--force-upload');
 const USE_HOOK = hasFlag('--hook');
 const DOMAIN = getArg('--domain') || 'GCP';
-const USE_VOICE = hasFlag('--voice');  // Voice OFF by default, use --voice to enable
+const USE_VOICE = !hasFlag('--no-voice');  // Voice ON by default, use --no-voice to disable
 const VOICE_PRESET = getArg('--voice-preset') || 'aiden_calm';
 const SKIP_LLM = hasFlag('--skip-llm');  // If true, load existing qX_content.json instead of calling Gemini
 
@@ -88,13 +89,18 @@ async function run() {
   // ── INIT DB ───────────────────────────────────────────────────────────────────
   await initDB();
 
-  // ── STEP 0: Fetch latest model list via web search ────────────────────────────
-  console.log('🔍 STEP 0/4 — Fetching latest Gemini models via web search...');
-  const liveModelsNote = await askLatestModels();
-  if (liveModelsNote) {
-    console.log('   Live models context injected into prompt.');
+  // ── STEP 0: Fetch latest model list via web search (Gemini only) ──────────────
+  let liveModelsNote = '';
+  if (PROVIDER === 'gemini') {
+    console.log('🔍 STEP 0/4 — Fetching latest Gemini models via web search...');
+    liveModelsNote = await askLatestModels();
+    if (liveModelsNote) {
+      console.log('   Live models context injected into prompt.');
+    } else {
+      console.log('   Using hardcoded fallback model list.');
+    }
   } else {
-    console.log('   Using hardcoded fallback model list.');
+    console.log('🔍 STEP 0/4 — Skipping model lookup (non-Gemini provider).');
   }
 
   // ── STEP 1: Content Generation ──────────────────────────────────────────────
@@ -183,36 +189,86 @@ async function run() {
     console.log('\n⏭️  Skipping voice generation (--no-voice)');
   }
 
-  // ── STEP 2: Refine DSL for each diagram ─────────────────────────────────────
-  console.log('\n📐 STEP 2/4 — Refining diagram DSL...');
-  for (let i = 0; i < contentJson.diagrams.length; i++) {
-    const diagram = contentJson.diagrams[i];
-    const section = contentJson.answer_sections.find(s => s.id === diagram.section_id);
-    console.log(`  Diagram ${i + 1}/${contentJson.diagrams.length}: ${diagram.title}`);
+  // ── STEP 2: Refine Visuals for each scene ─────────────────────────────────
+  console.log('\n📐 STEP 2/4 — Refining scene visuals...');
+  
+  // Create a diagrams array for the assembler to consume
+  let diagrams = [];
 
-    // Use the correct refinement prompt based on diagram mode
-    const refinePrompt = DIAGRAM_MODE === 'mermaid'
-      ? mermaidDslRefinementPrompt(diagram, section?.spoken_audio || section?.text || '', DOMAIN)
-      : DIAGRAM_MODE === 'remotion'
-        ? remotionDslRefinementPrompt(diagram, section?.spoken_audio || section?.text || '', DOMAIN)
-        : dslRefinementPrompt(diagram, section?.spoken_audio || section?.text || '', DOMAIN);
+  for (let i = 0; i < contentJson.scenes.length; i++) {
+    const scene = contentJson.scenes[i];
+    
+    if (scene.visualFormat === 'diagram') {
+      if (scene.sceneType === 'decision_loop') {
+        console.log(`  Skipping diagram refinement for decision_loop: ${scene.title}`);
+        continue;
+      }
+      // ── Refine diagram DSL → nodes/edges JSON ──────────────────────────────
+      console.log(`  Refining diagram for scene ${i + 1}/${contentJson.scenes.length}: ${scene.title}`);
 
-    const refinedDsl = await askJSON(refinePrompt).catch(() => ({ dsl: diagram.dsl })); // fallback to original DSL on parse fail
+      const diagram = {
+        id: scene.id,
+        section_id: scene.id,
+        title: scene.title,
+        type: "flowchart",
+        dsl: scene.visualData?.dsl || ""
+      };
 
-    // askJSON might return string for DSL, or JSON object for remotion
-    diagram.dsl = (DIAGRAM_MODE === 'remotion' && typeof refinedDsl === 'object' && !refinedDsl.dsl)
-      ? JSON.stringify(refinedDsl)
-      : (typeof refinedDsl === 'string') ? refinedDsl : (refinedDsl?.dsl || diagram.dsl);
+      const refinePrompt = DIAGRAM_MODE === 'mermaid'
+        ? mermaidDslRefinementPrompt(diagram, scene.spokenAudio || scene.text || '', DOMAIN)
+        : DIAGRAM_MODE === 'remotion'
+          ? remotionDslRefinementPrompt(diagram, scene.spokenAudio || scene.text || '', DOMAIN)
+          : dslRefinementPrompt(diagram, scene.spokenAudio || scene.text || '', DOMAIN);
+
+      const refinedDsl = await askJSON(refinePrompt).catch(() => ({ dsl: diagram.dsl }));
+
+      if (DIAGRAM_MODE === 'remotion' && typeof refinedDsl === 'object' && !refinedDsl.dsl) {
+        Object.assign(diagram, refinedDsl);
+        // Also write refined nodes/edges back into the scene visualData
+        scene.visualData = { ...scene.visualData, ...refinedDsl };
+      } else {
+        diagram.dsl = (typeof refinedDsl === 'string') ? refinedDsl : (refinedDsl?.dsl || diagram.dsl);
+      }
+      
+      diagrams.push(diagram);
+
+    } else if (scene.visualFormat === 'chaos_grid') {
+      // ── Refine chaos grid for PainChaosScene ──────────────────────────────
+      console.log(`  Refining chaos_grid for scene ${i + 1}: ${scene.title}`);
+      const rawProblems = scene.visualData?.problems || [];
+      const refined = await askJSON(
+        refineChaosGridPrompt(rawProblems, scene.spokenAudio || scene.text || '', DOMAIN)
+      ).catch(() => null);
+      if (refined && refined.problems) {
+        scene.visualData = { ...scene.visualData, ...refined };
+      }
+
+    } else if (scene.visualFormat === 'timeline_steps') {
+      // ── Refine timeline steps for TimelineStepsScene ──────────────────────
+      console.log(`  Refining timeline_steps for scene ${i + 1}: ${scene.title}`);
+      const rawSteps = scene.visualData?.steps || [];
+      const refined = await askJSON(
+        refineTimelineStepsPrompt(rawSteps, scene.spokenAudio || scene.text || '', DOMAIN)
+      ).catch(() => null);
+      if (refined && refined.steps) {
+        scene.visualData = { ...scene.visualData, ...refined };
+      }
+    }
   }
 
+  // Write updated content JSON (with refined visualData per scene)
+  fs.writeFileSync(contentPath, JSON.stringify(contentJson, null, 2));
+  console.log(`   Sections: ${contentJson.scenes?.length}`);
+  console.log(`   Diagrams: ${diagrams.length}`);
+
   // ── STEP 3: Render diagrams → PNG (Skip if remotion native) ────────────────────────────────────────────
-  console.log('\n🎨 STEP 3/4 — Rendering diagrams...');
-  let diagrams = [];
+  console.log('\\n🎨 STEP 3/4 — Rendering diagrams...');
   if (DIAGRAM_MODE === 'remotion') {
     console.log('   Skipping PNG render (using native Remotion diagrams)...');
-    diagrams = contentJson.diagrams.map(d => ({ ...d, isNative: true }));
+    diagrams = diagrams.map(d => ({ ...d, isNative: true }));
   } else {
-    diagrams = await renderAllDiagrams(contentJson, DIAGRAM_MODE);
+    // Legacy generic diagram renderer (fallback)
+    diagrams = await renderAllDiagrams({ diagrams }, DIAGRAM_MODE);
   }
 
   // ── BONUS: Generate platform metadata BEFOREHAND for thumbnail ────────────────────────────────────────

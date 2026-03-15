@@ -96,6 +96,38 @@ function buildSFXTrack(content, timings) {
         break;
       }
 
+      case 'decision_loop': {
+        const beats = scene.visualData?.beats || [];
+        const beatCount = Math.max(1, beats.length);
+        const beatWindow = Math.max(24, Math.floor(timing.durationFrames / beatCount));
+
+        beats.forEach((beat, i) => {
+          const beatFrame = sceneStart + 12 + i * beatWindow;
+          events.push({
+            frame: beatFrame,
+            sfxType: SFX_TYPES.TICK,
+            volume: 0.4,
+          });
+
+          if (beat.emphasis === 'execute') {
+            events.push({
+              frame: beatFrame + 8,
+              sfxType: SFX_TYPES.DING,
+              volume: 0.55,
+            });
+          }
+
+          if (beat.emphasis === 'escalate') {
+            events.push({
+              frame: beatFrame + 8,
+              sfxType: SFX_TYPES.CONFIRM_CHIME,
+              volume: 0.5,
+            });
+          }
+        });
+        break;
+      }
+
       case 'reveal_diagram':
       case 'solution':
       case 'concept': {

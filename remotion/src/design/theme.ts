@@ -56,6 +56,7 @@ export const getMoodColor = (sceneType: string, override?: string): string => {
     hook: MOOD_COLORS.mystery,
     pain_chaos: MOOD_COLORS.tension,
     problem: MOOD_COLORS.tension,
+    decision_loop: MOOD_COLORS.resolution,
     reveal_diagram: MOOD_COLORS.resolution,
     solution: MOOD_COLORS.resolution,
     timeline_steps: MOOD_COLORS.depth,

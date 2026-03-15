@@ -15,6 +15,7 @@ export type SceneType =
   | 'hook'           // Legacy: 0-5s curiosity gap opener
   | 'ticker_hook'    // NEW: Animated stat counter or bold question zoom-in
   | 'pain_chaos'     // NEW: X-mark chaos left, blurred question right (tension)
+  | 'decision_loop'  // NEW: Mechanism-first branching system explainer
   | 'reveal_diagram' // NEW: Diagram nodes assemble w/ glowing edge animation
   | 'timeline_steps' // NEW: Step-by-step numbered rows slide in one-by-one
   | 'identity_cta'   // NEW: "You now understand X" confirm + subscribe pill
@@ -59,18 +60,44 @@ export interface DiagramNode {
   label: string;       // 1-2 words max
   type: 'compute' | 'storage' | 'database' | 'messaging' | 'user' | 'process' | 'decision';
   iconName?: string;    // Icon identifier (e.g. 'cloud-run', 'database')
+  position?: {
+    x: number;          // 0-100 normalized stage position
+    y: number;          // 0-100 normalized stage position
+  };
 }
 
 export interface DiagramEdge {
+  id?: string;
   from: string;
   to: string;
   label?: string;       // Optional short label on arrow
+}
+
+export interface DiagramBeat {
+  id: string;
+  label: string;
+  title?: string;
+  detail?: string;
+  chip?: string;
+  activeNodeIds: string[];
+  activeEdgeIds?: string[];
+  emphasis?: 'neutral' | 'execute' | 'escalate';
+}
+
+export interface DiagramGroup {
+  id: string;
+  label: string;
+  nodeIds: string[];
+  accentColor?: string;
 }
 
 export interface DiagramData {
   direction: 'LR' | 'TB';
   nodes: DiagramNode[];
   edges: DiagramEdge[];
+  beats?: DiagramBeat[];
+  groups?: DiagramGroup[];
+  focalNodeId?: string;
 }
 
 export interface ComparisonData {
