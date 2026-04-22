@@ -1,3 +1,110 @@
+// ── Design JSON types (agent-generated per video) ──────────────────────────
+
+export interface DesignPalette {
+    background: string;
+    surface: string;
+    primary: string;
+    secondary: string;
+    accent: string;
+    text: string;
+    textMuted: string;
+    gradients: {
+        introGlow: string[];
+        sectionAccents: string[];
+        cta: string[];
+    };
+}
+
+export interface DesignTypography {
+    fontFamily: string;
+    hookSize: number;
+    titleSize: number;
+    bodySize: number;
+    labelSize: number;
+    titleWeight: number;
+    bodyWeight: number;
+    keywordWeight: number;
+}
+
+export interface SpringConfig {
+    damping: number;
+    stiffness: number;
+}
+
+export interface DesignAnimations {
+    intro: {
+        type: 'slide-up' | 'scale-in' | 'stagger-chars' | 'typewriter' | 'blur-in';
+        spring: SpringConfig;
+        staggerDelay?: number;
+    };
+    textReveal: {
+        type: 'line-by-line' | 'word-by-word' | 'highlight-sweep' | 'fade-lines';
+        staggerDelay: number;
+    };
+    diagramEntrance: {
+        type: 'pop-in' | 'cascade' | 'draw-edges' | 'fade-cascade';
+        nodeDelay: number;
+        spring: SpringConfig;
+    };
+    transition: {
+        type: 'cut' | 'crossfade' | 'slide-left' | 'wipe-down';
+        durationFrames: number;
+    };
+    outro: {
+        type: 'pulse-cta' | 'expand-rings' | 'zoom-reveal';
+        spring: SpringConfig;
+    };
+}
+
+export interface DesignEffects {
+    backgroundType: 'radial-glow' | 'mesh-gradient' | 'none';
+    glowColors: string[];
+    glowIntensity: number;
+    glowBlur: number;
+    vignette: boolean;
+    noise: boolean;
+    scanlines: boolean;
+}
+
+export interface DesignDiagrams {
+    nodeStyle: 'bordered' | 'filled' | 'glass' | 'gradient' | 'neon';
+    edgeStyle: 'solid' | 'dashed' | 'glow';
+    edgeColor: string;
+    nodeShapes: Record<string, 'rounded-rect' | 'pill' | 'circle' | 'diamond'>;
+    glowOnActive: boolean;
+    iconDomain: string;
+}
+
+export interface DesignLayout {
+    introTextTop: string;
+    sectionTitleTop: number;
+    sectionTextTop: number;
+    diagramTop: string;
+    diagramBottom: string;
+    progressBar: boolean;
+    progressBarStyle: 'glow' | 'solid' | 'none';
+    bulletStyle: 'arrow' | 'dash' | 'dot' | 'number';
+}
+
+export interface SvgAsset {
+    id: string;
+    svg: string;
+    placement: 'background' | 'overlay';
+    opacity: number;
+}
+
+export interface DesignProps {
+    palette: DesignPalette;
+    typography: DesignTypography;
+    animations: DesignAnimations;
+    effects: DesignEffects;
+    diagrams: DesignDiagrams;
+    layout: DesignLayout;
+    svgAssets?: SvgAsset[];
+}
+
+// ── Content & Video types ──────────────────────────────────────────────────
+
 export interface DiagramInfo {
     section_id: string;
     excalidrawPath?: string;
@@ -52,6 +159,7 @@ export interface SectionTiming {
 export interface VideoProps {
     content: VideoContent;
     diagrams: DiagramInfo[];
+    design?: DesignProps;
     config?: {
         animStyle?: string;
         pauseFrames?: number;

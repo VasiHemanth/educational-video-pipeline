@@ -1,7 +1,7 @@
 {
   "name": "gcp-video-pipeline",
   "version": "1.0.0",
-  "description": "Automated pipeline that generates GCP Daily Interview Questions shorts",
+  "description": "AI Cloud Architect — Multi-domain educational video pipeline",
   "main": "pipeline.js",
   "scripts": {
     "video": "node pipeline.js",
@@ -11,6 +11,9 @@
     "token:check": "node scripts/meta_token.js check",
     "token:refresh": "node scripts/meta_token.js refresh",
     "start": "node pipeline.js",
+    "render": "node scripts/render.js",
+    "track": "node scripts/track.js",
+    "post": "node scripts/post.js",
     "backup": "node scripts/backup.js"
   },
   "dependencies": {

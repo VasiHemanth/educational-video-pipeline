@@ -1,118 +1,109 @@
-# 🤖 AI Agent Context for GCP Educational Video Pipeline
+# AI Cloud Architect — Video Pipeline
 
-> **IMPORTANT**: If you are an AI agent analyzing this repository, READ THIS ENTIRE FILE before proposing or making any changes. This project has highly specific constraints for mobile-first video rendering.
+You are the orchestration harness for an automated educational video pipeline.
+When the user asks you to generate a video, YOU are the brain — research, write content, validate, then call scripts to render and post.
 
-**Project Context:** We are generating and posting **AI Cloud Architect** related educational content. Each video contains a brief explanation of architectures or concepts, paired with dynamically generated **Flowchart diagrams** to visually illustrate the cloud solutions.
+## Architecture
 
-## 📱 1. Mobile-First Layout & Safe Zones (CRITICAL)
-This pipeline generates 1080x1920 (9:16 portrait) videos for **YouTube Shorts, Instagram Reels, and Facebook Reels**. The UI layout must strictly adhere to the following safe zones to avoid overlapping with platform chromes (like/share buttons, profile names, top nav):
-
-- **Canvas Size:** `1080` (width) × `1920` (height)
-- **Top Safe Zone:** The top `200px` must remain clear (Instagram's back button/search bar zone).
-    - Intro screen domain tag starts at `top: 20%`.
-    - Content section title starts at `top: 200px`.
-- **Text Zone:** Begins at `top: 320px` and takes `22%` of the screen height. 
-- **Diagram Zone:** Located centrally to maximize screen real estate.
-    - **Boundaries:** `top: 36%` to `bottom: 8%` (gives ~1075px usable height).
-    - **Padding:** Left `60px`, Right `60px` (usable width ~960px).
-- **Watermark:** Must be placed in the **bottom-left** corner (`bottom: 60px`, `left: 80px`). Do NOT place it in the bottom-right, as it will be covered by Instagram/YouTube engagement buttons.
-
----
-
-## 📐 2. Smart Diagram System (`NativeDiagram.tsx`)
-Because of the 9:16 aspect ratio, the rendering engine dynamically sizes and positions diagram nodes. **Never force diagrams to overflow.**
-
-### Layout Decision Logic:
-- **1 to 3 Nodes:** `LR` (Left-to-Right). Horizontal layout. Fits well across the 960px width.
-- **4 to 8 Nodes:** `TB` (Top-to-Bottom). Vertical layout. Uses the massive 1075px vertical space. 
-- **9+ Nodes:** `GRID` (2-row wrap layout). Fallback.
-
-### Sizing Tiers (for `TB` Layout):
-The font sizes and paddings scale conditionally based on the number of nodes so they always fit perfectly within the 1075px zone:
-| Node Count | Font Size | Padding (V/H) | Gap  |
-|------------|-----------|---------------|------|
-| **≤ 4**    | `36px`    | `18px`/`28px` | `24px` |
-| **5–6**    | `28px`    | `14px`/`22px` | `18px` |
-| **7–8**    | `22px`    | `10px`/`18px` | `12px` |
-
-**Text Wrapping:** Node styles must include `whiteSpace: 'normal'` and `wordBreak: 'break-word'` with a strictly calculated `maxWidth`. Do NOT use `nowrap`.
-
----
-
-## 🧠 3. LLM Prompting Rules (`prompts/index.js`)
-The LLM generates JSON payloads defining the video script and diagram structure.
-
-- **Strict Node Labels:** Diagram node labels must be **1-2 words MAX**. They must be readable on a 6-inch phone screen. No sentences inside nodes.
-- **Direction:** Prompts enforce `LR` for ≤3 nodes and `TB` for >3 nodes. `NativeDiagram.tsx` acts as the final arbiter.
-- **Text Formatting:** The `"text"` field from the LLM is rendered dynamically. Newlines (`\n`) in the text are mapped to bulleted lines prefixed with `▸`. 
-
----
-
-## ⚙️ 4. Pipeline Execution (`pipeline.js`)
-The main entry point for video generation is `pipeline.js`. It orchestrates the entire flow:
-0. **Model Fetching:** Fetches latest Gemini models via web search for context.
-1. **LLM Content Gen:** Gemini generates `qX_content.json` (skip with `--skip-llm` if file exists).
-2. **LLM Diagram Refinement:** Gemini converts abstract diagram DSL into strictly formatted Remotion JSON nodes/edges.
-3. **Voice TTS:** Qwen3 generates voiceover audio segments (per section).
-4. **Metadata Gen:** Generates YouTube/Meta descriptions and hashtags into `qX_metadata.json`.
-5. **Remotion Render:** Spins up a child process to compile `src/index.ts` into a `.mp4`.
-6. **Auto-Post:** Uploads directly to social media.
-
-### Sample Commands:
-```bash
-# Production run with auto-post
-npm run video -- --topic "Large-Scale Gen AI" --number 6 --domain "Generative AI" --platforms "youtube,meta" --post
-
-# Test run (uses output/ dir and content_tracker.sqlite)
-npm run video -- --topic "Test Topic" --number 999 --env test --dry-run
-
-# Render from existing JSON (skips Step 0 and 1)
-npm run video -- --number 11 --env test --skip-llm
-
-# Upload a previously-rendered video
-npm run upload -- --number 6 --platforms youtube,meta
-
-# Check Meta API token
-npm run token:check
+```
+YOU (Gemini CLI) = the harness
+  |
+  |-- Research topic (use your web search / extensions)
+  |-- Generate content JSON (you write it directly to file)
+  |-- Generate metadata JSON (you write it directly to file)
+  |-- Call: node scripts/render.js --number N [--voice] [--platform youtube,meta]
+  |-- Call: node scripts/post.js --number N [--platforms youtube,meta]
+  |-- Call: node scripts/track.js --number N --domain X --topic "Y"
 ```
 
----
+**The code does NOT call LLMs.** YOU are the LLM. You generate the JSON, validate it, self-correct.
 
-## 🚀 5. Social Media Uploading (`scripts/post.js`)
-The pipeline integrates via APIs directly to social platforms.
-- **YouTube Shorts:** Uses the `googleapis` library. Often restricts custom thumbnails via API for Shorts.
-- **Facebook Reels:** Direct upload using the `FB_PAGE_ID` and user access token.
-- **Instagram Reels:** 
-  - Instagram Graph API **does not accept local file uploads**.
-  - Pipeline uploads the local `.mp4` to **Cloudinary** first to get a public URL.
-  - Passes the Cloudinary URL to Instagram to create an async media container, then polls for completion before publishing.
+## Quick Commands
 
-### Environment Requirements (`.env`):
-For uploading to work, the script requires `dotenv` to be explicitly loaded at the top level and the following keys:
-- `YOUTUBE_CLIENT_SECRET_FILE`
-- `META_ACCESS_TOKEN`
-- `FB_PAGE_ID`, `IG_ACCOUNT_ID`
-- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
+| Task | Command |
+|------|---------|
+| Render video | `node scripts/render.js --number 42 --platform youtube --platform meta` |
+| Render with voice | `node scripts/render.js --number 42 --platform youtube --voice` |
+| Post video | `node scripts/post.js --number 42 --platforms youtube,meta` |
+| Track in DB | `node scripts/track.js --number 42 --domain GCP --topic "Cloud Run"` |
+| Re-upload | `node upload.js --number 42` |
+| Check DB coverage | `sqlite3 prod_tracker.sqlite "SELECT domain, COUNT(*) FROM videos GROUP BY domain"` |
+| List topics | `sqlite3 prod_tracker.sqlite "SELECT question_number, topic FROM videos WHERE domain='GCP' ORDER BY question_number"` |
 
----
+## Content JSON Schema
 
-## 🔄 6. Environment Modes (`utils/env.js`)
-The pipeline supports **test** and **prod** modes via `--env` flag or `PIPELINE_ENV` env var:
+Write to `output_prod/q{N}_content.json`:
 
-| Mode | Database | Output Dir | Use Case |
-|------|----------|-----------|----------|
-| `test` | `content_tracker.sqlite` | `output/` | Dev & testing |
-| `prod` (default) | `prod_tracker.sqlite` | `output_prod/` | Real content |
+```json
+{
+  "question_number": 42,
+  "topic": "Cloud Run vs GKE",
+  "domain": "GCP",
+  "question_text": "How would you choose between Cloud Run and GKE?",
+  "hook_text": "Here's the one question that separates junior from senior cloud architects",
+  "cta_text": "Save this for your next architecture review",
+  "title_card_text": "Run vs GKE Showdown",
+  "tech_terms": ["Cloud Run", "GKE", "Kubernetes"],
+  "hashtags": ["#GCP", "#CloudArchitect"],
+  "answer_sections": [
+    {
+      "id": 1,
+      "title": "WHEN TO USE CLOUD RUN",
+      "text": "Stateless HTTP containers\nAuto-scales to zero\nNo cluster management\nPay per request only",
+      "spoken_audio": "Cloud Run is your go-to for stateless HTTP workloads that need auto-scaling.",
+      "keywords": {
+        "tech_terms": ["Cloud Run", "HTTP"],
+        "action_verbs": ["scales"],
+        "concepts": ["stateless"]
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": 1, "section_id": 1, "title": "Architecture",
+      "type": "flowchart", "direction": "LR",
+      "dsl": "{\"direction\":\"LR\",\"nodes\":[{\"id\":\"a\",\"label\":\"Request\",\"type\":\"user\"},{\"id\":\"b\",\"label\":\"Cloud Run\",\"type\":\"compute\"}],\"edges\":[{\"from\":\"a\",\"to\":\"b\"}]}"
+    }
+  ]
+}
+```
 
-**All modules** (`pipeline.js`, `assembler.js`, `db.js`, `upload.js`, `diagrams.js`, `carousel_renderer.js`, `generate-thumbnail.js`) read from `utils/env.js` — a single flag switches everything.
+### Rules
+- 2-3 answer sections
+- `text`: 15-20 words, 3-5 lines
+- `spoken_audio`: 10-20 words
+- Keywords: exact words from `text`
+- Diagram `dsl`: stringified JSON with nodes/edges
+- Node labels: 1-2 words MAX
+- Direction: LR (<=3 nodes), TB (>3 nodes)
 
----
+## Metadata JSON Schema
 
-## 📁 7. Project Structure
-Key directories and utility modules:
-- **`utils/env.js`**: Central environment config (DB path, output dir) based on `--env` flag.
-- **`utils/cli.js`**: Shared CLI argument parser (`getArg`, `hasFlag`) used by all entry points.
-- **`scripts/meta_token.js`**: Meta API token utility with `check` and `refresh` subcommands.
-- **`providers/llm.js`**: Provider-agnostic LLM wrapper (gemini/ollama/claude/anthropic).
-- **`scripts/assembler.js`**: Remotion-based video assembler (props → MP4 + thumbnail).
-- **`scripts/db.js`**: SQLite tracking with dual-database support.
+Write to `output_prod/q{N}_metadata.json`:
+
+```json
+{
+  "youtube": { "title": "...", "description": "...", "tags": ["20 tags"], "category": "Education" },
+  "thumbnail": { "headline": "5 WORDS MAX", "subheadline": "10-12 words" },
+  "instagram": { "caption": "hook + bullets + CTA + hashtags", "cover_text": "3 WORDS" },
+  "tiktok": { "caption": "150 chars max" }
+}
+```
+
+## Supported Domains
+
+GCP, AWS, Azure, Kubernetes, Terraform, Generative AI, System Design, DevOps — or any tech domain.
+
+## Mobile Rendering Constraints
+
+Canvas: 1080x1920 (9:16). Top 200px clear. Diagram zone: 36%-92%. Node labels: 1-2 words MAX.
+
+## Workflow
+
+1. Research topic (web search for latest info)
+2. Write `output_prod/q{N}_content.json`
+3. Write `output_prod/q{N}_metadata.json`
+4. Self-review: count words, validate JSON, check constraints
+5. `node scripts/render.js --number {N} --platform youtube --platform meta`
+6. `node scripts/track.js --number {N} --domain "{D}" --topic "{T}"`
+7. (Optional) `node scripts/post.js --number {N} --platforms youtube,meta`

@@ -1,123 +1,228 @@
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
-import { VideoProps } from '../types';
+import { VideoProps, DesignProps } from '../types';
+import { mergeDesign } from '../designDefaults';
+import React from 'react';
 
-const G = {
-    blue: '#2997FF', // Apple-esque bright blue
-    purple: '#BF5AF2', // Apple-esque purple
-    orange: '#FF9F0A', // Apple-esque orange
-    green: '#32D74B', // Apple-esque green
-    bg: '#0A0A0A', // Deep pure dark
-    surface: '#1C1C1E',
-    border: '#333336',
-    textWhite: '#F5F5F7',
-    textMuted: '#86868B',
-};
-
-export const Intro: React.FC<{ content: VideoProps['content'], config?: VideoProps['config'] }> = ({ content, config }) => {
+export const Intro: React.FC<{
+    content: VideoProps['content'];
+    config?: VideoProps['config'];
+    design?: DesignProps;
+}> = ({ content, config, design: rawDesign }) => {
     const frame = useCurrentFrame();
     const { fps } = useVideoConfig();
+    const d = mergeDesign(rawDesign);
+    const p = d.palette;
+    const t = d.typography;
+    const anim = d.animations.intro;
 
-    const titleSlide = spring({ fps, frame, config: { damping: 80, stiffness: 100 } });
-    const questionSlide = spring({ fps, frame: frame - 30, config: { damping: 60, stiffness: 80 } });
+    // ── Animation helpers based on design.animations.intro.type ──
+    const introSpring = spring({ fps, frame, config: { damping: anim.spring.damping, stiffness: anim.spring.stiffness } });
+    const questionSpring = spring({ fps, frame: frame - 30, config: { damping: 60, stiffness: 80 } });
     const brandFade = interpolate(frame, [60, 100], [0, 1], { extrapolateRight: 'clamp' });
-    const glow = Math.sin(frame / 18) * 0.3 + 0.7;
+
+    // Glow pulse
+    const glow = Math.sin(frame / 18) * 0.3 + d.effects.glowIntensity;
+
+    // Title text
+    const titleText = content.title_card_text || content.topic;
+    const hookOrQuestion = config?.useHook ? (content.hook_text || content.question_text) : content.question_text;
+
+    // ── Intro animation variants ──
+    const getTitleTransform = () => {
+        switch (anim.type) {
+            case 'slide-up':
+                return {
+                    transform: `translateY(${interpolate(introSpring, [0, 1], [40, 0])}px)`,
+                    opacity: introSpring,
+                };
+            case 'scale-in':
+                return {
+                    transform: `scale(${interpolate(introSpring, [0, 1], [0.8, 1])})`,
+                    opacity: introSpring,
+                };
+            case 'blur-in': {
+                const blur = interpolate(introSpring, [0, 1], [20, 0]);
+                return {
+                    filter: `blur(${blur}px)`,
+                    opacity: introSpring,
+                };
+            }
+            case 'stagger-chars':
+            case 'typewriter':
+                return { opacity: 1 };
+            default:
+                return {
+                    transform: `translateY(${interpolate(introSpring, [0, 1], [40, 0])}px)`,
+                    opacity: introSpring,
+                };
+        }
+    };
+
+    // Character-level rendering for stagger-chars / typewriter
+    const renderTitle = () => {
+        if (anim.type === 'stagger-chars') {
+            const delay = anim.staggerDelay || 2;
+            return (
+                <span>
+                    {titleText.split('').map((char, i) => {
+                        const charSpring = spring({ fps, frame: frame - (i * delay), config: { damping: anim.spring.damping, stiffness: anim.spring.stiffness } });
+                        return (
+                            <span key={i} style={{
+                                display: 'inline-block',
+                                opacity: charSpring,
+                                transform: `translateY(${interpolate(charSpring, [0, 1], [20, 0])}px)`,
+                            }}>
+                                {char === ' ' ? '\u00A0' : char}
+                            </span>
+                        );
+                    })}
+                </span>
+            );
+        }
+        if (anim.type === 'typewriter') {
+            const delay = anim.staggerDelay || 2;
+            const charsVisible = Math.min(titleText.length, Math.floor(frame / delay));
+            return <span>{titleText.slice(0, charsVisible)}<span style={{ opacity: frame % 20 < 10 ? 1 : 0 }}>|</span></span>;
+        }
+        return <span>{titleText}</span>;
+    };
+
+    const titleStyle = getTitleTransform();
+
+    // ── Background effects ──
+    const renderBackground = () => {
+        if (d.effects.backgroundType === 'none') return null;
+        const colors = d.effects.glowColors.length > 0 ? d.effects.glowColors : p.gradients.introGlow;
+        const positions = [
+            { top: '-10%', left: '-10%' },
+            { bottom: '-10%', right: '-10%' },
+            { top: '30%', left: '50%', transform: 'translateX(-50%)' },
+        ];
+        return colors.map((color, i) => (
+            <div key={i} style={{
+                position: 'absolute',
+                ...positions[i % positions.length],
+                width: '800px', height: '800px',
+                background: `radial-gradient(circle, ${color}, transparent 60%)`,
+                opacity: glow * (1 - i * 0.1),
+                filter: `blur(${d.effects.glowBlur}px)`,
+                pointerEvents: 'none',
+            }} />
+        ));
+    };
 
     return (
         <AbsoluteFill style={{
-            backgroundColor: G.bg, justifyContent: 'center', alignItems: 'center',
-            padding: '60px', overflow: 'hidden',
-            fontFamily: "'Inter', '-apple-system', 'SF Pro Display', sans-serif",
+            backgroundColor: p.background,
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '60px',
+            overflow: 'hidden',
+            fontFamily: t.fontFamily,
         }}>
-            {/* Ambient glows (Colorful Apple Event Style) */}
-            <div style={{
-                position: 'absolute', top: '-10%', left: '-10%', width: '800px', height: '800px',
-                background: `radial-gradient(circle, ${G.purple}20, transparent 60%)`,
-                opacity: glow, filter: 'blur(100px)', pointerEvents: 'none',
-            }} />
-            <div style={{
-                position: 'absolute', bottom: '-10%', right: '-10%', width: '800px', height: '800px',
-                background: `radial-gradient(circle, ${G.blue}20, transparent 60%)`,
-                opacity: glow * 0.9, filter: 'blur(100px)', pointerEvents: 'none',
-            }} />
-            <div style={{
-                position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)', width: '600px', height: '600px',
-                background: `radial-gradient(circle, ${G.orange}15, transparent 60%)`,
-                opacity: glow * 0.8, filter: 'blur(90px)', pointerEvents: 'none',
-            }} />
+            {renderBackground()}
 
-            {/* TOP INFO ZONE (20-45%) — starts at 20% to clear Instagram top chrome */}
+            {/* SVG background assets */}
+            {d.svgAssets?.filter(a => a.placement === 'background').map(asset => (
+                <div key={asset.id} style={{
+                    position: 'absolute', inset: 0, opacity: asset.opacity, pointerEvents: 'none',
+                }} dangerouslySetInnerHTML={{ __html: asset.svg }} />
+            ))}
+
+            {/* TOP INFO ZONE */}
             <div style={{
                 position: 'absolute',
-                top: '20%',
+                top: d.layout.introTextTop,
                 width: '100%',
                 display: 'flex', flexDirection: 'column', alignItems: 'center',
-                padding: '0 80px'
+                padding: '0 80px',
             }}>
                 <div style={{
-                    transform: `translateY(${interpolate(titleSlide, [0, 1], [40, 0])}px)`,
-                    opacity: titleSlide,
+                    ...titleStyle,
                     display: 'flex', flexDirection: 'column', alignItems: 'center',
-                    marginBottom: '30px'
+                    marginBottom: '30px',
                 }}>
-                    {/* Domain badge — e.g. "GCP" or "Generative AI" */}
+                    {/* Domain badge */}
                     <div style={{
-                        fontSize: '30px', fontWeight: 700, color: G.blue,
-                        letterSpacing: '4px', textTransform: 'uppercase',
+                        fontSize: `${t.labelSize + 10}px`,
+                        fontWeight: 700,
+                        color: p.primary,
+                        letterSpacing: '4px',
+                        textTransform: 'uppercase',
                         marginBottom: '16px',
                     }}>
                         {content.domain || 'GCP'}
                     </div>
 
-                    {/* Topic pill — the scroll-stopper */}
+                    {/* Title — scroll-stopper */}
                     <div style={{
-                        fontSize: '52px', fontWeight: 900, color: G.textWhite,
-                        letterSpacing: '-1px', lineHeight: 1.15,
-                        textAlign: 'center', maxWidth: '900px',
+                        fontSize: '52px',
+                        fontWeight: t.titleWeight,
+                        color: p.text,
+                        letterSpacing: '-1px',
+                        lineHeight: 1.15,
+                        textAlign: 'center',
+                        maxWidth: '900px',
                         textShadow: '0 8px 32px rgba(0,0,0,0.6)',
                     }}>
-                        {content.title_card_text || content.topic}
+                        {renderTitle()}
                     </div>
 
-                    {/* Question number — small subdued label */}
+                    {/* Question number */}
                     <div style={{
-                        fontSize: '26px', fontWeight: 500, color: G.textMuted,
-                        marginTop: '14px', letterSpacing: '1px',
+                        fontSize: '26px',
+                        fontWeight: 500,
+                        color: p.textMuted,
+                        marginTop: '14px',
+                        letterSpacing: '1px',
                     }}>
                         Interview Q#{content.question_number}
                     </div>
                 </div>
 
-                {/* Question / Hook text */}
+                {/* Hook / Question text */}
                 <div style={{
                     width: '100%', maxWidth: '900px',
-                    transform: `translateY(${interpolate(questionSlide, [0, 1], [40, 0])}px)`,
-                    opacity: Math.max(0, questionSlide),
-                    textAlign: 'center'
+                    transform: `translateY(${interpolate(questionSpring, [0, 1], [40, 0])}px)`,
+                    opacity: Math.max(0, questionSpring),
+                    textAlign: 'center',
                 }}>
                     <div style={{
-                        fontSize: config?.useHook ? '64px' : '48px', // Reduced from 72/56
-                        fontWeight: 600, color: G.textWhite, lineHeight: 1.3,
-                        wordBreak: 'break-word', whiteSpace: 'normal',
-                        textShadow: '0 10px 30px rgba(0,0,0,0.5)'
-                    }}>                        {config?.useHook ? (content.hook_text || content.question_text) : content.question_text}
+                        fontSize: `${config?.useHook ? t.hookSize : t.titleSize + 8}px`,
+                        fontWeight: 600,
+                        color: p.text,
+                        lineHeight: 1.3,
+                        wordBreak: 'break-word',
+                        whiteSpace: 'normal',
+                        textShadow: '0 10px 30px rgba(0,0,0,0.5)',
+                    }}>
+                        {hookOrQuestion}
                     </div>
                 </div>
             </div>
 
-            {/* Branding (Bottom Safe Zone) */}
+            {/* SVG overlay assets */}
+            {d.svgAssets?.filter(a => a.placement === 'overlay').map(asset => (
+                <div key={asset.id} style={{
+                    position: 'absolute', inset: 0, opacity: asset.opacity, pointerEvents: 'none',
+                }} dangerouslySetInnerHTML={{ __html: asset.svg }} />
+            ))}
+
+            {/* Branding */}
             <div style={{
-                position: 'absolute', bottom: '100px', width: '100%', textAlign: 'center', opacity: brandFade,
-                display: 'flex', flexDirection: 'column', alignItems: 'center'
+                position: 'absolute', bottom: '100px', width: '100%', textAlign: 'center',
+                opacity: brandFade,
+                display: 'flex', flexDirection: 'column', alignItems: 'center',
             }}>
                 <div style={{
-                    fontSize: '18px', fontWeight: 700, color: G.textMuted,
-                    letterSpacing: '4px', textTransform: 'uppercase', opacity: 0.8
+                    fontSize: '18px', fontWeight: 700, color: p.textMuted,
+                    letterSpacing: '4px', textTransform: 'uppercase', opacity: 0.8,
                 }}>
                     AI Cloud Architect
                 </div>
                 <div style={{
-                    fontSize: '14px', fontWeight: 500, color: G.textMuted,
-                    letterSpacing: '2px', textTransform: 'uppercase', marginTop: '8px', opacity: 0.5
+                    fontSize: '14px', fontWeight: 500, color: p.textMuted,
+                    letterSpacing: '2px', textTransform: 'uppercase', marginTop: '8px', opacity: 0.5,
                 }}>
                     Hemanth Vasi
                 </div>

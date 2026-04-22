@@ -1,5 +1,6 @@
 import { Composition, getInputProps, Series } from 'remotion';
 import { MainVideo } from './MainVideo';
+import { DynamicVideo, DynamicVideoProps } from './scenes/DynamicVideo';
 import { Thumbnail } from './components/Thumbnail';
 import { AgenticReel } from './AgenticReel';
 import { VideoProps } from './types';
@@ -94,6 +95,20 @@ export const RemotionRoot: React.FC = () => {
         fps={30}
         width={1080}
         height={1920}
+      />
+      <Composition
+        id="DynamicVideo"
+        component={DynamicVideo as React.FC<any>}
+        durationInFrames={900}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{
+          scenes: {
+            meta: { title: 'Preview', fps: 30, width: 1080, height: 1920 },
+            scenes: [],
+          },
+        } as DynamicVideoProps}
       />
     </>
   );

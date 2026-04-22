@@ -10,6 +10,7 @@ client_secret.json
 youtube_tokens.json
 client_secret_*.json
 *.sqlite
+*.db*
 drive_tokens.json
 # Media and temporary files
 *.png

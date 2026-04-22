@@ -24,7 +24,7 @@ Object.values(DIRS).forEach(d => fs.mkdirSync(d, { recursive: true }));
 // ══════════════════════════════════════════════════════════════════════════════
 // MAIN ASSEMBLER (REMOTION BASED)
 // ══════════════════════════════════════════════════════════════════════════════
-async function assembleVideo(content, diagrams, metadata, questionNum, useRemotion = false, config = {}) {
+async function assembleVideo(content, diagrams, metadata, questionNum, useRemotion = false, config = {}, designJson = null) {
   const domainSlug = (content.domain || 'GCP').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
   const topicSlug = (content.topic || 'video').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '').slice(0, 50);
   const platformSuffix = config.platform ? `_${config.platform}` : '';
@@ -181,6 +181,7 @@ async function assembleVideo(content, diagrams, metadata, questionNum, useRemoti
   const propsPayload = {
     content,
     diagrams: formattedDiagrams,
+    design: designJson || undefined,
     config: {
       animStyle: config.animStyle || 'highlight',
       pauseFrames: config.pauseFrames || 30,
@@ -264,4 +265,109 @@ async function assembleVideo(content, diagrams, metadata, questionNum, useRemoti
   return { videoPath: finalOutputPath, thumbnailPath };
 }
 
-module.exports = { assembleVideo };
+// ══════════════════════════════════════════════════════════════════════════════
+// SCENES-BASED ASSEMBLER (DynamicVideo)
+// Agent generates scenes JSON → this renders it via DynamicVideo composition
+// ══════════════════════════════════════════════════════════════════════════════
+async function assembleScenesVideo(scenesJson, metadata, questionNum, config = {}) {
+  const title = scenesJson.meta?.title || 'video';
+  const domainSlug = (config.domain || 'video').replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '');
+  const topicSlug = title.replace(/[\s/]+/g, '_').replace(/[^\w-]/g, '').slice(0, 50);
+  const platformSuffix = config.platform ? `_${config.platform}` : '';
+  const slug = `${domainSlug}_${topicSlug}${platformSuffix}`;
+  const baseSlug = `${domainSlug}_${topicSlug}`;
+  const rawOutputPath = path.join(DIRS.video, `raw_q${questionNum}_${slug}.mp4`);
+  const finalOutputPath = path.join(DIRS.video, `q${questionNum}_${slug}.mp4`);
+  const thumbnailPath = path.join(DIRS.thumbnails, `q${questionNum}_${baseSlug}_thumbnail.png`);
+
+  // Background music
+  const audioDir = path.join(__dirname, '..', 'sample_audio_files');
+  let bgMusicPath = null;
+  if (fs.existsSync(audioDir)) {
+    const mp3s = fs.readdirSync(audioDir).filter(f => f.endsWith('.mp3'));
+    if (mp3s.length > 0) {
+      const randomFile = mp3s[Math.floor(Math.random() * mp3s.length)];
+      const b64Audio = fs.readFileSync(path.join(audioDir, randomFile)).toString('base64');
+      bgMusicPath = `data:audio/mp3;base64,${b64Audio}`;
+      console.log(`  🎵 Background music: ${randomFile}`);
+    }
+  }
+
+  // Encode voice segments
+  const voiceManifest = config.voiceManifest || null;
+  const voiceSegments = {};
+  let introVoicePath = null;
+  let outroVoicePath = null;
+
+  if (voiceManifest && voiceManifest.segments) {
+    console.log('  🎙️  Encoding voice files...');
+    for (const seg of voiceManifest.segments) {
+      const absPath = path.join(__dirname, '..', seg.path);
+      if (!fs.existsSync(absPath)) { console.warn(`  ⚠️  Voice not found: ${seg.path}`); continue; }
+      const b64 = fs.readFileSync(absPath).toString('base64');
+      const dataUri = `data:audio/wav;base64,${b64}`;
+      if (seg.key === 'intro') introVoicePath = dataUri;
+      else if (seg.key === 'outro') outroVoicePath = dataUri;
+      else voiceSegments[seg.key] = dataUri;
+    }
+  }
+
+  // Calculate total frames from scenes
+  const totalFrames = scenesJson.scenes.reduce((sum, s) => sum + s.durationFrames, 0);
+
+  const propsPayload = {
+    scenes: scenesJson,
+    audio: {
+      bgMusicPath,
+      voiceSegments,
+      introVoicePath,
+      outroVoicePath,
+    },
+  };
+
+  const propsFile = path.join(__dirname, '..', 'remotion', `props_q${questionNum}.json`);
+  fs.writeFileSync(propsFile, JSON.stringify(propsPayload, null, 2));
+
+  process.stdout.write('\n🎞️  Rendering DynamicVideo → MP4...\n');
+  const remotionDir = path.join(__dirname, '..', 'remotion');
+
+  await new Promise((resolve, reject) => {
+    const proc = spawn('npx', [
+      'remotion', 'render', 'src/index.ts', 'DynamicVideo',
+      rawOutputPath, `--props=${propsFile}`,
+      `--frames=0-${totalFrames - 1}`,
+      '-y'
+    ], { cwd: remotionDir, stdio: ['ignore', 'pipe', 'pipe'] });
+
+    proc.stderr.on('data', (data) => console.error(data.toString()));
+    proc.stdout.on('data', (chunk) => {
+      const text = chunk.toString();
+      const totalMatch = text.match(/(\d+)\/(\d+)/);
+      if (totalMatch) {
+        const done = parseInt(totalMatch[1]);
+        const total = parseInt(totalMatch[2]);
+        if (total > 0 && !config.noProgress) {
+          const pct = Math.round((done / total) * 100);
+          const filled = Math.round(pct / 5);
+          const bar = '▓'.repeat(filled) + '░'.repeat(20 - filled);
+          process.stdout.write(`\r  Rendering [${bar}] ${pct}%  `);
+        }
+      }
+    });
+
+    proc.on('close', (code) => {
+      if (!config.noProgress) process.stdout.write('\r  Rendering [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%  \n');
+      if (code === 0) {
+        fs.renameSync(rawOutputPath, finalOutputPath);
+        console.log(`\n✅ Final Video ready: ${finalOutputPath}`);
+        resolve();
+      } else {
+        reject(new Error(`Remotion render exited with code ${code}`));
+      }
+    });
+  });
+
+  return { videoPath: finalOutputPath, thumbnailPath };
+}
+
+module.exports = { assembleVideo, assembleScenesVideo };
